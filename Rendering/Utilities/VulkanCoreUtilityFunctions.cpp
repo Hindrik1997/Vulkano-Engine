@@ -58,3 +58,35 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
 
     return o;
 }
+
+ostream& operator<<(ostream& o, vk_layer_extension_properties p)
+{
+    o << "------------------------------LAYER PROPERTIES------------------------------" << std::endl;
+    o << "Layer name: " << p.m_layer_properties.layerName << std::endl;
+    o << "Layer description: " << p.m_layer_properties.description << std::endl;
+    o << "Layer implementation version: " << p.m_layer_properties.implementationVersion << std::endl;
+    o << "Layer spec version: " << p.m_layer_properties.specVersion << std::endl;
+    o << "Extension count: " << p.m_extensions_properties.size() << std::endl;
+
+    o << "------------LAYER EXTENSIONS: " << p.m_layer_properties.layerName << "------------" << std::endl;
+
+    for(VkExtensionProperties ep : p.m_extensions_properties)
+    {
+        o << "Extension name: " << ep.extensionName << std::endl;
+        o << "Extension spec version: " << ep.specVersion << std::endl;
+    }
+
+    o << "------------------------------------------------------------------------------" << std::endl;
+
+    return o;
+}
+
+ostream &operator<<(ostream &o, VkExtensionProperties p) {
+
+    o << "------------------------------EXTENSION PROPERTIES------------------------------" << std::endl;
+    o << "Extension name: " << p.extensionName << std::endl;
+    o << "Extension spec version: " << p.specVersion << std::endl;
+    o << "------------------------------------------------------------------------------" << std::endl;
+
+    return o;
+}

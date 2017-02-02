@@ -5,12 +5,12 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
 
-        "Rendering/VulkanPlatform.h"
+        "Rendering/VulkanPlatforms/VulkanPlatform.h"
         "Rendering/VulkanCore.h"
         "Rendering/VulkanCore.cpp"
-        "Rendering/VulkanCoreStructs.h"
-        "Rendering/VulkanCoreUtilityFunctions.h"
-        "Rendering/VulkanCoreUtilityFunctions.cpp"
+        "Rendering/Utilities/VulkanCoreStructs.h"
+        "Rendering/Utilities/VulkanCoreUtilityFunctions.h"
+        "Rendering/Utilities/VulkanCoreUtilityFunctions.cpp"
 
         "Data Storage/CacheOptimizedStorage.h"
         "Data Storage/Pool.h"
@@ -23,7 +23,7 @@ set(SOURCE_FILES
         "Core/Clock.cpp"
         "Core/Console.h"
 
-        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h)
+        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h Rendering/Utilities/VulkanLayerAndExtensionManager.cpp Rendering/Utilities/VulkanLayerAndExtensionManager.h)
 
 link_libraries(vulkan xcb)
 

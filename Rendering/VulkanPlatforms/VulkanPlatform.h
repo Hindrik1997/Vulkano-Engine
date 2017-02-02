@@ -14,7 +14,7 @@
 
 #if defined(VK_USE_PLATFORM_XCB_KHR)
 
-#include "VulkanPlatforms/VK_XCB_PLATFORM.h"
+#include "VK_XCB_PLATFORM.h"
 
 #endif
 

@@ -7,6 +7,12 @@
 
 #include "VulkanCore.h"
 
+extern const vector<string> enabledKHRInstanceExtensions;
+extern const vector<string> enabledInstanceValidationLayers;
+
+
+
+
 class Renderer {
 private:
     VulkanCore m_vk_core;
@@ -16,7 +22,6 @@ public:
 public:
     void render(float deltaTime);
     bool processAPI(float deltaTime);
-    void present();
 
 
 
