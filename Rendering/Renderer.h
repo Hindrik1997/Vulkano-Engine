@@ -7,10 +7,19 @@
 
 #include "VulkanCore.h"
 
-extern const vector<string> enabledKHRInstanceExtensions;
-extern const vector<string> enabledInstanceValidationLayers;
+//extern const vector<const char*> enabledKHRInstanceExtensions;
+//extern const vector<const char*> enabledInstanceValidationLayers;
 
+static const vector<const char*> enabledKHRInstanceExtensions = {
+#ifndef NDEBUG
+        VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
+#endif
 
+};
+
+static const vector<const char*> enabledInstanceValidationLayers = {
+        "VK_LAYER_LUNARG_standard_validation"
+};
 
 
 class Renderer {

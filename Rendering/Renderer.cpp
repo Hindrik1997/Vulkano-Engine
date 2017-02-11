@@ -5,13 +5,7 @@
 #include "Renderer.h"
 
 
-const vector<string> enabledKHRInstanceExtensions = {
 
-};
-
-const vector<string> enabledInstanceValidationLayers = {
-    "VK_LAYER_LUNARG_standard_validation"
-};
 
 
 #ifdef NDEBUG

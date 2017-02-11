@@ -23,6 +23,4 @@ Engine::Engine() {
 }
 
 Engine::~Engine() {
-    //SAFE_PNTR_DEL(m_renderer);
-    //SAFE_PNTR_DEL(m_forward);
 }

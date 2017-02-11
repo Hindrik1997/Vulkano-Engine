@@ -16,23 +16,38 @@ private:
     vector<vk_layer_extension_properties> m_instanceLayersAndExtentions;
     vector<VkExtensionProperties> m_instanceKHRExtensions;
 
-    vector<string> m_enabledInstanceKHRExtensionNames;
-    vector<string>  m_enabledInstanceValidationLayerNames;
+    vector<const char*> m_enabledInstanceKHRExtensionNames;
+    vector<const char*>  m_enabledInstanceValidationLayerNames;
 
+    bool m_validationLayersEnabled;
+    VkDebugReportCallbackEXT m_debugCallbackFP = nullptr;
+
+    VkInstance m_current_instance_handle = VK_NULL_HANDLE;
 
 public:
-    VulkanLayerAndExtensionManager(vector<string> enabledInstanceKHRExtensionNames, vector<string> enabledInstanceValidationLayerNames, bool enableValidationLayers);
-
+    VulkanLayerAndExtensionManager(vector<const char*> enabledInstanceKHRExtensionNames, vector<const char*> enabledInstanceValidationLayerNames, bool enableValidationLayers);
+    ~VulkanLayerAndExtensionManager();
 
 private:
     VkResult vk_enumerate_extension_layers_and_extensions();
     VkResult vk_enumerate_KHR_extensions();
-    bool isValidationLayerSupported(string name);
-    bool isKHRExtensionSupported(string name);
+    bool isValidationLayerSupported(const char* name);
+    bool isKHRExtensionSupported(const char* name);
 
+public:
+    bool getDebugEnabled();
+    void setupDebugFacilities();
+    void cleanupDebugFacilities();
+    void setVkInstanceHandle(VkInstance& handle);
+public:
+    vector<const char*> getEnabledInstanceKHRExtensions();
+    vector<const char*> getEnabledInstanceValidationLayers();
 
 
 };
+
+
+
 
 
 #endif //VULKANOENGINE_VULKANLAYEREXTENSIONMANAGER_H
