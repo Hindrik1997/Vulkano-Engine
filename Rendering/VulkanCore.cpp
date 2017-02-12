@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "VulkanCore.h"
 #include "../Core/Console.h"
 
@@ -80,29 +81,55 @@ VkResult VulkanCore::vk_init_instance() {
     return result;
 }
 
-VkResult VulkanCore::vk_init_select_physical_device() {
-    VkResult result;
-
-
-    return result;
-}
-
 VkResult VulkanCore::vk_init_device() {
     VkResult result;
 
     uint32_t physical_device_count = 0;
     vector<VkPhysicalDevice> physical_devices;
-
+    VkPhysicalDevice selected_device = VK_NULL_HANDLE;
 
 
     vkEnumeratePhysicalDevices(m_instance, &physical_device_count, nullptr);
 
     if(physical_device_count <= 0) {
-        throw std::runtime_error("Error, no physical device.");
+        throw std::runtime_error("Error, no physical devices supporting Vulkan found!.");
     }
 
-    result = vkEnumeratePhysicalDevices(m_instance, &physical_device_count, &physical_devices[0]);
+    physical_devices.resize(physical_device_count);
+
+    result = vkEnumeratePhysicalDevices(m_instance, &physical_device_count, physical_devices.data());
     VK_IF_FAIL_MSG(result, "Error when retrieving physical devices.");
+
+    vector<VkPhysicalDevice> possibleGPUs;
+
+    for(auto& device : physical_devices)
+    {
+        if(vk_init_check_device(device))
+        {
+            possibleGPUs.push_back(device);
+        }
+    }
+
+    if(possibleGPUs.size() == 0)
+    {
+        throw::std::runtime_error("Failed to find a suitable GPU. The GPU needs to be a discrete or integrated GPU, and needs to support geometry shaders and tesselation.");
+    }
+
+    vector<vk_device_rating> ratings;
+
+    for(auto& device : possibleGPUs)
+    {
+        ratings.push_back(vk_device_rating{device,vk_init_suitability_rating(device)});
+    }
+
+    std::sort(ratings.begin(), ratings.end(), [](const vk_device_rating& left, const vk_device_rating& right){ return right.m_rating < left.m_rating; });
+
+    selected_device = ratings.front().m_device;
+
+    if(selected_device == VK_NULL_HANDLE)
+    {
+        throw::std::runtime_error("Selected device is a VK_NULL_HANDLE! ");
+    }
 
 
 
@@ -110,5 +137,34 @@ VkResult VulkanCore::vk_init_device() {
 
 
     return result;
+}
+
+bool VulkanCore::vk_init_check_device(VkPhysicalDevice deviceToCheck) {
+
+    VkPhysicalDeviceProperties  deviceProperties;
+    VkPhysicalDeviceFeatures    deviceFeatures;
+
+    vkGetPhysicalDeviceProperties(deviceToCheck, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(deviceToCheck, &deviceFeatures);
+
+    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU && deviceFeatures.geometryShader && deviceFeatures.tessellationShader;
+}
+
+int32_t VulkanCore::vk_init_suitability_rating(VkPhysicalDevice deviceToRate) {
+
+    int32_t rating = 0;
+
+    VkPhysicalDeviceProperties  deviceProperties;
+    VkPhysicalDeviceFeatures    deviceFeatures;
+
+    vkGetPhysicalDeviceProperties(deviceToRate, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(deviceToRate, &deviceFeatures);
+
+    if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+        rating += 1000;
+
+    rating += deviceProperties.limits.maxImageDimension2D;
+
+    return rating;
 }
 

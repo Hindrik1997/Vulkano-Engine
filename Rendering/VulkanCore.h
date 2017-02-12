@@ -22,7 +22,6 @@ class VulkanCore {
 private:
     VkInstance          m_instance                      = VK_NULL_HANDLE;
     VkDevice            m_device                        = VK_NULL_HANDLE;
-    VkPhysicalDevice    m_physical_device               = VK_NULL_HANDLE;
 
 
 
@@ -43,8 +42,8 @@ private:
     VkResult vk_init();
     VkResult vk_init_instance();
     VkResult vk_init_device();
-    VkResult vk_init_select_physical_device();
-
+    static bool vk_init_check_device(VkPhysicalDevice deviceToCheck);
+    static int32_t vk_init_suitability_rating(VkPhysicalDevice deviceToRate);
 
 public:
     bool process_platform_API(float deltaTime);
