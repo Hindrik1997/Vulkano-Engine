@@ -11,9 +11,9 @@ set(SOURCE_FILES
         "Rendering/VulkanPlatforms/VulkanPlatform.h"
         "Rendering/VulkanCore.h"
         "Rendering/VulkanCore.cpp"
-        "Rendering/Utilities/VulkanCoreStructs.h"
-        "Rendering/Utilities/VulkanCoreUtilityFunctions.h"
-        "Rendering/Utilities/VulkanCoreUtilityFunctions.cpp"
+        "Rendering/Utilities/VulkanStructs.h"
+        "Rendering/Utilities/VulkanUtilityFunctions.h"
+        "Rendering/Utilities/VulkanUtilityFunctions.cpp"
 
         "Data Storage/CacheOptimizedStorage.h"
         "Data Storage/Pool.h"
@@ -26,7 +26,7 @@ set(SOURCE_FILES
         "Core/Clock.cpp"
         "Core/Console.h"
 
-        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h Rendering/VulkanCoreStaticFunctions.cpp Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp Rendering/VulkanCore/VulkanCoreInitialization.cpp)
+        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp Rendering/VulkanCore/VulkanCoreInitialization.cpp)
 
 link_libraries(vulkan xcb)
 

@@ -8,10 +8,10 @@
 #include "../VulkanCore.h"
 #include "../../Core/Console.h"
 
-bool VulkanCore::is_validation_layer_supported(const char *name) {
-    for(vk_layer_extension_properties& prop : m_instanceLayersAndExtentions)
+bool VulkanCore::isValidationLayerSupported(const char *name) {
+    for(vk_layer_extension_properties& prop : m_InstanceLayersAndExtentions)
     {
-        if(strcmp(prop.m_layer_properties.layerName, name) == 0)
+        if(strcmp(prop.m_layerProperties.layerName, name) == 0)
         {
             return true;
         }
@@ -21,8 +21,8 @@ bool VulkanCore::is_validation_layer_supported(const char *name) {
     return false;
 }
 
-bool VulkanCore::is_instance_KHR_extension_supported(const char *name) {
-    for(VkExtensionProperties& prop : m_instanceKHRExtensions)
+bool VulkanCore::isInstanceKHRExtensionSupported(const char *name) {
+    for(VkExtensionProperties& prop : m_InstanceKHRExtensions)
     {
         if(strcmp(prop.extensionName,name) == 0)
         {
@@ -34,9 +34,9 @@ bool VulkanCore::is_instance_KHR_extension_supported(const char *name) {
     return false;
 }
 
-bool VulkanCore::is_device_extension_supported(const char *name, const VkPhysicalDevice deviceToCheck) {
+bool VulkanCore::isDeviceExtensionSupported(const char *name, const VkPhysicalDevice deviceToCheck) {
 
-    vector<VkExtensionProperties> props = vk_enumerate_device_extentions(deviceToCheck);
+    vector<VkExtensionProperties> props = vkEnumerateDeviceExtentions(deviceToCheck);
 
     for(VkExtensionProperties& prop : props)
     {
@@ -50,20 +50,20 @@ bool VulkanCore::is_device_extension_supported(const char *name, const VkPhysica
     return false;
 }
 
-vector<VkExtensionProperties> VulkanCore::vk_enumerate_device_extentions(const VkPhysicalDevice deviceToCheck) {
+vector<VkExtensionProperties> VulkanCore::vkEnumerateDeviceExtentions(const VkPhysicalDevice deviceToCheck) {
 
     vector<VkExtensionProperties> extensionProperties;
-    uint32_t extension_count = 0;
-    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extension_count, nullptr);
+    uint32_t extensionCount = 0;
+    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extensionCount, nullptr);
 
-    if(extension_count == 0)
+    if(extensionCount == 0)
         return extensionProperties;
 
-    extensionProperties.resize(extension_count);
+    extensionProperties.resize(extensionCount);
 
-    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extension_count, extensionProperties.data());
+    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extensionCount, extensionProperties.data());
 
-    Console::printLine("Found " + std::to_string(extension_count) + " KHR device extentions:" );
+    Console::printLine("Found " + std::to_string(extensionCount) + " KHR device extentions:");
 
     for(uint32_t i = 0; i < static_cast<uint32_t >(extensionProperties.size()); ++i)
     {
@@ -73,7 +73,7 @@ vector<VkExtensionProperties> VulkanCore::vk_enumerate_device_extentions(const V
     return extensionProperties;
 }
 
-VkResult VulkanCore::vk_enumerate_extension_layers_and_extensions() {
+VkResult VulkanCore::vkEnumerateExtensionLayersAndExtensions() {
 
     VkResult result;
     uint32_t instanceLayerCount;
@@ -85,7 +85,7 @@ VkResult VulkanCore::vk_enumerate_extension_layers_and_extensions() {
 
     instanceLayerProperties.resize(instanceLayerCount);
 
-    m_instanceLayersAndExtentions.resize(instanceLayerCount);
+    m_InstanceLayersAndExtentions.resize(instanceLayerCount);
 
     result = vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayerProperties.data());
 
@@ -109,15 +109,15 @@ VkResult VulkanCore::vk_enumerate_extension_layers_and_extensions() {
 
         vk_layer_extension_properties layerProps;
 
-        layerProps.m_layer_properties       = layerProperty;
-        layerProps.m_extensions_properties  = extensionProperties;
+        layerProps.m_layerProperties       = layerProperty;
+        layerProps.m_ExtensionProperties  = extensionProperties;
 
-        m_instanceLayersAndExtentions[i] = (layerProps);
+        m_InstanceLayersAndExtentions[i] = (layerProps);
     }
 
-    std::cout << "Found " << m_instanceLayersAndExtentions.size() << " Extension Layers" << std::endl;
+    std::cout << "Found " << m_InstanceLayersAndExtentions.size() << " Extension Layers" << std::endl;
 
-    for(vk_layer_extension_properties ep : m_instanceLayersAndExtentions)
+    for(vk_layer_extension_properties ep : m_InstanceLayersAndExtentions)
     {
         std::cout << ep;
     }
@@ -125,7 +125,7 @@ VkResult VulkanCore::vk_enumerate_extension_layers_and_extensions() {
     return result;
 }
 
-VkResult VulkanCore::vk_enumerate_KHR_extensions() {
+VkResult VulkanCore::vkEnumerateKHRExtensions() {
     VkResult result;
     uint32_t extensionCount;
 
@@ -133,15 +133,15 @@ VkResult VulkanCore::vk_enumerate_KHR_extensions() {
 
     VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance KHR extension count")
 
-    m_instanceKHRExtensions.resize(extensionCount);
+    m_InstanceKHRExtensions.resize(extensionCount);
 
-    result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_instanceKHRExtensions.data());
+    result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_InstanceKHRExtensions.data());
 
     VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance KHR extension properties")
 
-    Console::printLine("Found " + std::to_string(m_instanceKHRExtensions.size()) + " KHR Extensions");
+    Console::printLine("Found " + std::to_string(m_InstanceKHRExtensions.size()) + " KHR Extensions");
 
-    for(VkExtensionProperties ep : m_instanceKHRExtensions)
+    for(VkExtensionProperties ep : m_InstanceKHRExtensions)
     {
         cout << ep;
     }
@@ -149,40 +149,40 @@ VkResult VulkanCore::vk_enumerate_KHR_extensions() {
     return result;
 }
 
-VkResult VulkanCore::load_layers_and_extensions() {
+VkResult VulkanCore::loadLayersAndExtensions() {
     VkResult result;
 
-    result = vk_enumerate_KHR_extensions();
+    result = vkEnumerateKHRExtensions();
 
     if(result != VK_SUCCESS)
         throw std::runtime_error("Error enumerating KHR extensions!");
 
-    result = vk_enumerate_extension_layers_and_extensions();
+    result = vkEnumerateExtensionLayersAndExtensions();
 
     if(result != VK_SUCCESS)
         throw std::runtime_error("Error enumerating validation layers and extensions!");
 
 
-    for(const char* name : m_enabledInstanceKHRExtensionNames)
+    for(const char* name : m_EnabledInstanceKHRExtensionNames)
     {
-        if(!is_instance_KHR_extension_supported(name))
+        if(!isInstanceKHRExtensionSupported(name))
         {
             throw std::runtime_error("KHR Extension not supported!");
         }
     }
 
-    if(m_isDebugEnabled)
+    if(m_IsDebugEnabled)
     {
-        for(const char* name : m_enabledInstanceValidationLayerNames)
+        for(const char* name : m_EnabledInstanceValidationLayerNames)
         {
-            if(!is_validation_layer_supported(name))
+            if(!isValidationLayerSupported(name))
             {
                 throw std::runtime_error("Validation layer not supported!");
             }
         }
 
         bool debugExtensionFound = false;
-        for(const char* name : m_enabledInstanceKHRExtensionNames)
+        for(const char* name : m_EnabledInstanceKHRExtensionNames)
         {
             if(strcmp(name, VK_EXT_DEBUG_REPORT_EXTENSION_NAME) == 0)
             {
@@ -199,11 +199,11 @@ VkResult VulkanCore::load_layers_and_extensions() {
     return result;
 }
 
-bool VulkanCore::check_device_extentions(const VkPhysicalDevice deviceToCheck, vector<const char*> extensionNames) {
+bool VulkanCore::checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames) {
     for(uint32_t i = 0; i < static_cast<uint32_t >(extensionNames.size()); ++i)
     {
         bool isSupported;
-        isSupported = is_device_extension_supported(extensionNames[i], deviceToCheck);
+        isSupported = isDeviceExtensionSupported(extensionNames[i], deviceToCheck);
         if(!isSupported)
             return false;
     }

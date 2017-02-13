@@ -12,23 +12,23 @@ VulkanCore::VulkanCore(string applicationName,
                        vector<const char*> enabledInstanceValidationLayers,
                        vector<const char*> enabledDeviceExtensions,
                        bool enableDebugLayers)
-        : m_application_name(applicationName), m_enabledInstanceKHRExtensionNames(enabledKHRInstanceExtensions), m_enabledInstanceValidationLayerNames(enabledInstanceValidationLayers), m_isDebugEnabled(enableDebugLayers), m_enabledDeviceExtensions(enabledDeviceExtensions)
+        : m_ApplicationName(applicationName), m_EnabledInstanceKHRExtensionNames(enabledKHRInstanceExtensions), m_EnabledInstanceValidationLayerNames(enabledInstanceValidationLayers), m_IsDebugEnabled(enableDebugLayers), m_EnabledDeviceExtensions(enabledDeviceExtensions)
 {
-    load_layers_and_extensions();
-    VkResult r = vk_init();
+    loadLayersAndExtensions();
+    VkResult r = vkInit();
     if(r == VK_SUCCESS)
         Console::printLine("Initialized Vulkan API succesfully.");
 }
 
 VulkanCore::~VulkanCore() {
-    cleanup_debug_facilities();
-    vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
-    vkDestroyDevice(m_device, nullptr);
-    vkDestroyInstance(m_instance,nullptr);
+    cleanupDebugFacilities();
+    vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+    vkDestroyDevice(m_Device, nullptr);
+    vkDestroyInstance(m_Instance,nullptr);
 }
 
-bool VulkanCore::process_platform_API(float deltaTime) {
-    return m_platform.processAPI(deltaTime);
+bool VulkanCore::processPlatformAPI(float deltaTime) {
+    return m_Platform.processAPI(deltaTime);
 }
 
 

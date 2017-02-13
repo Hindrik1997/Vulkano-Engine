@@ -16,7 +16,7 @@ void Renderer::render(float deltaTime) {
 }
 
 bool Renderer::processAPI(float deltaTime) {
-    return m_vk_core.process_platform_API(deltaTime);
+    return m_vk_core.processPlatformAPI(deltaTime);
 }
 
 Renderer::Renderer() : m_vk_core("Vulkano Engine", enabledKHRInstanceExtensions, enabledInstanceValidationLayers, enabledDeviceExtensions, enableDebugLayers)

@@ -2,7 +2,7 @@
 // Created by hindrik on 27-1-17.
 //
 
-#include "VulkanCoreUtilityFunctions.h"
+#include "VulkanUtilityFunctions.h"
 
 ostream& operator<<(ostream& o, VkPhysicalDeviceType& t) {
     switch(t)
@@ -65,15 +65,15 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
 ostream& operator<<(ostream& o, vk_layer_extension_properties p)
 {
     o << "------------------------------LAYER PROPERTIES------------------------------" << std::endl;
-    o << "Layer name: " << p.m_layer_properties.layerName << std::endl;
-    o << "Layer description: " << p.m_layer_properties.description << std::endl;
-    o << "Layer implementation version: " << p.m_layer_properties.implementationVersion << std::endl;
-    o << "Layer spec version: " << p.m_layer_properties.specVersion << std::endl;
-    o << "Extension count: " << p.m_extensions_properties.size() << std::endl;
+    o << "Layer name: " << p.m_layerProperties.layerName << std::endl;
+    o << "Layer description: " << p.m_layerProperties.description << std::endl;
+    o << "Layer implementation version: " << p.m_layerProperties.implementationVersion << std::endl;
+    o << "Layer spec version: " << p.m_layerProperties.specVersion << std::endl;
+    o << "Extension count: " << p.m_ExtensionProperties.size() << std::endl;
 
-    o << "------------LAYER EXTENSIONS: " << p.m_layer_properties.layerName << "------------" << std::endl;
+    o << "------------LAYER EXTENSIONS: " << p.m_layerProperties.layerName << "------------" << std::endl;
 
-    for(VkExtensionProperties ep : p.m_extensions_properties)
+    for(VkExtensionProperties ep : p.m_ExtensionProperties)
     {
         o << "Extension name: " << ep.extensionName << std::endl;
         o << "Extension spec version: " << ep.specVersion << std::endl;

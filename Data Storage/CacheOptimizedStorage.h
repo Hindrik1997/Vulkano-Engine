@@ -28,7 +28,7 @@ public:
     template<typename... Args>
     uint16_t getNewItem(Args... _args);
 
-    void removeItem(uint16_t _index);
+    void removeItem(uint16_t nonMappedIndex);
 
     uint16_t size();
 
@@ -49,33 +49,33 @@ uint16_t CacheOptimizedStorage<T, SIZE>::getNewItem(Args... _args) {
 }
 
 template<typename T, uint16_t SIZE>
-void CacheOptimizedStorage<T, SIZE>::removeItem(uint16_t _nonmappedIndex) {
-    if(_nonmappedIndex == 65535)
+void CacheOptimizedStorage<T, SIZE>::removeItem(uint16_t nonMappedIndex) {
+    if(nonMappedIndex == 65535)
         throw "Invalid index";
 
-    uint16_t mappedIndex = m_indices[_nonmappedIndex];
+    uint16_t mappedIndex = m_indices[nonMappedIndex];
 
     if(mappedIndex == m_inUseCounter - 1)
     {
         m_items[mappedIndex].cleanUp();
-        m_mappedIndices[_nonmappedIndex] = 65535;
-        m_indices.removeItem(_nonmappedIndex);
+        m_mappedIndices[nonMappedIndex] = 65535;
+        m_indices.removeItem(nonMappedIndex);
         m_inUseCounter--;
     }
     else
     {
         //Oude wegsmijten
         m_items[mappedIndex].cleanUp();
-        m_mappedIndices[_nonmappedIndex] = 65535;
-        m_indices.removeItem(_nonmappedIndex);
+        m_mappedIndices[nonMappedIndex] = 65535;
+        m_indices.removeItem(nonMappedIndex);
 
         //Laatste plaatsen op mappedIndex
-        uint16_t _nonmappedLastIndex = m_inUseCounter - (uint16_t)1;
-        uint16_t mappedLastIndex = m_indices[_nonmappedLastIndex];
+        uint16_t nonMappedLastIndex = m_inUseCounter - (uint16_t)1;
+        uint16_t mappedLastIndex = m_indices[nonMappedLastIndex];
 
         //laatste moven en index setten
         m_indices[mappedLastIndex] = mappedIndex;
-        m_items[mappedIndex] = std::move(m_items[_nonmappedLastIndex]);
+        m_items[mappedIndex] = std::move(m_items[nonMappedLastIndex]);
 
         m_inUseCounter--;
     }

@@ -23,7 +23,8 @@ VkBool32 debugCallback(
 
 }
 
-VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugReportCallbackEXT* pCallback) {
+VkResult createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
+                                      const VkAllocationCallbacks *pAllocator, VkDebugReportCallbackEXT *pCallback) {
     auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
     if (func != nullptr) {
         return func(instance, pCreateInfo, pAllocator, pCallback);
@@ -32,7 +33,8 @@ VkResult CreateDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCa
     }
 }
 
-VkResult DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback, const VkAllocationCallbacks* pAllocator) {
+VkResult destroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback,
+                                       const VkAllocationCallbacks *pAllocator) {
     auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
     if (func != nullptr) {
         func(instance, callback, pAllocator);
@@ -41,18 +43,18 @@ VkResult DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbac
         return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-void VulkanCore::cleanup_debug_facilities() {
-    if(m_isDebugEnabled)
+void VulkanCore::cleanupDebugFacilities() {
+    if(m_IsDebugEnabled)
     {
 
-        VkResult result = DestroyDebugReportCallbackEXT(m_instance, m_debugCallbackFP, NULL);
+        VkResult result = destroyDebugReportCallbackEXT(m_Instance, m_DebugCallback, NULL);
         if(result  != VK_SUCCESS)
             Console::printLine("Error when destroying debug reporter callback.");
     }
 }
 
-void VulkanCore::setup_debug_facilities() {
-    if(!m_isDebugEnabled)
+void VulkanCore::setupDebugFacilities() {
+    if(!m_IsDebugEnabled)
     {
         throw std::runtime_error("Error, enabling debug facilities while the debug layers are not enabled.");
     }
@@ -69,7 +71,7 @@ void VulkanCore::setup_debug_facilities() {
     createInfo.pfnCallback = debugCallback;
     createInfo.pUserData = NULL;
 
-    if (CreateDebugReportCallbackEXT(m_instance, &createInfo, nullptr, &m_debugCallbackFP) != VK_SUCCESS) {
+    if (createDebugReportCallbackEXT(m_Instance, &createInfo, nullptr, &m_DebugCallback) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug callback!");
     }
     Console::printLine("Succesfully set up the debug facilities!");
