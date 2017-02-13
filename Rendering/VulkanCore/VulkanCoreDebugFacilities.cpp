@@ -43,7 +43,7 @@ VkResult destroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbac
         return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-void VulkanCore::cleanupDebugFacilities() {
+void VulkanCore::cleanUpDebugFacilities() {
     if(m_IsDebugEnabled)
     {
 

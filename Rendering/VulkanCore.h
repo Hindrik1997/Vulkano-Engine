@@ -11,8 +11,6 @@
 #include "Utilities/VulkanStructs.h"
 #include "Utilities/VulkanUtilityFunctions.h"
 
-
-#define VK_CHECK(result) if(result != VK_SUCCESS) return result;
 #define VK_IF_FAIL_MSG(result, message) if(result != VK_SUCCESS) { Console::printLine(message); return result; }
 
 using std::vector;
@@ -35,8 +33,9 @@ private:
     VkSurfaceKHR                            m_Surface                       = VK_NULL_HANDLE;
     VkSwapchainKHR                          m_Swapchain                     = VK_NULL_HANDLE;
     vector<VkImage>                         m_SwapChainImages               = {};
+    vector<VkImageView>                     m_SwapChainImageViews           = {};
     VkExtent2D                              m_SwapChainExtent               = {};
-    VkSurfaceFormatKHR                      m_SwapChainFormat               = {};
+    VkFormat                                m_SwapChainFormat               = {};
 
     string                                  m_ApplicationName               = "";
     VulkanPlatform                          m_Platform;
@@ -72,6 +71,7 @@ private:
     void     vkInitAssignQqueues();
     VkResult vkInitCreateSurface();
     VkResult vkInitCreateSwapchain();
+    VkResult vkInitCreateSwapchainImageViews();
 
     static  vk_physical_device_info     vkInitGetQueueFamilies(const VkPhysicalDevice device);
     static  bool                        vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &DeviceExtentions, const VkSurfaceKHR surface);
@@ -82,7 +82,8 @@ private:
     bool        isValidationLayerSupported(const char *name);
     bool        isInstanceKHRExtensionSupported(const char *name);
     void        setupDebugFacilities();
-    void        cleanupDebugFacilities();
+    void        cleanUpDebugFacilities();
+    void        cleanUpSwapchainImageViews();
 
 
 

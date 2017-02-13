@@ -210,4 +210,18 @@ bool VulkanCore::checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vec
     return true;
 }
 
+void VulkanCore::cleanUpSwapchainImageViews() {
+
+    for(uint32_t i = static_cast<uint32_t >(m_SwapChainImageViews.size()); i > 0; --i )
+    {
+        VkImageView view = m_SwapChainImageViews.back();
+        m_SwapChainImageViews.pop_back();
+
+        vkDestroyImageView(m_Device, view, nullptr);
+    }
+    m_SwapChainImageViews.clear();
+}
+
+
+
 

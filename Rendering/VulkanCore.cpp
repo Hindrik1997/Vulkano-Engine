@@ -22,10 +22,12 @@ VulkanCore::VulkanCore(string applicationName,
 
 VulkanCore::~VulkanCore() {
 
-    cleanupDebugFacilities();
+    cleanUpDebugFacilities();
 
     if(m_Swapchain != VK_NULL_HANDLE)
         vkDestroySwapchainKHR(m_Device, m_Swapchain, nullptr);
+
+    cleanUpSwapchainImageViews();
 
     if(m_Surface != VK_NULL_HANDLE)
         vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);

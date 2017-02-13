@@ -34,6 +34,8 @@ VkResult VulkanCore::vkInit() {
     result = vkInitCreateSwapchain();
     VK_IF_FAIL_MSG(result, "Swapchain creation failed.");
 
+    result = vkInitCreateSwapchainImageViews();
+    VK_IF_FAIL_MSG(result, "Error occured when creating the image views");
 
     return result;
 }
@@ -212,6 +214,12 @@ void VulkanCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> 
 
 void VulkanCore::vkInitAssignQqueues() {
 
+    m_GraphicsQueue = VK_NULL_HANDLE;
+    m_AdditionalGraphicsQueues.clear();
+    m_ComputeQueues.clear();
+    m_SparseBindingQueues.clear();
+    m_TransferOnlyQueues.clear();
+
     bool graphicsAssigned = false;
 
     for(uint32_t i = 0; i < static_cast<uint32_t >(m_QueueFamilies.size()); ++i)
@@ -358,6 +366,8 @@ vk_physical_device_info VulkanCore::vkInitGetQueueFamilies(const VkPhysicalDevic
 
 VkResult VulkanCore::vkInitCreateSwapchain() {
 
+    m_SwapChainImages.clear();
+
     vk_swapchain_details swapchainDetails = fillSwapChainDetails(m_PhysicalDevice, m_Surface);
 
     VkSurfaceFormatKHR surfaceFormatKHR = pickSwapChainSurfaceFormat(swapchainDetails);
@@ -411,12 +421,49 @@ VkResult VulkanCore::vkInitCreateSwapchain() {
     vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &swapImageCount, m_SwapChainImages.data());
 
     m_SwapChainExtent = extent2D;
-    m_SwapChainFormat = surfaceFormatKHR;
+    m_SwapChainFormat = surfaceFormatKHR.format;
 
     return result;
 }
 
+VkResult VulkanCore::vkInitCreateSwapchainImageViews() {
 
+    VkResult result = VK_ERROR_INITIALIZATION_FAILED;
+
+    cleanUpSwapchainImageViews();
+    m_SwapChainImageViews.resize(m_SwapChainImages.size());
+
+    //Default rgba color channel set
+    VkComponentMapping componentMapping {VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY, VK_COMPONENT_SWIZZLE_IDENTITY};
+
+    //Default sub resource mapping, as color buffer
+    VkImageSubresourceRange subresourceRange;
+    subresourceRange.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    subresourceRange.baseArrayLayer = 0;
+    subresourceRange.baseMipLevel   = 0;
+    subresourceRange.layerCount     = 1;
+    subresourceRange.levelCount     = 1;
+
+
+
+    for(uint32_t i = 0; i < static_cast<uint32_t >(m_SwapChainImages.size()); ++i)
+    {
+
+        VkImageViewCreateInfo createInfo    = {};
+        createInfo.sType                    = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.pNext                    = nullptr;
+        createInfo.image                    = m_SwapChainImages[i];
+        createInfo.components               = componentMapping;
+        createInfo.subresourceRange         = subresourceRange;
+        createInfo.viewType                 = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format                   = m_SwapChainFormat;
+
+        result = vkCreateImageView(m_Device, &createInfo, nullptr, &m_SwapChainImageViews[i]);
+        VK_IF_FAIL_MSG(result, "Error when creating image view.");
+    }
+
+    return result;
+}
 
 
 
