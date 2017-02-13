@@ -43,7 +43,9 @@ bool VulkanCore::processPlatformAPI(float deltaTime) {
     return m_Platform.processAPI(deltaTime);
 }
 
+void VulkanCore::createPipeline() {
 
+}
 
 
 

@@ -85,8 +85,6 @@ private:
     void        cleanUpDebugFacilities();
     void        cleanUpSwapchainImageViews();
 
-
-
     VkResult vkEnumerateExtensionLayersAndExtensions();
     VkResult vkEnumerateKHRExtensions();
 
@@ -97,6 +95,7 @@ private:
 public:
     bool processPlatformAPI(float deltaTime);
 
+    void createPipeline();
 
 };
 
