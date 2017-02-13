@@ -209,3 +209,5 @@ bool VulkanCore::checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vec
     }
     return true;
 }
+
+

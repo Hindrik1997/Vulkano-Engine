@@ -11,7 +11,7 @@ VkResult VulkanCore::vkInit() {
     VkResult result;
 
     result = vkInitInstance();
-    VK_CHECK(result);
+    VK_IF_FAIL_MSG(result, "Instance creation failed.");
 
     //Enable debug if necessary
     if(m_IsDebugEnabled)
@@ -19,16 +19,20 @@ VkResult VulkanCore::vkInit() {
         setupDebugFacilities();
     }
 
+    result = vkInitCreateSurface();
+    VK_IF_FAIL_MSG(result, "Surface creation failed.")
+
+
     result = vkInitPhysicalDevice();
-    VK_CHECK(result);
+    VK_IF_FAIL_MSG(result, "Physical device selection failed.")
 
     result = vkInitLogicalDevice();
-    VK_CHECK(result);
-
-    result = vkInitCreateSurface();
-    VK_CHECK(result);
+    VK_IF_FAIL_MSG(result, "Logical device creation failed.");
 
     vkInitAssignQqueues();
+
+    result = vkInitCreateSwapchain();
+    VK_IF_FAIL_MSG(result, "Swapchain creation failed.");
 
 
     return result;
@@ -91,7 +95,7 @@ VkResult VulkanCore::vkInitPhysicalDevice() {
 
     for(const auto& device : physicalDevices)
     {
-        if(vkInitCheckDevice(device, m_EnabledDeviceExtensions))
+        if(vkInitCheckDevice(device, m_EnabledDeviceExtensions, m_Surface))
         {
             possibleGPUs.push_back(device);
         }
@@ -162,8 +166,10 @@ VkResult VulkanCore::vkInitLogicalDevice() {
         }
     }
 
-    //TODO: geomshaders and tesselationshaders?
     VkPhysicalDeviceFeatures deviceFeatures = {};
+
+    deviceFeatures.geometryShader = VK_TRUE;
+    deviceFeatures.tessellationShader = VK_TRUE;
 
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -274,7 +280,7 @@ VkResult VulkanCore::vkInitCreateSurface() {
     return result;
 }
 
-bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &deviceExtentions) {
+bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &deviceExtentions, const VkSurfaceKHR surface) {
 
     VkPhysicalDeviceProperties  deviceProperties;
     VkPhysicalDeviceFeatures    deviceFeatures;
@@ -297,7 +303,8 @@ bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const v
         }
     }
 
-    if(!checkDeviceExtentions(deviceToCheck, deviceExtentions))
+    vk_swapchain_details details = fillSwapChainDetails(deviceToCheck, surface);
+    if(!checkDeviceExtentions(deviceToCheck, deviceExtentions) || !checkSwapChainDetails(details))
         return false;
 
 
@@ -348,3 +355,99 @@ vk_physical_device_info VulkanCore::vkInitGetQueueFamilies(const VkPhysicalDevic
     info.m_QueueFamilyProperties = queueFamilies;
     return info;
 }
+
+VkResult VulkanCore::vkInitCreateSwapchain() {
+
+    vk_swapchain_details swapchainDetails = fillSwapChainDetails(m_PhysicalDevice, m_Surface);
+
+    VkSurfaceFormatKHR surfaceFormatKHR = pickSwapChainSurfaceFormat(swapchainDetails);
+    VkPresentModeKHR presentModeKHR = pickSwapChainPresentMode(swapchainDetails);
+    VkExtent2D extent2D = pickSwapChainExtent2D(swapchainDetails, WIDTH, HEIGHT);
+
+    uint32_t imageCount = swapchainDetails.m_capabilities.minImageCount + 1;
+    if(swapchainDetails.m_capabilities.maxImageCount > 0 && imageCount > swapchainDetails.m_capabilities.maxImageCount)
+    {
+        imageCount = swapchainDetails.m_capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfoKHR          = {};
+    createInfoKHR.sType                             = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfoKHR.pNext                             = nullptr;
+    createInfoKHR.surface                           = m_Surface;
+    createInfoKHR.minImageCount                     = imageCount;
+    createInfoKHR.imageFormat                       = surfaceFormatKHR.format;
+    createInfoKHR.imageColorSpace                   = surfaceFormatKHR.colorSpace;
+    createInfoKHR.imageExtent                       = extent2D;
+    //Engine does not support stereoscopic 3d as of yet so 1 image array layer
+    createInfoKHR.imageArrayLayers                  = 1;
+    createInfoKHR.imageUsage                        = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    //Currently presentation queue and graphics queue are the same queues, so exclusive mode is okay
+    createInfoKHR.imageSharingMode                  = VK_SHARING_MODE_EXCLUSIVE;
+    createInfoKHR.queueFamilyIndexCount             = 0;
+    createInfoKHR.pQueueFamilyIndices               = nullptr;
+
+    //No pretransformation
+    createInfoKHR.preTransform                      = swapchainDetails.m_capabilities.currentTransform;
+    //Ignore alpha blending with the windowing system, well, for obvious reasons i guess :)
+    createInfoKHR.compositeAlpha                    = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfoKHR.presentMode                       = presentModeKHR;
+    createInfoKHR.clipped                           = VK_TRUE;
+
+    //TODO: Set up swapchain stuff here in a proper way for later when resizing windows and whatnot
+    if(m_Swapchain != VK_NULL_HANDLE)
+        createInfoKHR.oldSwapchain = m_Swapchain;
+    else
+        createInfoKHR.oldSwapchain = VK_NULL_HANDLE;
+
+    VkResult result = vkCreateSwapchainKHR(m_Device, &createInfoKHR, nullptr, &m_Swapchain);
+    if(result != VK_SUCCESS)
+        throw std::runtime_error("Swapchain creation failed.");
+
+    uint32_t swapImageCount = 0;
+    vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &swapImageCount, nullptr);
+
+    m_SwapChainImages.resize(swapImageCount);
+    vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &swapImageCount, m_SwapChainImages.data());
+
+    m_SwapChainExtent = extent2D;
+    m_SwapChainFormat = surfaceFormatKHR;
+
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

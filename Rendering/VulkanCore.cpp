@@ -21,10 +21,20 @@ VulkanCore::VulkanCore(string applicationName,
 }
 
 VulkanCore::~VulkanCore() {
+
     cleanupDebugFacilities();
-    vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
-    vkDestroyDevice(m_Device, nullptr);
-    vkDestroyInstance(m_Instance,nullptr);
+
+    if(m_Swapchain != VK_NULL_HANDLE)
+        vkDestroySwapchainKHR(m_Device, m_Swapchain, nullptr);
+
+    if(m_Surface != VK_NULL_HANDLE)
+        vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+
+    if(m_Device != VK_NULL_HANDLE)
+        vkDestroyDevice(m_Device, nullptr);
+
+    if(m_Instance != VK_NULL_HANDLE)
+        vkDestroyInstance(m_Instance,nullptr);
 }
 
 bool VulkanCore::processPlatformAPI(float deltaTime) {

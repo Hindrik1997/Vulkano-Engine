@@ -20,23 +20,40 @@ using std::string;
 
 class VulkanCore {
 private:
-    VkInstance                      m_Instance                      = VK_NULL_HANDLE;
-    VkDevice                        m_Device                        = VK_NULL_HANDLE;
-    VkPhysicalDevice                m_PhysicalDevice                = VK_NULL_HANDLE;
-    vk_physical_device_info         m_PhysicalDeviceInfo            = {};
-    vector<vk_queue_family>         m_QueueFamilies;
+    VkInstance                              m_Instance                      = VK_NULL_HANDLE;
+    VkDevice                                m_Device                        = VK_NULL_HANDLE;
+    VkPhysicalDevice                        m_PhysicalDevice                = VK_NULL_HANDLE;
+    vk_physical_device_info                 m_PhysicalDeviceInfo            = {};
+    vector<vk_queue_family>                 m_QueueFamilies;
 
-    VkQueue                         m_GraphicsQueue                 = VK_NULL_HANDLE;
-    vector<VkQueue>                 m_AdditionalGraphicsQueues;
-    vector<VkQueue>                 m_ComputeQueues;
-    vector<VkQueue>                 m_TransferOnlyQueues;
-    vector<VkQueue>                 m_SparseBindingQueues;
+    VkQueue                                 m_GraphicsQueue                 = VK_NULL_HANDLE;
+    vector<VkQueue>                         m_AdditionalGraphicsQueues;
+    vector<VkQueue>                         m_ComputeQueues;
+    vector<VkQueue>                         m_TransferOnlyQueues;
+    vector<VkQueue>                         m_SparseBindingQueues;
 
-    VkSurfaceKHR                    m_Surface                       = VK_NULL_HANDLE;
+    VkSurfaceKHR                            m_Surface                       = VK_NULL_HANDLE;
+    VkSwapchainKHR                          m_Swapchain                     = VK_NULL_HANDLE;
+    vector<VkImage>                         m_SwapChainImages               = {};
+    VkExtent2D                              m_SwapChainExtent               = {};
+    VkSurfaceFormatKHR                      m_SwapChainFormat               = {};
 
-private:
-    string                          m_ApplicationName               = "";
-    VulkanPlatform                  m_Platform;
+    string                                  m_ApplicationName               = "";
+    VulkanPlatform                          m_Platform;
+
+    vector<vk_layer_extension_properties>   m_InstanceLayersAndExtentions;
+    vector<VkExtensionProperties>           m_InstanceKHRExtensions;
+
+    vector<const char*>                     m_EnabledInstanceKHRExtensionNames;
+    vector<const char*>                     m_EnabledInstanceValidationLayerNames;
+    vector<const char*>                     m_EnabledDeviceExtensions;
+
+    bool                                    m_IsDebugEnabled;
+    VkDebugReportCallbackEXT                m_DebugCallback = nullptr;
+
+
+
+
 public:
     VulkanCore(
             string applicationName,
@@ -45,6 +62,7 @@ public:
             vector<const char*> enabledDeviceExtenions,
             bool enableDebugLayers);
     ~VulkanCore();
+
 private:
     VkResult vkInit();
     VkResult vkInitInstance();
@@ -53,33 +71,28 @@ private:
     VkResult vkInitLogicalDevice();
     void     vkInitAssignQqueues();
     VkResult vkInitCreateSurface();
+    VkResult vkInitCreateSwapchain();
 
-    static vk_physical_device_info vkInitGetQueueFamilies(const VkPhysicalDevice device);
-    static bool vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &DeviceExtentions);
-    static int32_t vkInitSuitabilityRating(const VkPhysicalDevice deviceToRate);
+    static  vk_physical_device_info     vkInitGetQueueFamilies(const VkPhysicalDevice device);
+    static  bool                        vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &DeviceExtentions, const VkSurfaceKHR surface);
+    static  int32_t                     vkInitSuitabilityRating(const VkPhysicalDevice deviceToRate);
 private:
-    vector<vk_layer_extension_properties> m_InstanceLayersAndExtentions;
-    vector<VkExtensionProperties> m_InstanceKHRExtensions;
 
-    vector<const char*>  m_EnabledInstanceKHRExtensionNames;
-    vector<const char*>  m_EnabledInstanceValidationLayerNames;
-    vector<const char*>  m_EnabledDeviceExtensions;
+    VkResult    loadLayersAndExtensions();
+    bool        isValidationLayerSupported(const char *name);
+    bool        isInstanceKHRExtensionSupported(const char *name);
+    void        setupDebugFacilities();
+    void        cleanupDebugFacilities();
 
-    bool m_IsDebugEnabled;
-    VkDebugReportCallbackEXT m_DebugCallback = nullptr;
-private:
-    VkResult loadLayersAndExtensions();
-    void setupDebugFacilities();
-    void cleanupDebugFacilities();
+
 
     VkResult vkEnumerateExtensionLayersAndExtensions();
     VkResult vkEnumerateKHRExtensions();
-    static vector<VkExtensionProperties> vkEnumerateDeviceExtentions(const VkPhysicalDevice deviceToCheck);
 
-    bool isValidationLayerSupported(const char *name);
-    bool isInstanceKHRExtensionSupported(const char *name);
-    static bool isDeviceExtensionSupported(const char *name, const VkPhysicalDevice deviceToCheck);
-    static bool checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames);
+    static  vector<VkExtensionProperties>   vkEnumerateDeviceExtentions(const VkPhysicalDevice deviceToCheck);
+    static  bool                            isDeviceExtensionSupported(const char *name, const VkPhysicalDevice deviceToCheck);
+    static  bool                            checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames);
+
 public:
     bool processPlatformAPI(float deltaTime);
 
