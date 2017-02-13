@@ -4,7 +4,19 @@
 
 #include <cstring>
 #include <cstdlib>
+#include "VulkanPlatform.h"
 #include "VK_XCB_PLATFORM.h"
+
+
+VkResult CreateXCBSurfaceKHR(VkInstance instance, VkXcbSurfaceCreateInfoKHR info, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR& surface) {
+    auto func = (PFN_vkCreateXcbSurfaceKHR) vkGetInstanceProcAddr(instance, "vkCreateXcbSurfaceKHR");
+    if (func != nullptr) {
+        func(instance, &info, pAllocator, &surface);
+        return VK_SUCCESS;
+    } else
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+}
+
 
 VulkanPlatform::VulkanPlatform()
 {
@@ -26,7 +38,7 @@ VulkanPlatform::VulkanPlatform()
                            m_window,                        /* m_window Id           */
                            screen->root,                  /* parent m_window       */
                            0, 0,                          /* x, y                */
-                           150, 150,                      /* width, height       */
+                           WIDTH, HEIGHT,                      /* width, height       */
                            10,                            /* border_width        */
                            XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
                            screen->root_visual,           /* visual              */
@@ -89,4 +101,16 @@ bool VulkanPlatform::processAPI(float deltaTime) {
     free(event);
 
     return true;
+}
+
+VkResult VulkanPlatform::createSurface(VkInstance& instance, VkSurfaceKHR& surface) {
+
+    VkXcbSurfaceCreateInfoKHR info = {};
+
+    info.sType = VK_STRUCTURE_TYPE_XCB_SURFACE_CREATE_INFO_KHR;
+    info.pNext = nullptr;
+    info.connection = m_connection;
+    info.window = m_window;
+
+    return CreateXCBSurfaceKHR(instance, info, nullptr, surface);
 }

@@ -26,7 +26,7 @@ set(SOURCE_FILES
         "Core/Clock.cpp"
         "Core/Console.h"
 
-        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h Rendering/Utilities/VulkanLayerAndExtensionManager.cpp Rendering/Utilities/VulkanLayerAndExtensionManager.h Rendering/Utilities/VulkanLayerAndExtensionManagerDebug.cpp Rendering/Utilities/VulkanLayerAndExtensionManagerDebug.h)
+        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h Rendering/Utilities/VulkanLayerAndExtensionManager.cpp Rendering/Utilities/VulkanLayerAndExtensionManager.h Rendering/Utilities/VulkanLayerAndExtensionManagerDebug.cpp Rendering/Utilities/VulkanLayerAndExtensionManagerDebug.h Rendering/VulkanCoreStaticFunctions.cpp)
 
 link_libraries(vulkan xcb)
 

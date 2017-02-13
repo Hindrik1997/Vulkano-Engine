@@ -49,6 +49,9 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
 
     o << "------------QUEUE_FAMILY------------" << std::endl;
 
+    o << "Queue count: " << p.queueCount << std::endl;
+
+    o << "------------------------------------" << std::endl;
     o << "Graphics: "               << ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) ? "Yes" : "No")          << std::endl;
     o << "Compute: "               << ((p.queueFlags & VK_QUEUE_COMPUTE_BIT)  ? "Yes" : "No")          << std::endl;
     o << "Transfer: "               << ((p.queueFlags & VK_QUEUE_TRANSFER_BIT) ? "Yes" : "No")          << std::endl;
@@ -81,7 +84,7 @@ ostream& operator<<(ostream& o, vk_layer_extension_properties p)
     return o;
 }
 
-ostream &operator<<(ostream &o, VkExtensionProperties p) {
+ostream& operator<<(ostream &o, VkExtensionProperties p) {
 
     o << "------------------------------EXTENSION PROPERTIES------------------------------" << std::endl;
     o << "Extension name: " << p.extensionName << std::endl;

@@ -7,16 +7,18 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <vulkan/vulkan.h>
 
+using std::array;
 using std::vector;
 using std::string;
 
 struct vk_physical_device_info {
 
-    VkPhysicalDevice                m_physical_device;
+    VkPhysicalDevice                m_physical_device = VK_NULL_HANDLE;
     vector<VkQueueFamilyProperties> m_queue_family_properties;
-    uint32_t                        m_queue_family_count;
+    uint32_t                        m_queue_family_count = 0;
 
 };
 
@@ -37,7 +39,11 @@ struct vk_device_rating {
 };
 
 
-
-
+struct vk_queue_family
+{
+    VkQueueFamilyProperties m_queue_family_properties;
+    uint32_t m_index;
+    vector<float> m_priorities;
+};
 
 #endif //VULKANO_ENGINE_VULKANCORESTRUCTS_H

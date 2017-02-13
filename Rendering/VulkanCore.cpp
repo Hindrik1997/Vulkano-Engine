@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "VulkanCore.h"
 #include "../Core/Console.h"
+#include "Renderer.h"
 
 
 VulkanCore::VulkanCore(string applicationName, vector<const char*> enabledKHRInstanceExtensions, vector<const char*> enabledInstanceValidationLayers, bool enableValidationLayers)
@@ -18,6 +19,8 @@ VulkanCore::VulkanCore(string applicationName, vector<const char*> enabledKHRIns
 
 VulkanCore::~VulkanCore() {
     m_layerAndExtensionManager.cleanupDebugFacilities();
+    vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
+    vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance,nullptr);
 }
 
@@ -33,15 +36,23 @@ VkResult VulkanCore::vk_init() {
         m_layerAndExtensionManager.setupDebugFacilities();
     }
 
-    result = vk_init_device();
+    result = vk_init_physical_device();
     VK_CHECK(result);
+
+    result = vk_init_logical_device();
+    VK_CHECK(result);
+
+    result = vk_init_create_surface();
+    VK_CHECK(result);
+
+    vk_init_assign_queues();
+
 
     return result;
 }
 
 bool VulkanCore::process_platform_API(float deltaTime) {
-    return false;
-    //return platform->processAPI(deltaTime);
+    return m_platform.processAPI(deltaTime);
 }
 
 VkResult VulkanCore::vk_init_instance() {
@@ -81,7 +92,7 @@ VkResult VulkanCore::vk_init_instance() {
     return result;
 }
 
-VkResult VulkanCore::vk_init_device() {
+VkResult VulkanCore::vk_init_physical_device() {
     VkResult result;
 
     uint32_t physical_device_count = 0;
@@ -89,7 +100,8 @@ VkResult VulkanCore::vk_init_device() {
     VkPhysicalDevice selected_device = VK_NULL_HANDLE;
 
 
-    vkEnumeratePhysicalDevices(m_instance, &physical_device_count, nullptr);
+    result = vkEnumeratePhysicalDevices(m_instance, &physical_device_count, nullptr);
+    VK_IF_FAIL_MSG(result, "Error when retrieving amount of physical devices.");
 
     if(physical_device_count <= 0) {
         throw std::runtime_error("Error, no physical devices supporting Vulkan found!.");
@@ -102,7 +114,9 @@ VkResult VulkanCore::vk_init_device() {
 
     vector<VkPhysicalDevice> possibleGPUs;
 
-    for(auto& device : physical_devices)
+    cout << "Possible GPU's found: " << std::endl;
+
+    for(const auto& device : physical_devices)
     {
         if(vk_init_check_device(device))
         {
@@ -117,7 +131,9 @@ VkResult VulkanCore::vk_init_device() {
 
     vector<vk_device_rating> ratings;
 
-    for(auto& device : possibleGPUs)
+
+
+    for(const auto& device : possibleGPUs)
     {
         ratings.push_back(vk_device_rating{device,vk_init_suitability_rating(device)});
     }
@@ -131,40 +147,157 @@ VkResult VulkanCore::vk_init_device() {
         throw::std::runtime_error("Selected device is a VK_NULL_HANDLE! ");
     }
 
+    m_physical_device = selected_device;
 
 
+    VkPhysicalDeviceProperties props;
+    vkGetPhysicalDeviceProperties(selected_device, &props);
+
+
+    std::cout << "Selected device: " << std::endl << props << std::endl;
+
+    m_physical_device_info = vk_init_get_queue_families(selected_device);
 
 
 
     return result;
 }
 
-bool VulkanCore::vk_init_check_device(VkPhysicalDevice deviceToCheck) {
+VkResult VulkanCore::vk_init_logical_device() {
 
-    VkPhysicalDeviceProperties  deviceProperties;
-    VkPhysicalDeviceFeatures    deviceFeatures;
+    VkResult result;
 
-    vkGetPhysicalDeviceProperties(deviceToCheck, &deviceProperties);
-    vkGetPhysicalDeviceFeatures(deviceToCheck, &deviceFeatures);
+    m_queue_families.clear();
 
-    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU && deviceFeatures.geometryShader && deviceFeatures.tessellationShader;
+    vk_init_setup_queue_families(m_physical_device_info.m_queue_family_properties);
+
+    vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+
+    if(m_queue_families.size() > 0)
+    {
+        for(uint32_t i = 0; i < m_queue_families.size(); ++i)
+        {
+
+            VkDeviceQueueCreateInfo info = {};
+            info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            info.pNext = nullptr;
+            info.queueCount = static_cast<uint32_t >(m_queue_families[i].m_queue_family_properties.queueCount);
+            info.queueFamilyIndex = m_queue_families[i].m_index;
+            info.pQueuePriorities = m_queue_families[i].m_priorities.data();
+
+            queueCreateInfos.push_back(info);
+        }
+    }
+
+    //TODO: geomshaders and tesselationshaders?
+    VkPhysicalDeviceFeatures deviceFeatures = {};
+
+    VkDeviceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pNext = nullptr;
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
+    createInfo.queueCreateInfoCount = static_cast<uint32_t >(queueCreateInfos.size());
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    //Device layers are deprecated, so we disable them
+    createInfo.enabledLayerCount = 0;
+    createInfo.ppEnabledLayerNames = nullptr;
+
+    createInfo.enabledExtensionCount = static_cast<uint32_t >(enabledDeviceExtensions.size());
+    createInfo.ppEnabledExtensionNames = enabledDeviceExtensions.data();
+
+
+    result = vkCreateDevice(m_physical_device, &createInfo, nullptr, &m_device);
+    if(result != VK_SUCCESS)
+    {
+        Console::printLine("Error when creating device.");
+    }
+
+    return result;
 }
 
-int32_t VulkanCore::vk_init_suitability_rating(VkPhysicalDevice deviceToRate) {
+void VulkanCore::vk_init_setup_queue_families(const vector<VkQueueFamilyProperties>& queueFamilies) {
 
-    int32_t rating = 0;
+    for(uint32_t i = 0;  i < static_cast<uint32_t >(queueFamilies.size()); ++i)
+    {
+        const VkQueueFamilyProperties& queueFamily = queueFamilies[i];
 
-    VkPhysicalDeviceProperties  deviceProperties;
-    VkPhysicalDeviceFeatures    deviceFeatures;
+        vk_queue_family qf { queueFamily, i };
 
-    vkGetPhysicalDeviceProperties(deviceToRate, &deviceProperties);
-    vkGetPhysicalDeviceFeatures(deviceToRate, &deviceFeatures);
+        for(uint32_t j = 0; j < queueFamily.queueCount; ++j)
+            qf.m_priorities.push_back(1.0f);
 
-    if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-        rating += 1000;
+        m_queue_families.push_back(qf);
+    }
+}
 
-    rating += deviceProperties.limits.maxImageDimension2D;
+void VulkanCore::vk_init_assign_queues() {
 
-    return rating;
+    bool graphicsAssigned = false;
+
+    for(uint32_t i = 0; i < static_cast<uint32_t >(m_queue_families.size()); ++i)
+    {
+        vk_queue_family& qf = m_queue_families[i];
+
+        if(qf.m_queue_family_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            VkBool32 presentSupport = VK_FALSE;
+            vkGetPhysicalDeviceSurfaceSupportKHR(m_physical_device, qf.m_index, m_surface, &presentSupport);
+            if(presentSupport == VK_FALSE)
+                continue;
+
+            for(uint32_t j = 0; j < qf.m_queue_family_properties.queueCount; ++j)
+            {
+                if(!graphicsAssigned)
+                {
+                    //Assign as main graphics queue
+
+                    vkGetDeviceQueue(m_device, qf.m_index, j, &m_graphics_queue);
+
+                    graphicsAssigned = true;
+                } else
+                {
+                    m_additional_graphics_queues.push_back(VK_NULL_HANDLE);
+                    vkGetDeviceQueue(m_device, qf.m_index, j, &m_additional_graphics_queues.back());
+                }
+            }
+        }
+
+        if(qf.m_queue_family_properties.queueFlags & VK_QUEUE_COMPUTE_BIT)
+        {
+            for(uint32_t j = 0; j < qf.m_queue_family_properties.queueCount; ++j)
+            {
+                m_compute_queues.push_back(VK_NULL_HANDLE);
+                vkGetDeviceQueue(m_device, qf.m_index, j, &m_compute_queues.back());
+            }
+        }
+
+        if(qf.m_queue_family_properties.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT)
+        {
+            for(uint32_t j = 0; j < qf.m_queue_family_properties.queueCount; ++j)
+            {
+                m_sparse_binding_queues.push_back(VK_NULL_HANDLE);
+                vkGetDeviceQueue(m_device, qf.m_index, j, &m_sparse_binding_queues.back());
+            }
+        }
+
+        if(qf.m_queue_family_properties.queueFlags & VK_QUEUE_TRANSFER_BIT && !qf.m_queue_family_properties.queueFlags & VK_QUEUE_GRAPHICS_BIT && !qf.m_queue_family_properties.queueFlags & VK_QUEUE_COMPUTE_BIT)
+        {
+            for(uint32_t j = 0; j < qf.m_queue_family_properties.queueCount; ++j)
+            {
+                m_transfer_only_queues.push_back(VK_NULL_HANDLE);
+                vkGetDeviceQueue(m_device, qf.m_index, j, &m_transfer_only_queues.back());
+            }
+        }
+    }
+}
+
+VkResult VulkanCore::vk_init_create_surface() {
+
+    VkResult result;
+
+    result = m_platform.createSurface(m_instance, m_surface);
+
+    return result;
 }
 

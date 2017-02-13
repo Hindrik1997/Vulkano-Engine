@@ -7,6 +7,7 @@
 
 
 #include <xcb/xcb.h>
+#include <vulkan/vulkan.h>
 
 class VulkanPlatform{
 private:
@@ -20,10 +21,14 @@ public:
 
     xcb_connection_t* getConnection();
     xcb_window_t getWindow();
+    VkResult createSurface(VkInstance& instance, VkSurfaceKHR& surface);
+
+
 
     bool processAPI(float deltaTime);
 
 };
 
+VkResult CreateXCBSurfaceKHR(VkInstance instance, VkXcbSurfaceCreateInfoKHR info, const VkAllocationCallbacks* pAllocator, VkSurfaceKHR& surface);
 
 #endif //VULKANOENGINE_VK_XCB_PLATFORM_H

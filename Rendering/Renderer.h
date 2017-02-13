@@ -5,21 +5,25 @@
 #ifndef VULKANOENGINE_RENDERER_H
 #define VULKANOENGINE_RENDERER_H
 
+#include "VulkanPlatforms/VulkanPlatform.h"
 #include "VulkanCore.h"
-
-//extern const vector<const char*> enabledKHRInstanceExtensions;
-//extern const vector<const char*> enabledInstanceValidationLayers;
 
 static const vector<const char*> enabledKHRInstanceExtensions = {
 #ifndef NDEBUG
         VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
 #endif
-
+    VK_KHR_SURFACE_EXTENSION_NAME,
+    VK_KHR_XCB_SURFACE_EXTENSION_NAME
 };
 
 static const vector<const char*> enabledInstanceValidationLayers = {
         "VK_LAYER_LUNARG_standard_validation"
 };
+
+static const vector<const char*> enabledDeviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+};
+
 
 
 class Renderer {
