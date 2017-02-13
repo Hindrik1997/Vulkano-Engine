@@ -5,7 +5,7 @@
 #include "VulkanCore.h"
 #include "../Core/Console.h"
 
-bool VulkanCore::vk_init_check_device(const VkPhysicalDevice deviceToCheck) {
+bool VulkanCore::vk_init_check_device(const VkPhysicalDevice deviceToCheck, const vector<const char*>& deviceExtentions) {
 
     VkPhysicalDeviceProperties  deviceProperties;
     VkPhysicalDeviceFeatures    deviceFeatures;
@@ -27,6 +27,10 @@ bool VulkanCore::vk_init_check_device(const VkPhysicalDevice deviceToCheck) {
             break;
         }
     }
+
+    if(!check_device_extentions(deviceToCheck, deviceExtentions))
+        return false;
+
 
     return supportsGraphics && (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader && deviceFeatures.tessellationShader;
 }

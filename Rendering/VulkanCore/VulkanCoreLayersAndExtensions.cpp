@@ -1,14 +1,79 @@
 //
-// Created by hindrik on 2-2-17.
+// Created by hindrik on 13-2-17.
 //
 
+#include <iostream>
+#include <algorithm>
 #include <cstring>
-#include "VulkanLayerAndExtensionManager.h"
+#include "../VulkanCore.h"
 #include "../../Core/Console.h"
-#include "VulkanLayerAndExtensionManagerDebug.h"
 
+bool VulkanCore::is_validation_layer_supported(const char *name) {
+    for(vk_layer_extension_properties& prop : m_instanceLayersAndExtentions)
+    {
+        if(strcmp(prop.m_layer_properties.layerName, name) == 0)
+        {
+            return true;
+        }
+    }
+    Console::print("Validation layer not supported: ");
+    Console::printLine(name);
+    return false;
+}
 
-VkResult VulkanLayerAndExtensionManager::vk_enumerate_extension_layers_and_extensions() {
+bool VulkanCore::is_instance_KHR_extension_supported(const char *name) {
+    for(VkExtensionProperties& prop : m_instanceKHRExtensions)
+    {
+        if(strcmp(prop.extensionName,name) == 0)
+        {
+            return true;
+        }
+    }
+    Console::print("KHR extension not supported: ");
+    Console::printLine(name);
+    return false;
+}
+
+bool VulkanCore::is_device_extension_supported(const char *name, const VkPhysicalDevice deviceToCheck) {
+
+    vector<VkExtensionProperties> props = vk_enumerate_device_extentions(deviceToCheck);
+
+    for(VkExtensionProperties& prop : props)
+    {
+        if(strcmp(prop.extensionName, name) == 0)
+        {
+            return true;
+        }
+    }
+    Console::print("Device extension not supported: ");
+    Console::printLine(name);
+    return false;
+}
+
+vector<VkExtensionProperties> VulkanCore::vk_enumerate_device_extentions(const VkPhysicalDevice deviceToCheck) {
+
+    vector<VkExtensionProperties> extensionProperties;
+    uint32_t extension_count = 0;
+    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extension_count, nullptr);
+
+    if(extension_count == 0)
+        return extensionProperties;
+
+    extensionProperties.resize(extension_count);
+
+    vkEnumerateDeviceExtensionProperties(deviceToCheck, nullptr, &extension_count, extensionProperties.data());
+
+    Console::printLine("Found " + std::to_string(extension_count) + " KHR device extentions:" );
+
+    for(uint32_t i = 0; i < static_cast<uint32_t >(extensionProperties.size()); ++i)
+    {
+        cout << extensionProperties[i] << std::endl;
+    }
+
+    return extensionProperties;
+}
+
+VkResult VulkanCore::vk_enumerate_extension_layers_and_extensions() {
 
     VkResult result;
     uint32_t instanceLayerCount;
@@ -60,7 +125,7 @@ VkResult VulkanLayerAndExtensionManager::vk_enumerate_extension_layers_and_exten
     return result;
 }
 
-VkResult VulkanLayerAndExtensionManager::vk_enumerate_KHR_extensions() {
+VkResult VulkanCore::vk_enumerate_KHR_extensions() {
     VkResult result;
     uint32_t extensionCount;
 
@@ -84,9 +149,7 @@ VkResult VulkanLayerAndExtensionManager::vk_enumerate_KHR_extensions() {
     return result;
 }
 
-VulkanLayerAndExtensionManager::VulkanLayerAndExtensionManager(vector<const char*> enabledInstanceKHRExtensionNames, vector<const char*> enabledInstanceValidationLayerNames, bool enableValidationLayers)
-        : m_enabledInstanceKHRExtensionNames(enabledInstanceKHRExtensionNames),m_enabledInstanceValidationLayerNames(enabledInstanceValidationLayerNames), m_validationLayersEnabled(enableValidationLayers)
-{
+VkResult VulkanCore::load_layers_and_extensions() {
     VkResult result;
 
     result = vk_enumerate_KHR_extensions();
@@ -102,17 +165,17 @@ VulkanLayerAndExtensionManager::VulkanLayerAndExtensionManager(vector<const char
 
     for(const char* name : m_enabledInstanceKHRExtensionNames)
     {
-        if(!isKHRExtensionSupported(name))
+        if(!is_instance_KHR_extension_supported(name))
         {
             throw std::runtime_error("KHR Extension not supported!");
         }
     }
 
-    if(enableValidationLayers)
+    if(m_isDebugEnabled)
     {
         for(const char* name : m_enabledInstanceValidationLayerNames)
         {
-            if(!isValidationLayerSupported(name))
+            if(!is_validation_layer_supported(name))
             {
                 throw std::runtime_error("Validation layer not supported!");
             }
@@ -133,58 +196,16 @@ VulkanLayerAndExtensionManager::VulkanLayerAndExtensionManager(vector<const char
             throw std::runtime_error("KHR Debug Extension is required when using the validation layers. Please enable it.");
         }
     }
+    return result;
 }
 
-bool VulkanLayerAndExtensionManager::isValidationLayerSupported(const char* name) {
-    for(vk_layer_extension_properties& prop : m_instanceLayersAndExtentions)
+bool VulkanCore::check_device_extentions(const VkPhysicalDevice deviceToCheck, vector<const char*> extensionNames) {
+    for(uint32_t i = 0; i < static_cast<uint32_t >(extensionNames.size()); ++i)
     {
-        if(strcmp(prop.m_layer_properties.layerName, name) == 0)
-        {
-            return true;
-        }
+        bool isSupported;
+        isSupported = is_device_extension_supported(extensionNames[i], deviceToCheck);
+        if(!isSupported)
+            return false;
     }
-    Console::print("Validation layer not supported: ");
-    Console::printLine(name);
-    return false;
+    return true;
 }
-
-bool VulkanLayerAndExtensionManager::isKHRExtensionSupported(const char* name) {
-    for(VkExtensionProperties& prop : m_instanceKHRExtensions)
-    {
-        if(strcmp(prop.extensionName,name) == 0)
-        {
-            return true;
-        }
-    }
-    Console::print("KHR Extension not supported: ");
-    Console::printLine(name);
-    return false;
-}
-
-
-
-VulkanLayerAndExtensionManager::~VulkanLayerAndExtensionManager() {
-
-
-}
-
-bool VulkanLayerAndExtensionManager::getDebugEnabled() {
-    return m_validationLayersEnabled;
-}
-
-
-
-vector<const char*> VulkanLayerAndExtensionManager::getEnabledInstanceKHRExtensions() {
-    return m_enabledInstanceKHRExtensionNames;
-}
-
-vector<const char*> VulkanLayerAndExtensionManager::getEnabledInstanceValidationLayers() {
-    return m_enabledInstanceValidationLayerNames;
-}
-
-void VulkanLayerAndExtensionManager::setVkInstanceHandle(VkInstance& handle) {
-    m_current_instance_handle = handle;
-}
-
-
-

@@ -4,14 +4,10 @@
 
 #include "Renderer.h"
 
-
-
-
-
 #ifdef NDEBUG
     const bool enableValidationlayers = false;
 #else
-    const bool enableValidationLayers = true;
+    const bool enableDebugLayers = true;
 #endif
 
 
@@ -23,7 +19,7 @@ bool Renderer::processAPI(float deltaTime) {
     return m_vk_core.process_platform_API(deltaTime);
 }
 
-Renderer::Renderer() : m_vk_core("Vulkano Engine", enabledKHRInstanceExtensions, enabledInstanceValidationLayers, enableValidationLayers)
+Renderer::Renderer() : m_vk_core("Vulkano Engine", enabledKHRInstanceExtensions, enabledInstanceValidationLayers, enabledDeviceExtensions, enableDebugLayers)
 {
 
 }

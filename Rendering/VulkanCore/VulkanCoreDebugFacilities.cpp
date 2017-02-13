@@ -1,8 +1,10 @@
 //
-// Created by hindrik on 11-2-17.
+// Created by hindrik on 13-2-17.
 //
-
-#include "VulkanLayerAndExtensionManagerDebug.h"
+#include <iostream>
+#include <algorithm>
+#include <cstring>
+#include "../VulkanCore.h"
 #include "../../Core/Console.h"
 
 VkBool32 debugCallback(
@@ -39,18 +41,18 @@ VkResult DestroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbac
         return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-void VulkanLayerAndExtensionManager::cleanupDebugFacilities() {
-    if(getDebugEnabled())
+void VulkanCore::cleanup_debug_facilities() {
+    if(m_isDebugEnabled)
     {
 
-        VkResult result = DestroyDebugReportCallbackEXT(m_current_instance_handle, m_debugCallbackFP, NULL);
+        VkResult result = DestroyDebugReportCallbackEXT(m_instance, m_debugCallbackFP, NULL);
         if(result  != VK_SUCCESS)
             Console::printLine("Error when destroying debug reporter callback.");
     }
 }
 
-void VulkanLayerAndExtensionManager::setupDebugFacilities() {
-    if(!getDebugEnabled())
+void VulkanCore::setup_debug_facilities() {
+    if(!m_isDebugEnabled)
     {
         throw std::runtime_error("Error, enabling debug facilities while the debug layers are not enabled.");
     }
@@ -67,9 +69,8 @@ void VulkanLayerAndExtensionManager::setupDebugFacilities() {
     createInfo.pfnCallback = debugCallback;
     createInfo.pUserData = NULL;
 
-    if (CreateDebugReportCallbackEXT(m_current_instance_handle, &createInfo, nullptr, &m_debugCallbackFP) != VK_SUCCESS) {
+    if (CreateDebugReportCallbackEXT(m_instance, &createInfo, nullptr, &m_debugCallbackFP) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug callback!");
     }
     Console::printLine("Succesfully set up the debug facilities!");
-
 }
