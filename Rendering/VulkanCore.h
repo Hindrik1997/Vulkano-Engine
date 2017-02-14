@@ -10,6 +10,7 @@
 #include "VulkanPlatforms/VulkanPlatform.h"
 #include "Utilities/VulkanStructs.h"
 #include "Utilities/VulkanUtilityFunctions.h"
+#include "Utilities/ShaderModule.h"
 
 #define VK_IF_FAIL_MSG(result, message) if(result != VK_SUCCESS) { Console::printLine(message); return result; }
 
@@ -37,6 +38,8 @@ private:
     VkExtent2D                              m_SwapChainExtent               = {};
     VkFormat                                m_SwapChainFormat               = {};
 
+    VkRenderPass                            m_RenderPass                    = VK_NULL_HANDLE;
+
     string                                  m_ApplicationName               = "";
     VulkanPlatform                          m_Platform;
 
@@ -48,9 +51,9 @@ private:
     vector<const char*>                     m_EnabledDeviceExtensions;
 
     bool                                    m_IsDebugEnabled;
-    VkDebugReportCallbackEXT                m_DebugCallback = nullptr;
+    VkDebugReportCallbackEXT                m_DebugCallback                 = nullptr;
 
-
+    vector<ShaderModule>                    m_ShaderModules                 = {};
 
 
 public:
@@ -95,6 +98,7 @@ private:
 public:
     bool processPlatformAPI(float deltaTime);
 
+    void createRenderpass();
     void createPipeline();
 
 };
