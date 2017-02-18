@@ -51,7 +51,7 @@ VkRect2D Pipeline::defaultScissorRectangle(VkExtent2D& swapchainExtent) {
     return rect;
 }
 
-VkPipelineViewportStateCreateInfo Pipeline::defaultViewPortState(VkViewport viewport, VkRect2D scissorRectangle) {
+VkPipelineViewportStateCreateInfo Pipeline::defaultViewPortState(VkViewport& viewport, VkRect2D& scissorRectangle) {
 
     VkPipelineViewportStateCreateInfo info = {};
 
