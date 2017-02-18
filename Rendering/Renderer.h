@@ -13,11 +13,11 @@ static const vector<const char*> enabledKHRInstanceExtensions = {
         VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
 #endif
     VK_KHR_SURFACE_EXTENSION_NAME,
-    VK_KHR_XCB_SURFACE_EXTENSION_NAME
 };
 
 static const vector<const char*> enabledInstanceValidationLayers = {
-        "VK_LAYER_LUNARG_standard_validation"
+        "VK_LAYER_LUNARG_standard_validation",
+        "VK_LAYER_LUNARG_api_dump"
 };
 
 static const vector<const char*> enabledDeviceExtensions = {
@@ -28,7 +28,7 @@ static const vector<const char*> enabledDeviceExtensions = {
 
 class Renderer {
 private:
-    VulkanCore m_vk_core;
+    VulkanCore m_VulkanCore;
 public:
     Renderer();
     ~Renderer();

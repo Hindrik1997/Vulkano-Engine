@@ -152,6 +152,8 @@ VkResult VulkanCore::vkEnumerateKHRExtensions() {
 VkResult VulkanCore::loadLayersAndExtensions() {
     VkResult result;
 
+    m_Platform.ProcessExtensions(m_EnabledInstanceKHRExtensionNames);
+
     result = vkEnumerateKHRExtensions();
 
     if(result != VK_SUCCESS)
@@ -196,6 +198,9 @@ VkResult VulkanCore::loadLayersAndExtensions() {
             throw std::runtime_error("KHR Debug Extension is required when using the validation layers. Please enable it.");
         }
     }
+
+
+
     return result;
 }
 
@@ -208,18 +213,6 @@ bool VulkanCore::checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vec
             return false;
     }
     return true;
-}
-
-void VulkanCore::cleanUpSwapchainImageViews() {
-
-    for(uint32_t i = static_cast<uint32_t >(m_SwapChainImageViews.size()); i > 0; --i )
-    {
-        VkImageView view = m_SwapChainImageViews.back();
-        m_SwapChainImageViews.pop_back();
-
-        vkDestroyImageView(m_Device, view, nullptr);
-    }
-    m_SwapChainImageViews.clear();
 }
 
 

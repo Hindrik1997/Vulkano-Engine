@@ -18,30 +18,45 @@ using std::vector;
 using std::string;
 
 class VulkanCore {
-private:
+public:
     VkInstance                              m_Instance                      = VK_NULL_HANDLE;
     VkDevice                                m_Device                        = VK_NULL_HANDLE;
     VkPhysicalDevice                        m_PhysicalDevice                = VK_NULL_HANDLE;
     vk_physical_device_info                 m_PhysicalDeviceInfo            = {};
-    vector<vk_queue_family>                 m_QueueFamilies;
+    vector<vk_queue_family>                 m_QueueFamilies                 = {};
 
-    VkQueue                                 m_GraphicsQueue                 = VK_NULL_HANDLE;
-    vector<VkQueue>                         m_AdditionalGraphicsQueues;
-    vector<VkQueue>                         m_ComputeQueues;
-    vector<VkQueue>                         m_TransferOnlyQueues;
-    vector<VkQueue>                         m_SparseBindingQueues;
+    vk_queue                                m_GraphicsQueue                 = {};
+    vector<vk_queue>                        m_AdditionalGraphicsQueues      = {};
+    vector<vk_queue>                        m_ComputeQueues                 = {};
+    vector<vk_queue>                        m_TransferOnlyQueues            = {};
+    vector<vk_queue>                        m_SparseBindingQueues           = {};
 
     VkSurfaceKHR                            m_Surface                       = VK_NULL_HANDLE;
     VkSwapchainKHR                          m_Swapchain                     = VK_NULL_HANDLE;
-    vector<VkImage>                         m_SwapChainImages               = {};
-    vector<VkImageView>                     m_SwapChainImageViews           = {};
-    VkExtent2D                              m_SwapChainExtent               = {};
-    VkFormat                                m_SwapChainFormat               = {};
+    vector<VkImage>                         m_SwapchainImages               = {};
+    vector<VkImageView>                     m_SwapchainImageViews           = {};
+    VkExtent2D                              m_SwapchainExtent               = {};
+    VkFormat                                m_SwapchainFormat               = {};
+
+    vector<ShaderModule>                    m_ShaderModules                 = {};
+
+    VkViewport                              m_Viewport                      = {};
+    VkRect2D                                m_Scissors                      = {};
 
     VkRenderPass                            m_RenderPass                    = VK_NULL_HANDLE;
+    VkPipelineLayout                        m_PipelineLayout                = VK_NULL_HANDLE;
+    VkPipeline                              m_Pipeline                      = VK_NULL_HANDLE;
+
+    vector<VkFramebuffer>                   m_SwapchainFrameBuffers         = {};
+
+    VkCommandPool                           m_CommandPool                   = VK_NULL_HANDLE;
+    vector<VkCommandBuffer>                 m_CommandBuffers                = {};
+
+    VkSemaphore                             m_ImageAvailableSemaphore       = VK_NULL_HANDLE;
+    VkSemaphore                             m_RenderingFinsihedSemaphore    = VK_NULL_HANDLE;
 
     string                                  m_ApplicationName               = "";
-    VulkanPlatform                          m_Platform;
+    VK_PLATFORM                             m_Platform;
 
     vector<vk_layer_extension_properties>   m_InstanceLayersAndExtentions;
     vector<VkExtensionProperties>           m_InstanceKHRExtensions;
@@ -53,7 +68,7 @@ private:
     bool                                    m_IsDebugEnabled;
     VkDebugReportCallbackEXT                m_DebugCallback                 = nullptr;
 
-    vector<ShaderModule>                    m_ShaderModules                 = {};
+
 
 
 public:
@@ -75,6 +90,16 @@ private:
     VkResult vkInitCreateSurface();
     VkResult vkInitCreateSwapchain();
     VkResult vkInitCreateSwapchainImageViews();
+    void vkInitCreateRenderPass();
+    void vkInitCreatePipeline();
+    void vkInitCreateFrameBuffers();
+    void vkInitCreateCommandPool();
+    void vkInitCreateSwapchainSemaphores();
+    void vkInitCreateCommandBuffers();
+
+    void cleanUpShaderModules();
+    void cleanUpSwapchainImageViews();
+    void cleanUpSwapchainFrameBuffers();
 
     static  vk_physical_device_info     vkInitGetQueueFamilies(const VkPhysicalDevice device);
     static  bool                        vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &DeviceExtentions, const VkSurfaceKHR surface);
@@ -86,7 +111,6 @@ private:
     bool        isInstanceKHRExtensionSupported(const char *name);
     void        setupDebugFacilities();
     void        cleanUpDebugFacilities();
-    void        cleanUpSwapchainImageViews();
 
     VkResult vkEnumerateExtensionLayersAndExtensions();
     VkResult vkEnumerateKHRExtensions();
@@ -98,8 +122,10 @@ private:
 public:
     bool processPlatformAPI(float deltaTime);
 
-    void createRenderpass();
-    void createPipeline();
+
+
+
+
 
 };
 

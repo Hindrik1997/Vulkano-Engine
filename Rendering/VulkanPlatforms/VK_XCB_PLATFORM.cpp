@@ -18,31 +18,34 @@ VkResult CreateXCBSurfaceKHR(VkInstance instance, VkXcbSurfaceCreateInfoKHR info
 }
 
 
-VulkanPlatform::VulkanPlatform()
+VK_XCB_PLATFORM::VK_XCB_PLATFORM()
 {
         m_connection = xcb_connect(NULL, NULL);
 
         const xcb_setup_t      *setup  = xcb_get_setup (m_connection);
         xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator (setup);
-        xcb_screen_t           *screen = iter.data;
+        m_screen = iter.data;
 
         m_window = xcb_generate_id (m_connection);
 
 
 
         uint32_t  eventMask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-        uint32_t vals[] = { 0,0 };
+        uint32_t vals[] = { m_screen->black_pixel, XCB_EVENT_MASK_EXPOSURE | XCB_EVENT_MASK_BUTTON_PRESS};
 
         xcb_create_window (m_connection,                    /* Connection          */
                            XCB_COPY_FROM_PARENT,          /* depth (same as root)*/
                            m_window,                        /* m_window Id           */
-                           screen->root,                  /* parent m_window       */
+                           m_screen->root,                  /* parent m_window       */
                            0, 0,                          /* x, y                */
                            WIDTH, HEIGHT,                      /* width, height       */
-                           10,                            /* border_width        */
+                           0,                            /* border_width        */
                            XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
-                           screen->root_visual,           /* visual              */
+                           m_screen->root_visual,           /* visual              */
                            eventMask, vals );                     /* masks, not used yet */
+
+    xcb_change_property(m_connection, XCB_PROP_MODE_REPLACE, m_window, XCB_ATOM_WM_NAME, XCB_ATOM_STRING, 8,
+                        static_cast<uint32_t >(strlen("Vulkan")), "Vulkan");
 
     xcb_intern_atom_cookie_t wmDeleteCookie = xcb_intern_atom(
             m_connection, 0, (uint16_t) strlen("WM_DELETE_WINDOW"), "WM_DELETE_WINDOW");
@@ -63,7 +66,7 @@ VulkanPlatform::VulkanPlatform()
         xcb_flush (m_connection);
 }
 
-VulkanPlatform::~VulkanPlatform()
+VK_XCB_PLATFORM::~VK_XCB_PLATFORM()
 {
     if(m_connection != nullptr)
     {
@@ -72,15 +75,15 @@ VulkanPlatform::~VulkanPlatform()
     }
 }
 
-xcb_connection_t *VulkanPlatform::getConnection() {
+xcb_connection_t *VK_XCB_PLATFORM::getConnection() {
     return m_connection;
 }
 
-xcb_window_t VulkanPlatform::getWindow() {
+xcb_window_t VK_XCB_PLATFORM::getWindow() {
     return m_window;
 }
 
-bool VulkanPlatform::processAPI(float deltaTime) {
+bool VK_XCB_PLATFORM::processAPI(float deltaTime) {
 
     xcb_generic_event_t *event;
     xcb_client_message_event_t *cm;
@@ -96,6 +99,8 @@ bool VulkanPlatform::processAPI(float deltaTime) {
 
                 break;
             }
+            default:
+                break;
         }
 
     free(event);
@@ -103,7 +108,7 @@ bool VulkanPlatform::processAPI(float deltaTime) {
     return true;
 }
 
-VkResult VulkanPlatform::createSurface(VkInstance& instance, VkSurfaceKHR& surface) {
+VkResult VK_XCB_PLATFORM::CreateSurface(VkInstance instance, VkSurfaceKHR surface) {
 
     VkXcbSurfaceCreateInfoKHR info = {};
 

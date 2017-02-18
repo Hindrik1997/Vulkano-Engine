@@ -109,10 +109,10 @@ VkPipelineColorBlendAttachmentState Pipeline::defaultColorBlendAttachmentState()
             VK_COLOR_COMPONENT_B_BIT |
             VK_COLOR_COMPONENT_A_BIT;
     attachment.blendEnable = VK_FALSE;
-    attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ZERO;
     attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
     attachment.colorBlendOp = VK_BLEND_OP_ADD;
-    attachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    attachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
     attachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
     attachment.alphaBlendOp = VK_BLEND_OP_ADD;
 

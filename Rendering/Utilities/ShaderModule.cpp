@@ -5,13 +5,29 @@
 #include <bits/ios_base.h>
 #include <ios>
 #include <fstream>
+#ifdef WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
 #include "ShaderModule.h"
 #include "../../Core/Console.h"
 #include "../VulkanCore.h"
 
+
+std::string GetCurrentWorkingDir( void ) {
+    char buff[FILENAME_MAX];
+    GetCurrentDir( buff, FILENAME_MAX );
+    std::string current_working_dir(buff);
+    return current_working_dir;
+}
+
+
 vector<char> ShaderModule::readSpirFile(const std::string &fileName) {
 
-    std::ifstream file(fileName, std::ios::ate | std::ios::binary);
+    std::ifstream file("../Shaders/" + fileName, std::ios::ate | std::ios::binary);
 
     if(!file.is_open())
     {

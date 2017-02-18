@@ -8,20 +8,27 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+
+
 ////SELECT PLATFORM HERE////
 
-#define VK_USE_PLATFORM_XCB_KHR
+#define VK_USE_PLATFORM_GLFW
 
 ////////////////////////////
 
 
-#if defined(VK_USE_PLATFORM_XCB_KHR)
-
-#include "VK_XCB_PLATFORM.h"
-
+#if defined(VK_USE_PLATFORM_GLFW)
+    #define GLFW_INCLUDE_VULKAN
+    #include <GLFW/glfw3.h>
+    #include "VK_GLFW_PLATFORM.h"
 #endif
 
+#if defined(VK_USE_PLATFORM_XCB_KHR)
+    #include "VK_XCB_PLATFORM.h"
+#endif
 
-#include <vulkan/vulkan.h>
+#ifndef VK_USE_PLATFORM_GLFW
+    #include <vulkan/vulkan.h>
+#endif
 
 #endif //VULKANO_ENGINE_VULKANPLATFORM_H

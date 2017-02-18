@@ -168,4 +168,3 @@ VkExtent2D pickSwapChainExtent2D(const vk_swapchain_details& details, uint32_t w
 
     return newExtent;
 }
-

@@ -9,19 +9,22 @@
 #include <xcb/xcb.h>
 #include <vulkan/vulkan.h>
 
-class VulkanPlatform{
+#define VK_PLATFORM VK_XCB_PLATFORM
+
+class VK_XCB_PLATFORM{
 private:
     xcb_connection_t* m_connection = nullptr;
     xcb_window_t m_window;
     xcb_atom_t m_wmDeleteWin;
     xcb_atom_t m_wmProtocols;
+    xcb_screen_t * m_screen;
 public:
-    VulkanPlatform();
-    ~VulkanPlatform();
+    VK_XCB_PLATFORM();
+    ~VK_XCB_PLATFORM();
 
     xcb_connection_t* getConnection();
     xcb_window_t getWindow();
-    VkResult createSurface(VkInstance& instance, VkSurfaceKHR& surface);
+    VkResult CreateSurface(VkInstance instance, VkSurfaceKHR surface);
 
 
 

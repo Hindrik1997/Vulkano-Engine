@@ -54,4 +54,11 @@ struct vk_swapchain_details {
 };
 
 
+struct vk_queue {
+
+    VkQueue                     m_Queue             = VK_NULL_HANDLE;
+    uint32_t                    m_FamilyIndex      = 0;
+
+};
+
 #endif //VULKANO_ENGINE_VULKANCORESTRUCTS_H

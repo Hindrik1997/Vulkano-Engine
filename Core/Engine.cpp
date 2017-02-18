@@ -9,12 +9,10 @@ void Engine::run() {
     {
         float deltaTime = m_internalClock.getDeltaTime();
 
-        if(!m_renderer.processAPI(deltaTime))
-        {
+        if(!m_renderer.processAPI(deltaTime)) {
             m_quit = false;
             break;
         }
-
         m_renderer.render(deltaTime);
     }
 }
