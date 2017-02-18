@@ -592,7 +592,7 @@ void VulkanCore::vkInitCreateFrameBuffers()
     m_SwapchainFrameBuffers.clear();
     m_SwapchainFrameBuffers.resize(m_SwapchainImageViews.size());
 
-    for (size_t i = 0; i < m_SwapchainImageViews.size(); i++) {
+    for (uint32_t i = 0; i < static_cast<uint32_t >(m_SwapchainImageViews.size()); i++) {
         VkImageView attachments[] = {
                 m_SwapchainImageViews[i]
         };
@@ -641,7 +641,7 @@ void VulkanCore::vkInitCreateCommandBuffers()
         throw std::runtime_error("Failed to allocate command buffers!");
     }
 
-    for (size_t i = 0; i < m_CommandBuffers.size(); i++) {
+    for (uint32_t i = 0; i < static_cast<uint32_t >(m_CommandBuffers.size()); i++) {
 
         VkCommandBufferBeginInfo beginInfo = {};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
