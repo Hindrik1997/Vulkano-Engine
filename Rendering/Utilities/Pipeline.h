@@ -21,7 +21,7 @@ public:
     static VkPipelineInputAssemblyStateCreateInfo   defaultInputAssemplyState();
     static VkViewport                               defaultViewport(VkExtent2D& swapchainExtent);
     static VkRect2D                                 defaultScissorRectangle(VkExtent2D& swapchainExtent);
-    static VkPipelineViewportStateCreateInfo        defaultViewPortState(VkViewport viewport, VkRect2D scissorRectangle);
+    static VkPipelineViewportStateCreateInfo        defaultViewPortState(VkViewport& viewport, VkRect2D& scissorRectangle);
     static VkPipelineRasterizationStateCreateInfo   defaultRasterizerState();
     static VkPipelineMultisampleStateCreateInfo     defaultMultisampleState();
     static VkPipelineDepthStencilStateCreateInfo    defaultDepthStencilState();
