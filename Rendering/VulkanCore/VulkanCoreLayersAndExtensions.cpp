@@ -81,7 +81,7 @@ VkResult VulkanCore::vkEnumerateExtensionLayersAndExtensions() {
 
     result = vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr);
 
-    VK_IF_FAIL_MSG(result, "Error occurred when fetching instance layer count")
+    VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching instance layer count");
 
     instanceLayerProperties.resize(instanceLayerCount);
 
@@ -89,7 +89,7 @@ VkResult VulkanCore::vkEnumerateExtensionLayersAndExtensions() {
 
     result = vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayerProperties.data());
 
-    VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance layer properties")
+    VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching the instance layer properties");
 
     for(uint32_t i = 0; i < instanceLayerProperties.size(); ++i)
     {
@@ -99,13 +99,13 @@ VkResult VulkanCore::vkEnumerateExtensionLayersAndExtensions() {
 
         result = vkEnumerateInstanceExtensionProperties(layerProperty.layerName, &extensionCount, nullptr);
 
-        VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance layer extension count")
+        VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching the instance layer extension count");
 
         extensionProperties.resize(extensionCount);
 
         result = vkEnumerateInstanceExtensionProperties(layerProperty.layerName, &extensionCount, extensionProperties.data());
 
-        VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance layer extension properties")
+        VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching the instance layer extension properties");
 
         vk_layer_extension_properties layerProps;
 
@@ -131,13 +131,13 @@ VkResult VulkanCore::vkEnumerateKHRExtensions() {
 
     result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-    VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance KHR extension count")
+    VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching the instance KHR extension count");
 
     m_InstanceKHRExtensions.resize(extensionCount);
 
     result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, m_InstanceKHRExtensions.data());
 
-    VK_IF_FAIL_MSG(result, "Error occurred when fetching the instance KHR extension properties")
+    VK_IF_FAIL_THROW_MSG(result, "Error occurred when fetching the instance KHR extension properties");
 
     Console::printLine("Found " + std::to_string(m_InstanceKHRExtensions.size()) + " KHR Extensions");
 
@@ -198,8 +198,6 @@ VkResult VulkanCore::loadLayersAndExtensions() {
             throw std::runtime_error("KHR Debug Extension is required when using the validation layers. Please enable it.");
         }
     }
-
-
 
     return result;
 }

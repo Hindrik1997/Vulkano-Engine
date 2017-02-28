@@ -47,12 +47,12 @@ ShaderModule::ShaderModule(const string& fileName, ShaderModuleType shaderType, 
 
     vector<char> data = readSpirFile(m_FileName);
 
-    VkShaderModuleCreateInfo info = {};
-    info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    info.pNext = nullptr;
-    info.codeSize = data.size();
-    info.pCode = reinterpret_cast<uint32_t *>(data.data());
-    info.flags = {};
+    VkShaderModuleCreateInfo info   = {};
+    info.sType                      = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    info.pNext                      = nullptr;
+    info.codeSize                   = static_cast<uint32_t >(data.size());
+    info.pCode                      = reinterpret_cast<uint32_t *>(data.data());
+    info.flags                      = {};
 
     VkResult result = vkCreateShaderModule(m_Device, &info, nullptr, &m_ShaderModule);
     if(result != VK_SUCCESS)
@@ -69,22 +69,22 @@ ShaderModule::~ShaderModule() {
 }
 
 ShaderModule::ShaderModule(ShaderModule &&obj) {
-    m_Device = obj.m_Device;
-    m_ShaderModule = obj.m_ShaderModule;
-    m_FileName = obj.m_FileName;
-    m_ShaderModuleType = obj.m_ShaderModuleType;
-    obj.m_ShaderModule = VK_NULL_HANDLE;
-    obj.m_Device = VK_NULL_HANDLE;
+    m_Device                = obj.m_Device;
+    m_ShaderModule          = obj.m_ShaderModule;
+    m_FileName              = obj.m_FileName;
+    m_ShaderModuleType      = obj.m_ShaderModuleType;
+    obj.m_ShaderModule      = VK_NULL_HANDLE;
+    obj.m_Device            = VK_NULL_HANDLE;
 }
 
 VkPipelineShaderStageCreateInfo ShaderModule::createInfoStructure(const ShaderModule& module) {
 
-    VkPipelineShaderStageCreateInfo info = {};
-    info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    info.pNext = nullptr;
-    info.module = module.m_ShaderModule;
-    info.stage = static_cast<VkShaderStageFlagBits>(module.m_ShaderModuleType);
-    info.pName = "main";
+    VkPipelineShaderStageCreateInfo info    = {};
+    info.sType                              = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    info.pNext                              = nullptr;
+    info.module                             = module.m_ShaderModule;
+    info.stage                              = static_cast<VkShaderStageFlagBits>(module.m_ShaderModuleType);
+    info.pName                              = "main";
 
     //TODO: not use this atm, but is good for later.
     info.pSpecializationInfo = nullptr;

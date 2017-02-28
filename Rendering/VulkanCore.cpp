@@ -17,9 +17,8 @@ VulkanCore::VulkanCore(string applicationName,
         : m_ApplicationName(applicationName), m_EnabledInstanceKHRExtensionNames(enabledKHRInstanceExtensions), m_EnabledInstanceValidationLayerNames(enabledInstanceValidationLayers), m_IsDebugEnabled(enableDebugLayers), m_EnabledDeviceExtensions(enabledDeviceExtensions)
 {
     loadLayersAndExtensions();
-    VkResult r = vkInit();
-    if(r == VK_SUCCESS)
-        Console::printLine("Initialized Vulkan API succesfully.");
+    vkInit();
+    Console::printLine("Initialized Vulkan API succesfully.");
 }
 
 VulkanCore::~VulkanCore() {

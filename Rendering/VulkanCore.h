@@ -12,7 +12,8 @@
 #include "Utilities/VulkanUtilityFunctions.h"
 #include "Utilities/ShaderModule.h"
 
-#define VK_IF_FAIL_MSG(result, message) if(result != VK_SUCCESS) { Console::printLine(message); return result; }
+#define VK_IF_FAIL_THROW_MSG(result, message) if(result != VK_SUCCESS) { throw std::runtime_error(message); }
+
 
 using std::vector;
 using std::string;
@@ -81,15 +82,17 @@ public:
     ~VulkanCore();
 
 private:
-    VkResult vkInit();
-    VkResult vkInitInstance();
-    VkResult vkInitPhysicalDevice();
-    void     vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies);
-    VkResult vkInitLogicalDevice();
-    void     vkInitAssignQqueues();
-    VkResult vkInitCreateSurface();
-    VkResult vkInitCreateSwapchain();
-    VkResult vkInitCreateSwapchainImageViews();
+    void vkInit();
+    void vkInitInstance();
+    void vkInitPhysicalDevice();
+    void vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies);
+    void vkInitLogicalDevice();
+    void vkInitAssignQqueues();
+    void vkInitCreateSurface();
+    void vkInitCreateSwapchain();
+    void vkInitCreateSwapchainImageViews();
+
+
     void vkInitCreateRenderPass();
     void vkInitCreatePipeline();
     void vkInitCreateFrameBuffers();

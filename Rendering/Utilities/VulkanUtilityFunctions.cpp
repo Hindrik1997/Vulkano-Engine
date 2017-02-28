@@ -54,7 +54,7 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
 
     o << "------------------------------------" << std::endl;
     o << "Graphics: "               << ((p.queueFlags & VK_QUEUE_GRAPHICS_BIT) ? "Yes" : "No")          << std::endl;
-    o << "Compute: "               << ((p.queueFlags & VK_QUEUE_COMPUTE_BIT)  ? "Yes" : "No")          << std::endl;
+    o << "Compute: "                << ((p.queueFlags & VK_QUEUE_COMPUTE_BIT)  ? "Yes" : "No")          << std::endl;
     o << "Transfer: "               << ((p.queueFlags & VK_QUEUE_TRANSFER_BIT) ? "Yes" : "No")          << std::endl;
     o << "Sparse binding: "         << ((p.queueFlags & VK_QUEUE_SPARSE_BINDING_BIT) ? "Yes" : "No")    << std::endl;
 
@@ -66,18 +66,18 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
 ostream& operator<<(ostream& o, vk_layer_extension_properties p)
 {
     o << "------------------------------LAYER PROPERTIES------------------------------" << std::endl;
-    o << "Layer name: " << p.m_layerProperties.layerName << std::endl;
-    o << "Layer description: " << p.m_layerProperties.description << std::endl;
-    o << "Layer implementation version: " << p.m_layerProperties.implementationVersion << std::endl;
-    o << "Layer spec version: " << p.m_layerProperties.specVersion << std::endl;
-    o << "Extension count: " << p.m_ExtensionProperties.size() << std::endl;
+    o << "Layer name: "                     << p.m_layerProperties.layerName                << std::endl;
+    o << "Layer description: "              << p.m_layerProperties.description              << std::endl;
+    o << "Layer implementation version: "   << p.m_layerProperties.implementationVersion    << std::endl;
+    o << "Layer spec version: "             << p.m_layerProperties.specVersion              << std::endl;
+    o << "Extension count: "                << p.m_ExtensionProperties.size()               << std::endl;
 
     o << "------------LAYER EXTENSIONS: " << p.m_layerProperties.layerName << "------------" << std::endl;
 
     for(VkExtensionProperties ep : p.m_ExtensionProperties)
     {
-        o << "Extension name: " << ep.extensionName << std::endl;
-        o << "Extension spec version: " << ep.specVersion << std::endl;
+        o << "Extension name: "             << ep.extensionName << std::endl;
+        o << "Extension spec version: "     << ep.specVersion   << std::endl;
     }
 
     o << "------------------------------------------------------------------------------" << std::endl;
@@ -88,8 +88,8 @@ ostream& operator<<(ostream& o, vk_layer_extension_properties p)
 ostream& operator<<(ostream &o, VkExtensionProperties p) {
 
     o << "------------------------------EXTENSION PROPERTIES------------------------------" << std::endl;
-    o << "Extension name: " << p.extensionName << std::endl;
-    o << "Extension spec version: " << p.specVersion << std::endl;
+    o << "Extension name: "         << p.extensionName  << std::endl;
+    o << "Extension spec version: " << p.specVersion    << std::endl;
     o << "------------------------------------------------------------------------------" << std::endl;
 
     return o;
@@ -97,9 +97,9 @@ ostream& operator<<(ostream &o, VkExtensionProperties p) {
 
 vk_swapchain_details fillSwapChainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
 
-    vk_swapchain_details details = {};
-    uint32_t formatCount = 0;
-    uint32_t presentModeCount = 0;
+    vk_swapchain_details details    = {};
+    uint32_t formatCount            = 0;
+    uint32_t presentModeCount       = 0;
 
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &details.m_capabilities);
 
