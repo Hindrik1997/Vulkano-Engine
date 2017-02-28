@@ -36,7 +36,7 @@ bool VulkanCore::isInstanceKHRExtensionSupported(const char *name) {
 
 bool VulkanCore::isDeviceExtensionSupported(const char *name, const VkPhysicalDevice deviceToCheck) {
 
-    vector<VkExtensionProperties> props = vkEnumerateDeviceExtentions(deviceToCheck);
+    vector<VkExtensionProperties> props = vkEnumerateDeviceExtensions(deviceToCheck);
 
     for(VkExtensionProperties& prop : props)
     {
@@ -50,7 +50,7 @@ bool VulkanCore::isDeviceExtensionSupported(const char *name, const VkPhysicalDe
     return false;
 }
 
-vector<VkExtensionProperties> VulkanCore::vkEnumerateDeviceExtentions(const VkPhysicalDevice deviceToCheck) {
+vector<VkExtensionProperties> VulkanCore::vkEnumerateDeviceExtensions(const VkPhysicalDevice deviceToCheck) {
 
     vector<VkExtensionProperties> extensionProperties;
     uint32_t extensionCount = 0;
@@ -202,7 +202,7 @@ VkResult VulkanCore::loadLayersAndExtensions() {
     return result;
 }
 
-bool VulkanCore::checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames) {
+bool VulkanCore::checkDeviceExtensions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames) {
     for(uint32_t i = 0; i < static_cast<uint32_t >(extensionNames.size()); ++i)
     {
         bool isSupported;

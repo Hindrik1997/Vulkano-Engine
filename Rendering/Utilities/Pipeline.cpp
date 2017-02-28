@@ -163,3 +163,7 @@ VkResult Pipeline::defaultPipelineLayout(VkPipelineLayout* layout, VkDevice devi
     return vkCreatePipelineLayout(device, &info, nullptr, layout);
 }
 
+VkPipelineDepthStencilStateCreateInfo Pipeline::defaultDepthStencilState() {
+    //TODO: IMPLEMENT
+}
+

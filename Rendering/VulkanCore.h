@@ -118,9 +118,10 @@ private:
     VkResult vkEnumerateExtensionLayersAndExtensions();
     VkResult vkEnumerateKHRExtensions();
 
-    static  vector<VkExtensionProperties>   vkEnumerateDeviceExtentions(const VkPhysicalDevice deviceToCheck);
+    static  vector<VkExtensionProperties>   vkEnumerateDeviceExtensions(const VkPhysicalDevice deviceToCheck);
     static  bool                            isDeviceExtensionSupported(const char *name, const VkPhysicalDevice deviceToCheck);
-    static  bool                            checkDeviceExtentions(const VkPhysicalDevice deviceToCheck, vector<const char *> extensionNames);
+    static  bool                            checkDeviceExtensions(const VkPhysicalDevice deviceToCheck,
+                                                                  vector<const char *> extensionNames);
 
 public:
     bool processPlatformAPI(float deltaTime);

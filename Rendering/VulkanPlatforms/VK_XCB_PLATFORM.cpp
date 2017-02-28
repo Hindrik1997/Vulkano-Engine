@@ -92,7 +92,7 @@ bool VK_XCB_PLATFORM::processAPI(float deltaTime) {
 
         switch (event->response_type & ~0x80) {
             case XCB_CLIENT_MESSAGE: {
-                cm = (xcb_client_message_event_t *)event;
+                cm = static_cast<xcb_client_message_event_t*>(event);
 
                 if (cm->data.data32[0] == m_wmDeleteWin)
                     return false;

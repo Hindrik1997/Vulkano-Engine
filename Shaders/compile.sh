@@ -8,11 +8,11 @@
 echo "Vertex Shaders:"
 for file in *.vert
 do
-    $VULKAN_SDK/bin/glslangValidator -V "$file"
+    ${VULKAN_SDK}/bin/glslangValidator -V "$file"
 done
 
 echo "Fragment Shaders:"
 for file in *.frag
 do
-    $VULKAN_SDK/bin/glslangValidator -V "$file"
+    ${VULKAN_SDK}/bin/glslangValidator -V "$file"
 done

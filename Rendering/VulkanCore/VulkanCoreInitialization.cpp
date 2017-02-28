@@ -129,7 +129,7 @@ void VulkanCore::vkInitPhysicalDevice() {
 
     m_PhysicalDeviceInfo = vkInitGetQueueFamilies(selectedDevice);
 
-    vkEnumerateDeviceExtentions(m_PhysicalDevice);
+    vkEnumerateDeviceExtensions(m_PhysicalDevice);
 }
 
 void VulkanCore::vkInitLogicalDevice() {
@@ -302,12 +302,12 @@ bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const v
     }
 
     vk_swapchain_details details = fillSwapChainDetails(deviceToCheck, surface);
-    if(!checkDeviceExtentions(deviceToCheck, deviceExtentions) || !checkSwapChainDetails(details))
+    if (!checkDeviceExtensions(deviceToCheck, deviceExtentions)) {
         return false;
-
-
-
-
+    } else {
+        if (!checkSwapChainDetails(details))
+            return false;
+    }
 
     return supportsGraphics && (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader && deviceFeatures.tessellationShader;
 }
@@ -419,7 +419,7 @@ void VulkanCore::vkInitCreateSwapchain() {
 
 void VulkanCore::vkInitCreateSwapchainImageViews() {
 
-    VkResult result = VK_ERROR_INITIALIZATION_FAILED;
+    VkResult result;
 
     cleanUpSwapchainImageViews();
     m_SwapchainImageViews.resize(m_SwapchainImages.size());
@@ -496,7 +496,7 @@ void VulkanCore::vkInitCreatePipeline() {
     info.pMultisampleState                      = &multisampleStateCreateInfo;
     info.pDepthStencilState                     = nullptr; //inplement later!!
     info.pColorBlendState                       = &colorBlendStateCreateInfo;
-    info.pDynamicState                          =  nullptr;//&dynamicStateCreateInfo;
+    info.pDynamicState                          = &dynamicStateCreateInfo;
     info.layout                                 = m_PipelineLayout;
     info.renderPass                             = m_RenderPass;
     info.subpass                                = 0;
@@ -635,8 +635,8 @@ void VulkanCore::vkInitCreateCommandBuffers()
 
         vkCmdBindPipeline(m_CommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline);
 
-        //vkCmdSetViewport(m_CommandBuffers[i], 0, 1, &m_Viewport);
-        //vkCmdSetScissor(m_CommandBuffers[i], 0, 1, &m_Scissors);
+        vkCmdSetViewport(m_CommandBuffers[i], 0, 1, &m_Viewport);
+        vkCmdSetScissor(m_CommandBuffers[i], 0, 1, &m_Scissors);
 
         vkCmdDraw(m_CommandBuffers[i], 3, 1, 0, 0);
 
