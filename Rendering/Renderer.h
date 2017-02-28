@@ -17,7 +17,7 @@ static const vector<const char*> enabledKHRInstanceExtensions = {
 
 static const vector<const char*> enabledInstanceValidationLayers = {
         "VK_LAYER_LUNARG_standard_validation",
-        "VK_LAYER_LUNARG_api_dump"
+        //"VK_LAYER_LUNARG_api_dump"
 };
 
 static const vector<const char*> enabledDeviceExtensions = {

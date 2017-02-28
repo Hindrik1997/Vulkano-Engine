@@ -62,16 +62,14 @@ void VulkanCore::setupDebugFacilities() {
     VkDebugReportCallbackCreateInfoEXT createInfo = {};
 
 
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-    createInfo.pNext = NULL;
-    createInfo.flags =
-            VK_DEBUG_REPORT_WARNING_BIT_EXT |
-            VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
-            VK_DEBUG_REPORT_ERROR_BIT_EXT |
-            VK_DEBUG_REPORT_DEBUG_BIT_EXT |
-            VK_DEBUG_REPORT_INFORMATION_BIT_EXT;
-    createInfo.pfnCallback = debugCallback;
-    createInfo.pUserData = NULL;
+    createInfo.sType                = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+    createInfo.pNext                = NULL;
+    createInfo.flags                =
+                                        VK_DEBUG_REPORT_WARNING_BIT_EXT |
+                                        VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
+                                        VK_DEBUG_REPORT_ERROR_BIT_EXT;
+    createInfo.pfnCallback          = debugCallback;
+    createInfo.pUserData            = NULL;
 
     if (createDebugReportCallbackEXT(m_Instance, &createInfo, nullptr, &m_DebugCallback) != VK_SUCCESS) {
         throw std::runtime_error("failed to set up debug callback!");

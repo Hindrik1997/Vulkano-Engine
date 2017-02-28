@@ -109,10 +109,10 @@ VkResult VulkanCore::vkEnumerateExtensionLayersAndExtensions() {
 
         vk_layer_extension_properties layerProps;
 
-        layerProps.m_layerProperties       = layerProperty;
-        layerProps.m_ExtensionProperties  = extensionProperties;
+        layerProps.m_layerProperties        = layerProperty;
+        layerProps.m_ExtensionProperties    = extensionProperties;
 
-        m_InstanceLayersAndExtentions[i] = (layerProps);
+        m_InstanceLayersAndExtentions[i]    = (layerProps);
     }
 
     std::cout << "Found " << m_InstanceLayersAndExtentions.size() << " Extension Layers" << std::endl;
