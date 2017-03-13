@@ -59,7 +59,7 @@ void VulkanCore::vkInitInstance() {
 
     result = vkCreateInstance(&instanceCreateInfo, nullptr, &m_Instance);
 
-    VK_IF_FAIL_THROW_MSG(result, "Error creating VkInstance.");
+    vk_if_fail_throw_message(result, "Error creating VkInstance.");
 }
 
 void VulkanCore::vkInitPhysicalDevice() {
@@ -72,7 +72,7 @@ void VulkanCore::vkInitPhysicalDevice() {
 
 
     result = vkEnumeratePhysicalDevices(m_Instance, &physicalDeviceCount, nullptr);
-    VK_IF_FAIL_THROW_MSG(result, "Error when retrieving amount of physical devices.");
+    vk_if_fail_throw_message(result, "Error when retrieving amount of physical devices.");
 
     if(physicalDeviceCount == 0) {
         throw std::runtime_error("Error, no physical devices supporting Vulkan found!.");
@@ -81,7 +81,7 @@ void VulkanCore::vkInitPhysicalDevice() {
     physicalDevices.resize(physicalDeviceCount);
 
     result = vkEnumeratePhysicalDevices(m_Instance, &physicalDeviceCount, physicalDevices.data());
-    VK_IF_FAIL_THROW_MSG(result, "Error when retrieving physical devices.");
+    vk_if_fail_throw_message(result, "Error when retrieving physical devices.");
 
     vector<VkPhysicalDevice> possibleGPUs;
 
@@ -179,7 +179,7 @@ void VulkanCore::vkInitLogicalDevice() {
 
 
     result = vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device);
-    VK_IF_FAIL_THROW_MSG(result, "Error creating device.");
+    vk_if_fail_throw_message(result, "Error creating device.");
 }
 
 void VulkanCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies) {
@@ -274,7 +274,7 @@ void VulkanCore::vkInitCreateSurface() {
 
     result = m_Platform.CreateSurface(m_Instance, m_Surface);
 
-    VK_IF_FAIL_THROW_MSG(result, "Error creating surface.");
+    vk_if_fail_throw_message(result, "Error creating surface.");
 }
 
 bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const vector<const char *> &deviceExtentions, const VkSurfaceKHR surface) {
@@ -404,7 +404,7 @@ void VulkanCore::vkInitCreateSwapchain() {
         createInfoKHR.oldSwapchain = VK_NULL_HANDLE;
 
     VkResult result = vkCreateSwapchainKHR(m_Device, &createInfoKHR, nullptr, &m_Swapchain);
-    VK_IF_FAIL_THROW_MSG(result, "Error creating swapchain.");
+    vk_if_fail_throw_message(result, "Error creating swapchain.");
 
     uint32_t swapImageCount = 0;
     vkGetSwapchainImagesKHR(m_Device, m_Swapchain, &swapImageCount, nullptr);
@@ -450,7 +450,7 @@ void VulkanCore::vkInitCreateSwapchainImageViews() {
         createInfo.format                   = m_SwapchainFormat;
 
         result = vkCreateImageView(m_Device, &createInfo, nullptr, &m_SwapchainImageViews[i]);
-        VK_IF_FAIL_THROW_MSG(result, "Error when creating image view.");
+        vk_if_fail_throw_message(result, "Error when creating image view.");
     }
 
 }
@@ -465,7 +465,7 @@ void VulkanCore::vkInitCreatePipeline() {
     m_Scissors = Pipeline::defaultScissorRectangle(m_SwapchainExtent);
     m_Viewport = Pipeline::defaultViewport(m_SwapchainExtent);
     VkResult result = Pipeline::defaultPipelineLayout(&m_PipelineLayout, m_Device);
-    VK_IF_FAIL_THROW_MSG(result, "Error creating pipeline layout.");
+    vk_if_fail_throw_message(result, "Error creating pipeline layout.");
 
     VkPipelineVertexInputStateCreateInfo    vertexInputStateCreateInfo              = Pipeline::defaultVertexInputState();
     VkPipelineInputAssemblyStateCreateInfo  inputAssemblyStateCreateInfo            = Pipeline::defaultInputAssemplyState();
@@ -504,7 +504,7 @@ void VulkanCore::vkInitCreatePipeline() {
     info.basePipelineIndex                      = 0;
 
     result = vkCreateGraphicsPipelines(m_Device, VK_NULL_HANDLE, 1, &info, nullptr, &m_Pipeline);
-    VK_IF_FAIL_THROW_MSG(result, "Error creating pipeline.");
+    vk_if_fail_throw_message(result, "Error creating pipeline.");
 
     m_ShaderModules.emplace_back(std::move(vertex));
     m_ShaderModules.emplace_back(std::move(fragment));
@@ -554,7 +554,7 @@ void VulkanCore::vkInitCreateRenderPass() {
     renderPassInfo.pDependencies            = &dependency;
 
     VkResult result = vkCreateRenderPass(m_Device, &renderPassInfo, nullptr, &m_RenderPass);
-    VK_IF_FAIL_THROW_MSG(result, "Failed to create render pass.");
+    vk_if_fail_throw_message(result, "Failed to create render pass.");
 
 }
 
@@ -578,7 +578,7 @@ void VulkanCore::vkInitCreateFrameBuffers()
         framebufferInfo.layers                  = 1;
 
         VkResult result = vkCreateFramebuffer(m_Device, &framebufferInfo, nullptr, &m_SwapchainFrameBuffers[i]);
-        VK_IF_FAIL_THROW_MSG(result, "Error creating frame buffer");
+        vk_if_fail_throw_message(result, "Error creating frame buffer");
     }
 }
 
@@ -592,7 +592,7 @@ void VulkanCore::vkInitCreateCommandPool() {
     info.queueFamilyIndex           = m_GraphicsQueue.m_FamilyIndex;
 
     VkResult result = vkCreateCommandPool(m_Device, &info, nullptr, &m_CommandPool);
-    VK_IF_FAIL_THROW_MSG(result, "Error creating command pool.");
+    vk_if_fail_throw_message(result, "Error creating command pool.");
 }
 
 void VulkanCore::vkInitCreateCommandBuffers()
@@ -607,7 +607,7 @@ void VulkanCore::vkInitCreateCommandBuffers()
     info.commandBufferCount             = static_cast<uint32_t >(m_CommandBuffers.size());
 
     VkResult result = vkAllocateCommandBuffers(m_Device, &info, m_CommandBuffers.data());
-    VK_IF_FAIL_THROW_MSG(result, "Error allocating command buffers");
+    vk_if_fail_throw_message(result, "Error allocating command buffers");
 
     for (uint32_t i = 0; i < static_cast<uint32_t >(m_CommandBuffers.size()); i++) {
 
@@ -643,7 +643,7 @@ void VulkanCore::vkInitCreateCommandBuffers()
         vkCmdEndRenderPass(m_CommandBuffers[i]);
 
         VkResult result2 = vkEndCommandBuffer(m_CommandBuffers[i]);
-        VK_IF_FAIL_THROW_MSG(result2, "Error recording command buffer.");
+        vk_if_fail_throw_message(result2, "Error recording command buffer.");
     }
 }
 
@@ -654,9 +654,9 @@ void VulkanCore::vkInitCreateSwapchainSemaphores() {
     info.pNext                  = nullptr;
 
     VkResult result = vkCreateSemaphore(m_Device, &info, nullptr, &m_ImageAvailableSemaphore);
-    VK_IF_FAIL_THROW_MSG(result, "Failed to create image available semaphore.");
+    vk_if_fail_throw_message(result, "Failed to create image available semaphore.");
     result = vkCreateSemaphore(m_Device, &info, nullptr, &m_RenderingFinsihedSemaphore);
-    VK_IF_FAIL_THROW_MSG(result, "Failed to create renderingfinishedsemaphore");
+    vk_if_fail_throw_message(result, "Failed to create renderingfinishedsemaphore");
 
 
 }

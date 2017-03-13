@@ -12,7 +12,10 @@
 #include "Utilities/VulkanUtilityFunctions.h"
 #include "Utilities/ShaderModule.h"
 
-#define VK_IF_FAIL_THROW_MSG(result, message) if(result != VK_SUCCESS) { throw std::runtime_error(message); }
+inline void vk_if_fail_throw_message(VkResult result, std::string message){
+    if(result != VK_SUCCESS)
+        throw std::runtime_error(message);
+}
 
 
 using std::vector;
