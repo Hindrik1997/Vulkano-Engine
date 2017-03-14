@@ -7,7 +7,7 @@
 #include "../VulkanCore.h"
 #include "../../Core/Console.h"
 
-VkBool32 debugCallback(
+VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
         VkDebugReportFlagsEXT flags,
         VkDebugReportObjectTypeEXT objType,
         uint64_t obj,

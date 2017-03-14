@@ -3,3 +3,6 @@
 .idea/modules.xml
 .idea/workspace.xml
 cmake-build-debug/
+.vs
+.vs
+CMakeSettings.json

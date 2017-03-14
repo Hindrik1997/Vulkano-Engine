@@ -9,5 +9,5 @@ float Clock::getDeltaTime() {
     auto elapsed = current - m_previousFrame;
 
     m_previousFrame = current;
-    return std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+    return static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count());
 }

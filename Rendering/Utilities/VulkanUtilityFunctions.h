@@ -6,7 +6,7 @@
 #define VULKANO_ENGINE_VULKANCOREUTILITYFUNCTIONS_H
 
 #include <iostream>
-#include <vulkan/vulkan.h>
+#include "../VulkanPlatforms/VulkanPlatform.h"
 #include "VulkanStructs.h"
 
 using std::ostream;

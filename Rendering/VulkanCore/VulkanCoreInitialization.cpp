@@ -256,7 +256,7 @@ void VulkanCore::vkInitAssignQqueues() {
             }
         }
 
-        if(qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_TRANSFER_BIT && !qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT && !qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_COMPUTE_BIT)
+        if(qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_TRANSFER_BIT && !(qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_GRAPHICS_BIT) && !(qf.m_QueueFamilyProperties.queueFlags & VK_QUEUE_COMPUTE_BIT))
         {
             for(uint32_t j = 0; j < qf.m_QueueFamilyProperties.queueCount; ++j)
             {

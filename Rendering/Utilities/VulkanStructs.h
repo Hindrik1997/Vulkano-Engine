@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <vulkan/vulkan.h>
+#include "../VulkanPlatforms/VulkanPlatform.h"
 
 using std::array;
 using std::vector;

@@ -70,7 +70,7 @@ public:
     vector<const char*>                     m_EnabledDeviceExtensions;
 
     bool                                    m_IsDebugEnabled;
-    VkDebugReportCallbackEXT                m_DebugCallback                 = nullptr;
+    VkDebugReportCallbackEXT                m_DebugCallback;
 
 
 
