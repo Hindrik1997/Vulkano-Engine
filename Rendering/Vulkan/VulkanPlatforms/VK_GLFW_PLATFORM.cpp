@@ -20,16 +20,16 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    m_Window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkano Engine", nullptr, nullptr);
+    createWindow(WIDTH,HEIGHT,"VULKAN");
 
     if(glfwVulkanSupported() != GLFW_TRUE)
         throw std::runtime_error("Vulkan loader not found!");
 
 }
 
-bool VK_GLFW_PLATFORM::ProcessAPI(float deltaTime) {
+bool VK_GLFW_PLATFORM::processAPI(GLFWwindow* window, float deltaTime) {
 
-    bool shouldClose = glfwWindowShouldClose(m_Window) > 0;
+    bool shouldClose = glfwWindowShouldClose(window) > 0;
     if(shouldClose)
         return false;
 
@@ -41,7 +41,7 @@ bool VK_GLFW_PLATFORM::ProcessAPI(float deltaTime) {
         string c = "Vulkano Engine ";
         c.append(std::to_string(static_cast<int>(fps)));
         c.append(" FPS");
-        glfwSetWindowTitle(m_Window, c.c_str());
+        glfwSetWindowTitle(window, c.c_str());
     }
 
     return true;
@@ -69,4 +69,21 @@ void VK_GLFW_PLATFORM::ProcessExtensions(vector<const char *>& instanceExtension
             continue;
         instanceExtensions.push_back(extensions[i]);
     }
+}
+
+WindowHandle VK_GLFW_PLATFORM::createWindow(uint32_t windowWidth, uint32_t windowHeight, string windowTitle)
+{
+    WindowHandle handle = m_Windows.getNewItem(nullptr);
+    m_Windows[handle] = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), nullptr, nullptr);
+    return handle;
+}
+
+bool VK_GLFW_PLATFORM::processAPI(float deltaTime) {
+
+    for(GLFWwindow* window : m_Windows)
+    {
+        if(!processAPI(window,deltaTime))
+            return false;
+    }
+    return true;
 }

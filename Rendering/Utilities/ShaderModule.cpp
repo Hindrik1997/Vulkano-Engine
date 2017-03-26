@@ -3,7 +3,12 @@
 //
 
 
+#include <ios>
+#include <fstream>
 
+#include "ShaderModule.h"
+#include "../../Core/Console.h"
+#include "../VulkanCore.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -13,27 +18,16 @@
 #include <unistd.h>
 #define GetCurrentDir getcwd
 #endif
-
-
-#include <ios>
-#include <fstream>
-
-#include "ShaderModule.h"
-#include "../../Core/Console.h"
-#include "../VulkanCore.h"
-
-
-std::string GetCurrentWorkingDir( void ) {
+/*
+std::string GetCurrentWorkingDir() {
     char buff[FILENAME_MAX];
     GetCurrentDir( buff, FILENAME_MAX );
     std::string current_working_dir(buff);
     return current_working_dir;
 } 
-
+*/
 
 vector<char> ShaderModule::readSpirFile(const std::string &fileName) {
-
-	std::cout << GetCurrentWorkingDir() << std::endl;
 
     std::ifstream file("Shaders/" + fileName, std::ios::ate | std::ios::binary);
 
@@ -76,7 +70,7 @@ ShaderModule::~ShaderModule() {
     }
 }
 
-ShaderModule::ShaderModule(ShaderModule &&obj) {
+ShaderModule::ShaderModule(ShaderModule&& obj) {
     m_Device                = obj.m_Device;
     m_ShaderModule          = obj.m_ShaderModule;
     m_FileName              = obj.m_FileName;

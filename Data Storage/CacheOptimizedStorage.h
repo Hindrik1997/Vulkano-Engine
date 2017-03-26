@@ -15,8 +15,8 @@
 
 
 template <typename T, uint16_t SIZE = DEFAULT_SIZE>
-class CacheOptimizedStorage {
-    static_assert(SIZE <= MAX_SIZE && SIZE >= MIN_SIZE, "You must bind a size between (and including) #MIN_SIZE and (including) #MAX_SIZE!");
+class CacheOptimizedStorage : public NonCopyable, public NonMovable {
+    static_assert(SIZE <= MAX_SIZE && SIZE >= MIN_SIZE, "You must bind a max_size between (and including) #MIN_SIZE and (including) #MAX_SIZE!");
 public:
     CacheOptimizedStorage();
 private:
@@ -28,9 +28,16 @@ public:
     template<typename... Args>
     uint16_t getNewItem(Args... _args);
 
-    void removeItem(uint16_t nonMappedIndex);
+    void removeItem(const uint16_t index);
+
+    T& operator[] (const uint16_t index);
+
+
+    T* begin();
+    T* end();
 
     uint16_t size();
+    uint16_t max_size();
 
     array<StorageItem<T>, SIZE>& getStorageRef() const;
 
@@ -49,7 +56,7 @@ uint16_t CacheOptimizedStorage<T, SIZE>::getNewItem(Args... _args) {
 }
 
 template<typename T, uint16_t SIZE>
-void CacheOptimizedStorage<T, SIZE>::removeItem(uint16_t nonMappedIndex) {
+void CacheOptimizedStorage<T, SIZE>::removeItem(const uint16_t nonMappedIndex) {
     if(nonMappedIndex == 65535)
         throw "Invalid index";
 
@@ -90,7 +97,7 @@ CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage() {
 }
 
 template<typename T, uint16_t SIZE>
-uint16_t CacheOptimizedStorage<T, SIZE>::size() {
+uint16_t CacheOptimizedStorage<T, SIZE>::max_size() {
     return SIZE;
 }
 
@@ -98,6 +105,28 @@ template<typename T, uint16_t SIZE>
 array<StorageItem<T>, SIZE> &CacheOptimizedStorage<T, SIZE>::getStorageRef() const {
     return m_items;
 }
+
+template<typename T, uint16_t SIZE>
+T& CacheOptimizedStorage<T,SIZE>::operator[](const uint16_t index) {
+    uint16_t mappedIndex = m_indices[index];
+    return m_items[mappedIndex].m_Object.m_Object;
+}
+
+template<typename T, uint16_t SIZE>
+T* CacheOptimizedStorage<T,SIZE>::begin() {
+    return &(m_items.begin()->m_Object.m_Object);
+}
+
+template<typename T, uint16_t SIZE>
+T* CacheOptimizedStorage<T,SIZE>::end() {
+    return &(m_items.begin() + size())->m_Object.m_Object;
+}
+
+template<typename T, uint16_t SIZE>
+uint16_t CacheOptimizedStorage<T, SIZE>::size() {
+    return m_inUseCounter;
+}
+
 
 #undef MAX_SIZE
 #undef MIN_SIZE

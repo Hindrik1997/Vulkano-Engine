@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <array>
-#include "../VulkanPlatforms/VulkanPlatform.h"
+#include "../Vulkan/VulkanPlatforms/VulkanPlatform.h"
 
 using std::array;
 using std::vector;
@@ -60,5 +60,18 @@ struct vk_queue {
     uint32_t                    m_FamilyIndex      = 0;
 
 };
+
+struct vk_core_create_info {
+
+    const char*                         m_ApplicationName                           = "";
+    const vector<const char*>*          m_EnabledInstanceValidationLayerNames       = nullptr;
+    const vector<const char*>*          m_EnabledInstanceExtensionNames             = nullptr;
+    const vector<const char*>*          m_EnabledDeviceExtentionNames               = nullptr;
+    bool                                m_EnableDebugLayers                         = false;
+    bool                                m_EnumerateLayersAndExtensionsInConsole     = false;
+
+};
+
+
 
 #endif //VULKANO_ENGINE_VULKANCORESTRUCTS_H

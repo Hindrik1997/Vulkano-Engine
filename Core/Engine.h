@@ -9,9 +9,7 @@
 #include "../Data Storage/CacheOptimizedStorage.h"
 #include "../Rendering/Renderer.h"
 
-#define SAFE_PNTR_DEL(x) if(x != nullptr) delete x;
-
-class Engine {
+class Engine : NonCopyable, NonMovable {
 public:
     Engine();
     ~Engine();

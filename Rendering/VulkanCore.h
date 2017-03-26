@@ -7,21 +7,17 @@
 
 #include <vector>
 #include <string>
-#include "VulkanPlatforms/VulkanPlatform.h"
+#include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "Utilities/VulkanStructs.h"
 #include "Utilities/VulkanUtilityFunctions.h"
 #include "Utilities/ShaderModule.h"
-
-inline void vk_if_fail_throw_message(VkResult result, std::string message){
-    if(result != VK_SUCCESS)
-        throw std::runtime_error(message);
-}
-
+#include "../Utility Classes/NonCopyable.h"
+#include "../Utility Classes/NonMovable.h"
 
 using std::vector;
 using std::string;
 
-class VulkanCore {
+class VulkanCore : NonCopyable, NonMovable {
 public:
     VkInstance                              m_Instance                      = VK_NULL_HANDLE;
     VkDevice                                m_Device                        = VK_NULL_HANDLE;
@@ -90,7 +86,7 @@ private:
     void vkInitPhysicalDevice();
     void vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies);
     void vkInitLogicalDevice();
-    void vkInitAssignQqueues();
+    void vkInitAssignQueues();
     void vkInitCreateSurface();
     void vkInitCreateSwapchain();
     void vkInitCreateSwapchainImageViews();
@@ -128,11 +124,6 @@ private:
 
 public:
     bool processPlatformAPI(float deltaTime);
-
-
-
-
-
 
 };
 

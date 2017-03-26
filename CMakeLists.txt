@@ -28,7 +28,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
 
-        "Rendering/VulkanPlatforms/VulkanPlatform.h"
+        "Rendering/Vulkan/VulkanPlatforms/VulkanPlatform.h"
         "Rendering/VulkanCore.h"
         "Rendering/VulkanCore.cpp"
         "Rendering/Utilities/VulkanStructs.h"
@@ -46,7 +46,8 @@ set(SOURCE_FILES
         "Core/Clock.cpp"
         "Core/Console.h"
 
-        Rendering/Renderer.cpp Rendering/Renderer.h  Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp Rendering/VulkanCore/VulkanCoreInitialization.cpp Rendering/Utilities/ShaderModule.cpp Rendering/Utilities/ShaderModule.h Rendering/Utilities/VulkanEnums.h Rendering/Utilities/Pipeline.cpp Rendering/Utilities/Pipeline.h Rendering/VulkanPlatforms/VK_GLFW_PLATFORM.cpp Rendering/VulkanPlatforms/VK_GLFW_PLATFORM.h)
+        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp Rendering/VulkanCore/VulkanCoreInitialization.cpp Rendering/Utilities/ShaderModule.cpp Rendering/Utilities/ShaderModule.h Rendering/Utilities/VulkanEnums.h Rendering/Utilities/Pipeline.cpp Rendering/Utilities/Pipeline.h Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "Utility Classes/NonCopyable.h" "Utility Classes/NonMovable.h" "Utility Classes/Macros.h"
+        Rendering/Vulkan/VkCore.cpp Rendering/Vulkan/VkCore.h Rendering/Vulkan/Classes/RenderTargetOutput.cpp Rendering/Vulkan/Classes/RenderTargetOutput.h)
 
 #Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h
 

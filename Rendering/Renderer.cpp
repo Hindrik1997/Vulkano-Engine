@@ -5,16 +5,24 @@
 #include <limits>
 #include "Renderer.h"
 
-#ifdef NDEBUG
-    const bool enableDebugLayers = false;
-#else
-    const bool enableDebugLayers = true;
-#endif
+constexpr vk_core_create_info fill_vk_core_create_info(VK_PLATFORM& platform)
+{
+    vk_core_create_info info;
+
+    info.m_ApplicationName                          = "Vulkano Engine";
+    info.m_EnabledInstanceValidationLayerNames      = &enabledInstanceValidationLayers;
+    info.m_EnabledInstanceExtensionNames            = &enabledInstanceExtensions;
+    info.m_EnabledDeviceExtentionNames              = &enabledDeviceExtensions;
+    info.m_EnableDebugLayers                        = enableDebugLayers;
+    info.m_EnumerateLayersAndExtensionsInConsole    = false;
+
+    return info;
+}
 
 
 void Renderer::render(float deltaTime)
 {
-
+    /*
     uint32_t imageIndex;
     vkAcquireNextImageKHR(m_VulkanCore.m_Device, m_VulkanCore.m_Swapchain, std::numeric_limits<uint64_t >::max(), m_VulkanCore.m_ImageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
@@ -52,15 +60,15 @@ void Renderer::render(float deltaTime)
 
     presentInfo.pResults                        = nullptr;
 
-    vkQueuePresentKHR(m_VulkanCore.m_GraphicsQueue.m_Queue, &presentInfo);
+    vkQueuePresentKHR(m_VulkanCore.m_GraphicsQueue.m_Queue, &presentInfo);*/
 }
 
 bool Renderer::processAPI(float deltaTime)
 {
-    return m_VulkanCore.processPlatformAPI(deltaTime);
+    return m_Platform.processAPI(deltaTime);
 }
 
-Renderer::Renderer() : m_VulkanCore("Vulkano Engine", enabledKHRInstanceExtensions, enabledInstanceValidationLayers, enabledDeviceExtensions, enableDebugLayers)
+Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
 
 }

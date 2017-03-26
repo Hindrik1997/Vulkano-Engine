@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <string>
-#include "../VulkanPlatforms/VulkanPlatform.h"
+#include "../Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "VulkanEnums.h"
 
 using std::vector;

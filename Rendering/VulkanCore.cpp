@@ -62,7 +62,7 @@ VulkanCore::~VulkanCore() {
 }
 
 bool VulkanCore::processPlatformAPI(float deltaTime) {
-    return m_Platform.ProcessAPI(deltaTime);
+    return m_Platform.processAPI(deltaTime);
 }
 
 void VulkanCore::cleanUpSwapchainFrameBuffers()

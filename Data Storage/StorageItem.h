@@ -8,12 +8,12 @@
 
 template<typename T>
 class StorageItem {
-private:
+public:
     union Data {
         Data(){};
         ~Data(){};
-        T m_object;
-    } m_object;
+        T m_Object;
+    } m_Object;
 public:
     StorageItem();
     ~StorageItem();
@@ -37,14 +37,14 @@ inline StorageItem<T>::~StorageItem()
 template<typename T>
 inline void StorageItem<T>::cleanUp()
 {
-    m_object.m_object.~T();
+    m_Object.m_Object.~T();
 }
 
 template<typename T>
 template<typename... Args>
 void StorageItem<T>::reset(Args... arguments)
 {
-    void* tVoid = &m_object.m_object;
+    void* tVoid = &m_Object.m_Object;
     new (tVoid) T(arguments...);
 }
 

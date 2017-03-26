@@ -22,7 +22,7 @@ void VulkanCore::vkInit() {
     vkInitCreateSurface();
     vkInitPhysicalDevice();
     vkInitLogicalDevice();
-    vkInitAssignQqueues();
+    vkInitAssignQueues();
     vkInitCreateSwapchain();
     vkInitCreateSwapchainImageViews();
     vkInitCreateRenderPass();
@@ -197,7 +197,7 @@ void VulkanCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> 
     }
 }
 
-void VulkanCore::vkInitAssignQqueues() {
+void VulkanCore::vkInitAssignQueues() {
 
     m_GraphicsQueue = {};
     m_AdditionalGraphicsQueues.clear();

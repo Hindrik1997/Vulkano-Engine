@@ -8,7 +8,7 @@
 #define WIDTH 800
 #define HEIGHT 600
 
-
+#include <stdint.h>
 
 ////SELECT PLATFORM HERE////
 
@@ -16,6 +16,7 @@
 
 ////////////////////////////
 
+typedef uint16_t WindowHandle;
 
 #if defined(VK_USE_PLATFORM_GLFW)
     #define GLFW_INCLUDE_VULKAN

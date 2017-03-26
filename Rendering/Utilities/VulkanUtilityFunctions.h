@@ -6,7 +6,7 @@
 #define VULKANO_ENGINE_VULKANCOREUTILITYFUNCTIONS_H
 
 #include <iostream>
-#include "../VulkanPlatforms/VulkanPlatform.h"
+#include "../Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "VulkanStructs.h"
 
 using std::ostream;
@@ -30,5 +30,10 @@ VkSurfaceFormatKHR pickSwapChainSurfaceFormat(const vk_swapchain_details& detail
 VkPresentModeKHR pickSwapChainPresentMode(const vk_swapchain_details& details);
 
 VkExtent2D pickSwapChainExtent2D(const vk_swapchain_details& details, uint32_t width, uint32_t height);
+
+inline void vk_if_fail_throw_message(VkResult result, std::string message){
+    if(result != VK_SUCCESS)
+        throw std::runtime_error(message);
+}
 
 #endif //VULKANO_ENGINE_VULKANCOREUTILITYFUNCTIONS_H

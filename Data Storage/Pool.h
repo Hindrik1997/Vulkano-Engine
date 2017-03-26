@@ -7,6 +7,8 @@
 
 #include <array>
 #include "PoolItem.h"
+#include "../Utility Classes/NonCopyable.h"
+#include "../Utility Classes/NonMovable.h"
 
 using std::array;
 
@@ -15,16 +17,11 @@ using std::array;
 #define  MAX_SIZE 2000000
 
 template<typename T, int SIZE = DEFAULT_SIZE>
-class Pool {
-    static_assert(SIZE <= MAX_SIZE && SIZE >= MIN_SIZE, "You must bind a size between (and including) MIN_SIZE and (including) MAX_SIZE!");
+class Pool : public NonCopyable, public NonMovable {
+    static_assert(SIZE <= MAX_SIZE && SIZE >= MIN_SIZE, "You must bind a max_size between (and including) MIN_SIZE and (including) MAX_SIZE!");
 
 public:
     Pool();
-
-    //not movable or copy-able
-    Pool(const Pool& pool) = delete;
-    Pool(const Pool&& pool) = delete;
-    Pool& operator= (const Pool& pool) = delete;
 
     inline T& operator[] (const size_t index);
     inline T& At(const size_t index);
@@ -84,12 +81,12 @@ int Pool<T, SIZE>::getNewItem(Args... args) {
 
     if(m_firstFreeIndex == -1)
         throw "No free item left in the pool!";
-    int TempIndex = m_firstFreeIndex;
+    int tempIndex = m_firstFreeIndex;
     m_firstFreeIndex = storage[m_firstFreeIndex].m_currentState.m_nextItemIndex;
-    storage[TempIndex].m_isUsed = true;
-    storage[TempIndex].reset(args...);
+    storage[tempIndex].m_isUsed = true;
+    storage[tempIndex].reset(args...);
     m_inUseCounter++;
-    return TempIndex;
+    return tempIndex;
 }
 
 template<typename T, int SIZE>

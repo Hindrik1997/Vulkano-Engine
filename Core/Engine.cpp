@@ -17,7 +17,9 @@ void Engine::run() {
     }
 }
 
-Engine::Engine() {
+Engine::Engine()
+{
+
 }
 
 Engine::~Engine() {

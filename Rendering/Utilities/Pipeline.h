@@ -5,7 +5,7 @@
 #ifndef VULKANOENGINE_PIPELINE_H
 #define VULKANOENGINE_PIPELINE_H
 
-#include "../VulkanPlatforms/VulkanPlatform.h"
+#include "../Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include <vector>
 
 using std::vector;
