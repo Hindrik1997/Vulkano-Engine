@@ -58,6 +58,13 @@ private:
     static auto     rateDeviceSuitability                       (VkPhysicalDevice device)                                                   -> int32_t;
 
     static auto     getDeviceQueueFamilies                      (VkPhysicalDevice device)                    ->vk_physical_device_info;
+public:
+    VkInstance               instance();
+    VkDevice                 device();
+    VkPhysicalDevice         physicalDevice();
+    vk_physical_device_info  physicalDeviceInfo();
+
+
 
 };
 

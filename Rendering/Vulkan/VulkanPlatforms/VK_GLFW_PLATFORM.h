@@ -27,6 +27,7 @@ public:
     WindowHandle createWindow(uint32_t windowWidth, uint32_t windowHeight, string windowTitle);
 
     VkResult CreateSurface(VkInstance instance, VkSurfaceKHR& surface);
+    VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle);
 
     void ProcessExtensions(vector<const char*>& instanceExtensions);
     bool processAPI(float deltaTime);

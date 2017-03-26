@@ -20,8 +20,6 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    createWindow(WIDTH,HEIGHT,"VULKAN");
-
     if(glfwVulkanSupported() != GLFW_TRUE)
         throw std::runtime_error("Vulkan loader not found!");
 
@@ -86,4 +84,10 @@ bool VK_GLFW_PLATFORM::processAPI(float deltaTime) {
             return false;
     }
     return true;
+}
+
+VkResult VK_GLFW_PLATFORM::createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle) {
+
+    GLFWwindow* window = m_Windows[handle];
+    return glfwCreateWindowSurface(instance, m_Window, nullptr, &surface);
 }

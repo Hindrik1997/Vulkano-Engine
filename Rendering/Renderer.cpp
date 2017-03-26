@@ -5,9 +5,11 @@
 #include <limits>
 #include "Renderer.h"
 
-constexpr vk_core_create_info fill_vk_core_create_info(VK_PLATFORM& platform)
+vk_core_create_info fill_vk_core_create_info(VK_PLATFORM& platform)
 {
     vk_core_create_info info;
+
+    platform.ProcessExtensions(enabledInstanceExtensions);
 
     info.m_ApplicationName                          = "Vulkano Engine";
     info.m_EnabledInstanceValidationLayerNames      = &enabledInstanceValidationLayers;
@@ -68,7 +70,7 @@ bool Renderer::processAPI(float deltaTime)
     return m_Platform.processAPI(deltaTime);
 }
 
-Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
+Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform)), m_Output(800, 600, m_VkCore,m_Platform)
 {
 
 }

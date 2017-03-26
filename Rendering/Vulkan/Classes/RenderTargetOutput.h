@@ -11,12 +11,15 @@
 class RenderTargetOutput {
 private:
     VkCore& m_VkCore;
+    VK_PLATFORM& m_Platform;
+    WindowHandle m_Window;
     VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
 public:
-    RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore);
+    RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);
     ~RenderTargetOutput();
-public:
 
+private:
+    static VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle, VK_PLATFORM& platform);
 
 
 };

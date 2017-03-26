@@ -8,6 +8,7 @@
 #include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "VulkanCore.h"
 #include "Vulkan/VkCore.h"
+#include "Vulkan/Classes/RenderTargetOutput.h"
 
 const bool enableDebugLayers =
 #ifdef NDEBUG
@@ -38,7 +39,7 @@ class Renderer {
 private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
-    //VulkanCore m_VulkanCore;
+    RenderTargetOutput m_Output;
 public:
     Renderer();
     ~Renderer();

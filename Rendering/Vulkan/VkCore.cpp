@@ -608,4 +608,20 @@ vk_physical_device_info VkCore::getDeviceQueueFamilies(VkPhysicalDevice device) 
     return info;
 }
 
+vk_physical_device_info VkCore::physicalDeviceInfo() {
+    return m_PhysicalDeviceInfo;
+}
+
+VkPhysicalDevice VkCore::physicalDevice() {
+    return m_PhysicalDevice;
+}
+
+VkDevice VkCore::device() {
+    return m_Device;
+}
+
+VkInstance VkCore::instance() {
+    return m_Instance;
+}
+
 
