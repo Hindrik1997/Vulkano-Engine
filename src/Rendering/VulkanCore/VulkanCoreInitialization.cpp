@@ -7,6 +7,7 @@
 #include "../../Core/Console.h"
 #include "../Utilities/Pipeline.h"
 #include "../Utilities/VulkanUtilityFunctions.cpp"
+#include "../Vulkan/Classes/Swapchain.h"
 #include <algorithm>
 
 void VulkanCore::vkInit() {
@@ -301,11 +302,11 @@ bool VulkanCore::vkInitCheckDevice(const VkPhysicalDevice deviceToCheck, const v
         }
     }
 
-    vk_swapchain_details details = fillSwapChainDetails(deviceToCheck, surface);
+    vk_swapchain_details details = Swapchain::fillSwapChainDetails(deviceToCheck, surface);
     if (!checkDeviceExtensions(deviceToCheck, deviceExtentions)) {
         return false;
     } else {
-        if (!checkSwapChainDetails(details))
+        if (!Swapchain::checkSwapChainDetails(details))
             return false;
     }
 
@@ -361,16 +362,16 @@ void VulkanCore::vkInitCreateSwapchain() {
 
     m_SwapchainImages.clear();
 
-    vk_swapchain_details swapchainDetails = fillSwapChainDetails(m_PhysicalDevice, m_Surface);
+    vk_swapchain_details swapchainDetails = Swapchain::fillSwapChainDetails(m_PhysicalDevice, m_Surface);
 
-    VkSurfaceFormatKHR surfaceFormatKHR = pickSwapChainSurfaceFormat(swapchainDetails);
-    VkPresentModeKHR presentModeKHR = pickSwapChainPresentMode(swapchainDetails);
-    VkExtent2D extent2D = pickSwapChainExtent2D(swapchainDetails, WIDTH, HEIGHT);
+    VkSurfaceFormatKHR surfaceFormatKHR = Swapchain::pickSwapChainSurfaceFormat(swapchainDetails);
+    VkPresentModeKHR presentModeKHR = Swapchain::pickSwapChainPresentMode(swapchainDetails);
+    VkExtent2D extent2D = Swapchain::pickSwapChainExtent2D(swapchainDetails, WIDTH, HEIGHT);
 
-    uint32_t imageCount = swapchainDetails.m_capabilities.minImageCount + 1;
-    if(swapchainDetails.m_capabilities.maxImageCount > 0 && imageCount > swapchainDetails.m_capabilities.maxImageCount)
+    uint32_t imageCount = swapchainDetails.m_Capabilities.minImageCount + 1;
+    if(swapchainDetails.m_Capabilities.maxImageCount > 0 && imageCount > swapchainDetails.m_Capabilities.maxImageCount)
     {
-        imageCount = swapchainDetails.m_capabilities.maxImageCount;
+        imageCount = swapchainDetails.m_Capabilities.maxImageCount;
     }
 
     VkSwapchainCreateInfoKHR createInfoKHR          = {};
@@ -391,7 +392,7 @@ void VulkanCore::vkInitCreateSwapchain() {
     createInfoKHR.pQueueFamilyIndices               = nullptr;
 
     //No pretransformation
-    createInfoKHR.preTransform                      = swapchainDetails.m_capabilities.currentTransform;
+    createInfoKHR.preTransform                      = swapchainDetails.m_Capabilities.currentTransform;
     //Ignore alpha blending with the windowing system, well, for obvious reasons i guess :)
     createInfoKHR.compositeAlpha                    = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
     createInfoKHR.presentMode                       = presentModeKHR;

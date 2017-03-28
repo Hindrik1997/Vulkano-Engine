@@ -624,4 +624,20 @@ VkInstance VkCore::instance() {
     return m_Instance;
 }
 
+vector<vk_queue> &VkCore::graphicsQueues() {
+    return m_GraphicsQueues;
+}
+
+vector<vk_queue> &VkCore::computeQueues() {
+    return m_ComputeQueues;
+}
+
+vector<vk_queue> &VkCore::transferOnlyQueues() {
+    return m_TransferOnlyQueues;
+}
+
+vector<vk_queue> &VkCore::sparseBindingQueues() {
+    return m_SparseBindingQueues;
+}
+
 

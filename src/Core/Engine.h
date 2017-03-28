@@ -8,8 +8,9 @@
 #include "Clock.h"
 #include "../Data Storage/CacheOptimizedStorage.h"
 #include "../Rendering/Renderer.h"
+#include "../Utility Classes/NonCopyableNonMovable.h"
 
-class Engine : NonCopyable, NonMovable {
+class Engine : NonCopyableNonMovable {
 public:
     Engine();
     ~Engine();

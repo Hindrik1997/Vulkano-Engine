@@ -18,11 +18,11 @@ public:
         Data(){};
         ~Data(){};
 
-        T m_object;
-        uint16_t m_nextItemIndex;
-    } m_currentState;
+        T m_Object;
+        int32_t m_NextItemIndex;
+    } m_CurrentState;
 
-    bool m_isUsed = false;
+    bool m_IsUsed = false;
     void cleanUp();
 
     template<typename... Args>
@@ -37,7 +37,7 @@ PoolItem<T>::PoolItem()
 template<typename T>
 inline PoolItem<T>::~PoolItem()
 {
-    if (m_isUsed)
+    if (m_IsUsed)
     {
         cleanUp();
     }
@@ -46,14 +46,14 @@ inline PoolItem<T>::~PoolItem()
 template<typename T>
 inline void PoolItem<T>::cleanUp()
 {
-    m_currentState.m_object.~T();
+    m_CurrentState.m_Object.~T();
 }
 
 template<typename T>
 template<typename... Args>
 void PoolItem<T>::reset(Args... arguments)
 {
-    void* tVoid = &m_currentState;
+    void* tVoid = &m_CurrentState;
     new (tVoid) T(arguments...);
 }
 

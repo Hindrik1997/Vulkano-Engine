@@ -7,6 +7,7 @@
 
 #include "StorageItem.h"
 #include "Pool.h"
+#include "../Utility Classes/NonCopyableNonMovable.h"
 
 #define DEFAULT_SIZE 65534
 #define MIN_SIZE 1
@@ -15,7 +16,7 @@
 
 
 template <typename T, uint16_t SIZE = DEFAULT_SIZE>
-class CacheOptimizedStorage : public NonCopyable, public NonMovable {
+class CacheOptimizedStorage : NonCopyableNonMovable {
     static_assert(SIZE <= MAX_SIZE && SIZE >= MIN_SIZE, "You must bind a max_size between (and including) #MIN_SIZE and (including) #MAX_SIZE!");
 public:
     CacheOptimizedStorage();
@@ -26,7 +27,7 @@ private:
     uint16_t m_inUseCounter = 0;
 public:
     template<typename... Args>
-    uint16_t getNewItem(Args... _args);
+    uint16_t getNewItem(Args... args);
 
     void removeItem(const uint16_t index);
 
@@ -39,16 +40,14 @@ public:
     uint16_t size();
     uint16_t max_size();
 
-    array<StorageItem<T>, SIZE>& getStorageRef() const;
-
 };
 
 template<typename T, uint16_t SIZE>
 template<typename... Args>
-uint16_t CacheOptimizedStorage<T, SIZE>::getNewItem(Args... _args) {
+uint16_t CacheOptimizedStorage<T, SIZE>::getNewItem(Args... args) {
 
     uint16_t newIndex = static_cast<uint16_t>(m_indices.getNewItem(m_inUseCounter));
-    m_items[newIndex].reset(_args...);
+    m_items[newIndex].reset(args...);
     m_inUseCounter++;
     m_indices[newIndex] = newIndex;
     m_mappedIndices[newIndex] = newIndex;
@@ -77,7 +76,7 @@ void CacheOptimizedStorage<T, SIZE>::removeItem(const uint16_t nonMappedIndex) {
         m_indices.removeItem(nonMappedIndex);
 
         //Laatste plaatsen op mappedIndex
-        uint16_t nonMappedLastIndex = m_inUseCounter - (uint16_t)1;
+        uint16_t nonMappedLastIndex = m_inUseCounter - static_cast<uint16_t >(1);
         uint16_t mappedLastIndex = m_indices[nonMappedLastIndex];
 
         //laatste moven en index setten
@@ -99,11 +98,6 @@ CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage() {
 template<typename T, uint16_t SIZE>
 uint16_t CacheOptimizedStorage<T, SIZE>::max_size() {
     return SIZE;
-}
-
-template<typename T, uint16_t SIZE>
-array<StorageItem<T>, SIZE> &CacheOptimizedStorage<T, SIZE>::getStorageRef() const {
-    return m_items;
 }
 
 template<typename T, uint16_t SIZE>

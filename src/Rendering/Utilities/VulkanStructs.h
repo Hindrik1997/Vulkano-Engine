@@ -47,9 +47,9 @@ struct vk_queue_family {
 
 struct vk_swapchain_details {
 
-    VkSurfaceCapabilitiesKHR    m_capabilities  = {};
-    vector<VkSurfaceFormatKHR>  m_formats       = {};
-    vector<VkPresentModeKHR>    m_presentModes  = {};
+    VkSurfaceCapabilitiesKHR    m_Capabilities  = {};
+    vector<VkSurfaceFormatKHR>  m_Formats       = {};
+    vector<VkPresentModeKHR>    m_PresentModes  = {};
 
 };
 

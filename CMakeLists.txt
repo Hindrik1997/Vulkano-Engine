@@ -28,26 +28,26 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
 
-        "Rendering/Vulkan/VulkanPlatforms/VulkanPlatform.h"
-        "Rendering/VulkanCore.h"
-        "Rendering/VulkanCore.cpp"
-        "Rendering/Utilities/VulkanStructs.h"
-        "Rendering/Utilities/VulkanUtilityFunctions.h"
-        "Rendering/Utilities/VulkanUtilityFunctions.cpp"
+        "src/Rendering/Vulkan/VulkanPlatforms/VulkanPlatform.h"
+        "src/Rendering/VulkanCore.h"
+        "src/Rendering/VulkanCore.cpp"
+        "src/Rendering/Utilities/VulkanStructs.h"
+        "src/Rendering/Utilities/VulkanUtilityFunctions.h"
+        "src/Rendering/Utilities/VulkanUtilityFunctions.cpp"
 
-        "Data Storage/CacheOptimizedStorage.h"
-        "Data Storage/Pool.h"
-        "Data Storage/PoolItem.h"
-        "Data Storage/StorageItem.h"
+        "src/Data Storage/CacheOptimizedStorage.h"
+        "src/Data Storage/Pool.h"
+        "src/Data Storage/PoolItem.h"
+        "src/Data Storage/StorageItem.h"
 
-        "Core/Engine.h"
-        "Core/Engine.cpp"
-        "Core/Clock.h"
-        "Core/Clock.cpp"
-        "Core/Console.h"
+        "src/Core/Engine.h"
+        "src/Core/Engine.cpp"
+        "src/Core/Clock.h"
+        "src/Core/Clock.cpp"
+        "src/Core/Console.h"
 
-        Rendering/Renderer.cpp Rendering/Renderer.h Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp Rendering/VulkanCore/VulkanCoreInitialization.cpp Rendering/Utilities/ShaderModule.cpp Rendering/Utilities/ShaderModule.h Rendering/Utilities/VulkanEnums.h Rendering/Utilities/Pipeline.cpp Rendering/Utilities/Pipeline.h Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "Utility Classes/NonCopyable.h" "Utility Classes/NonMovable.h" "Utility Classes/Macros.h"
-        Rendering/Vulkan/VkCore.cpp Rendering/Vulkan/VkCore.h Rendering/Vulkan/Classes/RenderTargetOutput.cpp Rendering/Vulkan/Classes/RenderTargetOutput.h)
+		src/Rendering/Renderer.cpp src/Rendering/Renderer.h src/Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp src/Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp src/Rendering/VulkanCore/VulkanCoreInitialization.cpp src/Rendering/Utilities/ShaderModule.cpp src/Rendering/Utilities/ShaderModule.h src/Rendering/Utilities/VulkanEnums.h src/Rendering/Utilities/Pipeline.cpp src/Rendering/Utilities/Pipeline.h src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "src/Utility Classes/NonCopyable.h" "src/Utility Classes/NonMovable.h" "src/Utility Classes/Macros.h"
+		src/Rendering/Vulkan/VkCore.cpp src/Rendering/Vulkan/VkCore.h src/Rendering/Vulkan/Classes/RenderTargetOutput.cpp src/Rendering/Vulkan/Classes/RenderTargetOutput.h src/Rendering/Vulkan/Classes/Swapchain.cpp src/Rendering/Vulkan/Classes/Swapchain.h "src/Utility Classes/NonCopyableNonMovable.h")
 
 #Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h
 

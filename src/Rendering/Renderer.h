@@ -35,11 +35,11 @@ static vector<const char*> enabledDeviceExtensions = {
 
 
 
-class Renderer {
+class Renderer : NonCopyable {
 private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
-    RenderTargetOutput m_Output;
+    vector<RenderTargetOutput> m_Outputs;
 public:
     Renderer();
     ~Renderer();

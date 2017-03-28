@@ -70,14 +70,14 @@ bool Renderer::processAPI(float deltaTime)
     return m_Platform.processAPI(deltaTime);
 }
 
-Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform)), m_Output(800, 600, m_VkCore,m_Platform)
+Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
-
+    m_Outputs.push_back(RenderTargetOutput(800, 600, m_VkCore, m_Platform, m_VkCore.graphicsQueues()[0]));
+    //m_Outputs.emplace_back(800, 600, m_VkCore, m_Platform, m_VkCore.graphicsQueues()[0]);
 }
 
 Renderer::~Renderer() {
 
-
-
+    m_Outputs.clear();
 
 }

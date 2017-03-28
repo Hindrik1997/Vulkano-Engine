@@ -64,6 +64,11 @@ public:
     VkPhysicalDevice         physicalDevice();
     vk_physical_device_info  physicalDeviceInfo();
 
+    vector<vk_queue>&        graphicsQueues();
+    vector<vk_queue>&        computeQueues();
+    vector<vk_queue>&        transferOnlyQueues();
+    vector<vk_queue>&        sparseBindingQueues();
+
 
 
 };

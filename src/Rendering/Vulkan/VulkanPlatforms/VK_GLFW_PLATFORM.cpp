@@ -89,5 +89,5 @@ bool VK_GLFW_PLATFORM::processAPI(float deltaTime) {
 VkResult VK_GLFW_PLATFORM::createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle) {
 
     GLFWwindow* window = m_Windows[handle];
-    return glfwCreateWindowSurface(instance, m_Window, nullptr, &surface);
+    return glfwCreateWindowSurface(instance, window, nullptr, &surface);
 }
