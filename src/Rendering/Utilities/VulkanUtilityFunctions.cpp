@@ -3,7 +3,11 @@
 //
 
 #include <limits>
+#include <tuple>
 #include "VulkanUtilityFunctions.h"
+
+using std::tuple;
+using std::make_tuple;
 
 ostream& operator<<(ostream& o, VkPhysicalDeviceType& t) {
     switch(t)
@@ -32,11 +36,13 @@ ostream& operator<<(ostream& o, VkPhysicalDeviceType& t) {
 
 ostream& operator<<(ostream& o, VkPhysicalDeviceProperties& p) {
 
+    string vendorName = getVendorNameForID(p.vendorID);
+
     o << "---------------DEVICE---------------" << std::endl;
 
     o << "Name: "               << p.deviceName     << std::endl;
     o << "Type: "               << p.deviceType     << std::endl;
-    o << "Vendor: "             << p.vendorID       << std::endl;
+    o << "Vendor: "             << vendorName       << std::endl;
     o << "Device ID: "          << p.deviceID       << std::endl;
     o << "API Version: "        << p.apiVersion     << std::endl;
     o << "Driver Version: "     << p.driverVersion  << std::endl;
@@ -93,4 +99,26 @@ ostream& operator<<(ostream &o, VkExtensionProperties p) {
     o << "------------------------------------------------------------------------------" << std::endl;
 
     return o;
+}
+
+string getVendorNameForID(uint32_t id) {
+    vector<tuple<uint32_t,string>> names =
+            {
+                    make_tuple(0x1002, "AMD"),
+                    make_tuple(0x1010, "ImgTec"),
+                    make_tuple(0x10DE, "NVIDIA"),
+                    make_tuple(0x13B5, "ARM"),
+                    make_tuple(0x5143, "Qualcomm"),
+                    make_tuple(0x8086, "Intel")
+
+            };
+    for(auto& t : names)
+    {
+        if(std::get<0>(t) == id)
+        {
+            return std::get<1>(t);
+        }
+    }
+    std::cout << "No vendor found!" << std::endl;
+    return std::to_string(id);
 }

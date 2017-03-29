@@ -61,7 +61,7 @@ void VkCore::vkInitInstance(vk_core_create_info createInfo)
 
     result = vkCreateInstance(&instanceCreateInfo, nullptr, m_Instance.reset());
 
-    vk_if_fail_throw_message(result, "Error creating VkInstance.");
+    vkIfFailThrowMessage(result, "Error creating VkInstance.");
 }
 
 void VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo)
@@ -75,7 +75,7 @@ void VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo)
 
 
     result = vkEnumeratePhysicalDevices(m_Instance, &physicalDeviceCount, nullptr);
-    vk_if_fail_throw_message(result, "Error when retrieving amount of physical devices.");
+    vkIfFailThrowMessage(result, "Error when retrieving amount of physical devices.");
 
     if(physicalDeviceCount == 0) {
         throw std::runtime_error("Error, no physical devices supporting Vulkan found!.");
@@ -84,7 +84,7 @@ void VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo)
     physicalDevices.resize(physicalDeviceCount);
 
     result = vkEnumeratePhysicalDevices(m_Instance, &physicalDeviceCount, physicalDevices.data());
-    vk_if_fail_throw_message(result, "Error when retrieving physical devices.");
+    vkIfFailThrowMessage(result, "Error when retrieving physical devices.");
 
     vector<VkPhysicalDevice> possibleGPUs;
 
@@ -195,7 +195,7 @@ void VkCore::vkInitLogicalDevice(vk_core_create_info createInfo)
 
 
     result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, nullptr, m_Device.reset());
-    vk_if_fail_throw_message(result, "Error creating device.");
+    vkIfFailThrowMessage(result, "Error creating device.");
 }
 
 auto VkCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies) -> void
@@ -466,7 +466,7 @@ auto VkCore::enumerateValidationLayers() -> vector<vk_layer_extension_properties
 
     result = vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr);
 
-    vk_if_fail_throw_message(result, "Error occurred when fetching instance layer count");
+    vkIfFailThrowMessage(result, "Error occurred when fetching instance layer count");
 
     instanceLayerProperties.resize(instanceLayerCount);
 
@@ -474,7 +474,7 @@ auto VkCore::enumerateValidationLayers() -> vector<vk_layer_extension_properties
 
     result = vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayerProperties.data());
 
-    vk_if_fail_throw_message(result, "Error occurred when fetching the instance layer properties");
+    vkIfFailThrowMessage(result, "Error occurred when fetching the instance layer properties");
 
     for(uint32_t i = 0; i < instanceLayerProperties.size(); ++i)
     {
@@ -484,13 +484,13 @@ auto VkCore::enumerateValidationLayers() -> vector<vk_layer_extension_properties
 
         result = vkEnumerateInstanceExtensionProperties(layerProperty.layerName, &extensionCount, nullptr);
 
-        vk_if_fail_throw_message(result, "Error occurred when fetching the instance layer extension count");
+        vkIfFailThrowMessage(result, "Error occurred when fetching the instance layer extension count");
 
         extensionProperties.resize(extensionCount);
 
         result = vkEnumerateInstanceExtensionProperties(layerProperty.layerName, &extensionCount, extensionProperties.data());
 
-        vk_if_fail_throw_message(result, "Error occurred when fetching the instance layer extension properties");
+        vkIfFailThrowMessage(result, "Error occurred when fetching the instance layer extension properties");
 
         vk_layer_extension_properties layerProps;
 
@@ -512,13 +512,13 @@ auto VkCore::enumerateInstanceExtensions() -> vector<VkExtensionProperties>
 
     result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
-    vk_if_fail_throw_message(result, "Error occurred when fetching the instance KHR extension count");
+    vkIfFailThrowMessage(result, "Error occurred when fetching the instance KHR extension count");
 
     instanceExtensions.resize(extensionCount);
 
     result = vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, instanceExtensions.data());
 
-    vk_if_fail_throw_message(result, "Error occurred when fetching the instance KHR extension properties");
+    vkIfFailThrowMessage(result, "Error occurred when fetching the instance KHR extension properties");
 
     return instanceExtensions;
 }

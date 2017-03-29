@@ -20,6 +20,7 @@ private:
     Swapchain*      m_OldSwapchain      = nullptr;
 public:
     RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue);
+    RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);
     ~RenderTargetOutput();
 
     RenderTargetOutput(RenderTargetOutput&&);
@@ -29,6 +30,7 @@ public:
 
 private:
     static VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle, VK_PLATFORM& platform);
+    static vk_queue getPresentCapableQueue(VkSurfaceKHR surface, VkCore& vkCore);
 };
 
 
