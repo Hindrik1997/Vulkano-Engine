@@ -5,13 +5,13 @@
 #include <limits>
 #include "Swapchain.h"
 
-Swapchain::Swapchain(uint32_t width, uint32_t height, VkDevice device, VkPhysicalDevice physicalDevice, vk_queue presentQueue, VkSurfaceKHR surface) :
+Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface) :
     m_PresentQueue(presentQueue),
     m_Height(height),
     m_Width(width),
-    m_Device(device),
-    m_PhysicalDevice(physicalDevice),
-    m_Surface(surface)
+    m_VkCore(vkCore),
+    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR}),
+    m_Surface({surface, m_VkCore.instance(), vkDestroySurfaceKHR})
 {
     createSwapchain();
 }
@@ -98,7 +98,7 @@ auto Swapchain::pickSwapChainExtent2D(const vk_swapchain_details& details, uint3
 
 auto Swapchain::createSwapchain() -> void
 {
-    vk_swapchain_details details = fillSwapChainDetails(m_PhysicalDevice, m_Surface);
+    vk_swapchain_details details = fillSwapChainDetails(m_VkCore.physicalDevice(), m_Surface);
     if(!checkSwapChainDetails(details))
         throw std::runtime_error("Error, something wrong with the swapchain details.");
 
@@ -131,7 +131,7 @@ auto Swapchain::createSwapchain() -> void
     createInfo.clipped                  = VK_TRUE;
     createInfo.oldSwapchain             = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(m_Device, &createInfo, nullptr, &m_Swapchain) != VK_SUCCESS) {
+    if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
         throw std::runtime_error("Error, failed to create swapchain!");
     }
 }

@@ -10,6 +10,7 @@
 #include "../../Utility Classes/NonMovable.h"
 #include "../Utilities/VulkanStructs.h"
 #include "../Utilities/VulkanUtilityFunctions.h"
+#include "VkUniqueHandle.h"
 
 using std::vector;
 using std::string;
@@ -20,8 +21,8 @@ private:
     bool                                    m_IsDebugEnabled                                = false;
     VkDebugReportCallbackEXT                m_DebugCallback                                 = nullptr;
 
-    VkInstance                              m_Instance                                      = VK_NULL_HANDLE;
-    VkDevice                                m_Device                                        = VK_NULL_HANDLE;
+    VkUniqueHandle<VkInstance>              m_Instance                                      = {vkDestroyInstance};
+    VkUniqueHandle<VkDevice>                m_Device                                        = {vkDestroyDevice};
     VkPhysicalDevice                        m_PhysicalDevice                                = VK_NULL_HANDLE;
     vk_physical_device_info                 m_PhysicalDeviceInfo                            = {};
     vector<vk_queue_family>                 m_QueueFamilies                                 = {};
@@ -59,18 +60,15 @@ private:
 
     static auto     getDeviceQueueFamilies                      (VkPhysicalDevice device)                    ->vk_physical_device_info;
 public:
-    VkInstance               instance();
-    VkDevice                 device();
-    VkPhysicalDevice         physicalDevice();
-    vk_physical_device_info  physicalDeviceInfo();
+    const VkInstance               instance()           const;
+    const VkDevice                 device()             const;
+    const VkPhysicalDevice         physicalDevice()     const;
+    const vk_physical_device_info  physicalDeviceInfo() const;
 
-    vector<vk_queue>&        graphicsQueues();
-    vector<vk_queue>&        computeQueues();
-    vector<vk_queue>&        transferOnlyQueues();
-    vector<vk_queue>&        sparseBindingQueues();
-
-
-
+    auto        graphicsQueues()         const -> const vector<vk_queue>&;
+    auto        computeQueues()          const -> const vector<vk_queue>&;
+    auto        transferOnlyQueues()     const -> const vector<vk_queue>&;
+    auto        sparseBindingQueues()    const -> const vector<vk_queue>&;
 };
 
 VkResult createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,

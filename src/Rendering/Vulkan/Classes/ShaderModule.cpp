@@ -7,8 +7,7 @@
 #include <fstream>
 
 #include "ShaderModule.h"
-#include "../../Core/Console.h"
-#include "../VulkanCore.h"
+#include "../../../Core/Console.h"
 
 #ifdef _WIN32
 #include <direct.h>

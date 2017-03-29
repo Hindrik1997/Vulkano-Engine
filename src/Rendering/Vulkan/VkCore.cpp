@@ -18,12 +18,6 @@ VkCore::~VkCore()
 {
     vkDeviceWaitIdle(m_Device);
     cleanUpDebugFacilities();
-
-    if(m_Device != VK_NULL_HANDLE)
-        vkDestroyDevice(m_Device, nullptr);
-
-    if(m_Instance != VK_NULL_HANDLE)
-        vkDestroyInstance(m_Instance,nullptr);
 }
 
 void VkCore::vkInit(vk_core_create_info createInfo)
@@ -65,7 +59,7 @@ void VkCore::vkInitInstance(vk_core_create_info createInfo)
     instanceCreateInfo.enabledLayerCount                = static_cast<uint32_t >(createInfo.m_EnabledInstanceValidationLayerNames->size());
     instanceCreateInfo.ppEnabledLayerNames              = createInfo.m_EnabledInstanceValidationLayerNames->data();
 
-    result = vkCreateInstance(&instanceCreateInfo, nullptr, &m_Instance);
+    result = vkCreateInstance(&instanceCreateInfo, nullptr, m_Instance.reset());
 
     vk_if_fail_throw_message(result, "Error creating VkInstance.");
 }
@@ -200,11 +194,11 @@ void VkCore::vkInitLogicalDevice(vk_core_create_info createInfo)
     deviceCreateInfo.ppEnabledExtensionNames = createInfo.m_EnabledDeviceExtentionNames->data();
 
 
-    result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, nullptr, &m_Device);
+    result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, nullptr, m_Device.reset());
     vk_if_fail_throw_message(result, "Error creating device.");
 }
 
-void VkCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies)
+auto VkCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &queueFamilies) -> void
 {
 
     for(uint32_t i = 0;  i < static_cast<uint32_t >(queueFamilies.size()); ++i)
@@ -220,7 +214,7 @@ void VkCore::vkInitSetupQueueFamilies(const vector<VkQueueFamilyProperties> &que
     }
 }
 
-void VkCore::vkInitAssignQueues()
+auto VkCore::vkInitAssignQueues() -> void
 {
     m_GraphicsQueues.clear();
     m_ComputeQueues.clear();
@@ -273,7 +267,7 @@ void VkCore::vkInitAssignQueues()
     }
 }
 
-void VkCore::setupDebugFacilities()
+auto VkCore::setupDebugFacilities() -> void
 {
     if(!m_IsDebugEnabled)
     {
@@ -298,7 +292,7 @@ void VkCore::setupDebugFacilities()
     Console::printLine("Succesfully set up the debug facilities!");
 }
 
-void VkCore::cleanUpDebugFacilities()
+auto VkCore::cleanUpDebugFacilities() -> void
 {
     if(m_IsDebugEnabled)
     {
@@ -309,7 +303,9 @@ void VkCore::cleanUpDebugFacilities()
     }
 }
 
-VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char *layerPrefix, const char *msg, void *userData)
+VKAPI_ATTR auto VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj,
+                                         size_t location, int32_t code, const char *layerPrefix, const char *msg,
+                                                                                        void *userData) -> VkBool32
 {
     std::cerr << "Validation layer: " << msg << std::endl;
 
@@ -317,8 +313,9 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebu
 
 }
 
-VkResult createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
-                                      const VkAllocationCallbacks *pAllocator, VkDebugReportCallbackEXT *pCallback)
+auto createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
+                                      const VkAllocationCallbacks *pAllocator,
+                                                                VkDebugReportCallbackEXT *pCallback) -> VkResult
 {
     auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugReportCallbackEXT");
     if (func != nullptr) {
@@ -327,8 +324,8 @@ VkResult createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCa
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
-VkResult destroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback,
-                                       const VkAllocationCallbacks *pAllocator)
+auto destroyDebugReportCallbackEXT(VkInstance instance, VkDebugReportCallbackEXT callback,
+                                       const VkAllocationCallbacks *pAllocator) -> VkResult
 {
     auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugReportCallbackEXT");
     if (func != nullptr) {
@@ -538,7 +535,8 @@ auto VkCore::checkDeviceExtensions(VkPhysicalDevice device, vector<const char *>
     return true;
 }
 
-bool VkCore::checkDevice(VkPhysicalDevice device, const vector<const char *> &deviceExtentions) {
+auto VkCore::checkDevice(VkPhysicalDevice device, const vector<const char *> &deviceExtentions) -> bool
+{
 
     VkPhysicalDeviceProperties  deviceProperties;
     VkPhysicalDeviceFeatures    deviceFeatures;
@@ -568,7 +566,8 @@ bool VkCore::checkDevice(VkPhysicalDevice device, const vector<const char *> &de
     return supportsGraphics && (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU || deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU) && deviceFeatures.geometryShader && deviceFeatures.tessellationShader;
 }
 
-int32_t VkCore::rateDeviceSuitability(VkPhysicalDevice device) {
+auto VkCore::rateDeviceSuitability(VkPhysicalDevice device) -> int32_t
+{
 
     int32_t rating = 0;
 
@@ -586,7 +585,8 @@ int32_t VkCore::rateDeviceSuitability(VkPhysicalDevice device) {
     return rating;
 }
 
-vk_physical_device_info VkCore::getDeviceQueueFamilies(VkPhysicalDevice device) {
+auto VkCore::getDeviceQueueFamilies(VkPhysicalDevice device) -> vk_physical_device_info
+{
 
     uint32_t queueFamilyCount = 0;
     vector<VkQueueFamilyProperties> queueFamilies;
@@ -608,35 +608,43 @@ vk_physical_device_info VkCore::getDeviceQueueFamilies(VkPhysicalDevice device) 
     return info;
 }
 
-vk_physical_device_info VkCore::physicalDeviceInfo() {
+auto VkCore::physicalDeviceInfo() const -> const vk_physical_device_info
+{
     return m_PhysicalDeviceInfo;
 }
 
-VkPhysicalDevice VkCore::physicalDevice() {
+auto VkCore::physicalDevice() const -> const VkPhysicalDevice
+{
     return m_PhysicalDevice;
 }
 
-VkDevice VkCore::device() {
+auto VkCore::device() const -> const VkDevice
+{
     return m_Device;
 }
 
-VkInstance VkCore::instance() {
+auto VkCore::instance() const -> const VkInstance
+{
     return m_Instance;
 }
 
-vector<vk_queue> &VkCore::graphicsQueues() {
+auto VkCore::graphicsQueues() const -> const vector<vk_queue>&
+{
     return m_GraphicsQueues;
 }
 
-vector<vk_queue> &VkCore::computeQueues() {
+auto VkCore::computeQueues() const -> const vector<vk_queue>&
+{
     return m_ComputeQueues;
 }
 
-vector<vk_queue> &VkCore::transferOnlyQueues() {
+auto VkCore::transferOnlyQueues() const -> const vector<vk_queue>&
+{
     return m_TransferOnlyQueues;
 }
 
-vector<vk_queue> &VkCore::sparseBindingQueues() {
+auto VkCore::sparseBindingQueues() const -> const vector<vk_queue>&
+{
     return m_SparseBindingQueues;
 }
 

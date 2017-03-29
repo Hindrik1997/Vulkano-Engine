@@ -10,10 +10,9 @@
 
 class Swapchain : NonCopyable {
 private:
-    VkSwapchainKHR      m_Swapchain         = VK_NULL_HANDLE;
-    VkPhysicalDevice    m_PhysicalDevice    = VK_NULL_HANDLE;
-    VkDevice            m_Device            = VK_NULL_HANDLE;
-    VkSurfaceKHR        m_Surface           = VK_NULL_HANDLE;
+    VkCore&                             m_VkCore;
+    VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
+    VkUniqueHandle<VkSurfaceKHR>        m_Surface;
 
     VkSurfaceFormatKHR  m_SurfaceFormat;
     VkPresentModeKHR    m_PresentMode;
@@ -23,7 +22,7 @@ private:
     uint32_t            m_Width             = 0;
     uint32_t            m_Height            = 0;
 public:
-    Swapchain(uint32_t width, uint32_t height, VkDevice device, VkPhysicalDevice physicalDevicee, vk_queue presentQueue, VkSurfaceKHR surface);
+    Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface);
 public:
     auto        createSwapchain                 ()                                                                      -> void;
 

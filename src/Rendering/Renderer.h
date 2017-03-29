@@ -6,7 +6,6 @@
 #define VULKANOENGINE_RENDERER_H
 
 #include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
-#include "VulkanCore.h"
 #include "Vulkan/VkCore.h"
 #include "Vulkan/Classes/RenderTargetOutput.h"
 
