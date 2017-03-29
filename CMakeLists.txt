@@ -47,7 +47,7 @@ set(SOURCE_FILES
         "src/Core/Console.h"
 
 		src/Rendering/Renderer.cpp src/Rendering/Renderer.h src/Rendering/VulkanCore/VulkanCoreDebugFacilities.cpp src/Rendering/VulkanCore/VulkanCoreLayersAndExtensions.cpp src/Rendering/VulkanCore/VulkanCoreInitialization.cpp src/Rendering/Utilities/ShaderModule.cpp src/Rendering/Utilities/ShaderModule.h src/Rendering/Utilities/VulkanEnums.h src/Rendering/Utilities/Pipeline.cpp src/Rendering/Utilities/Pipeline.h src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "src/Utility Classes/NonCopyable.h" "src/Utility Classes/NonMovable.h" "src/Utility Classes/Macros.h"
-		src/Rendering/Vulkan/VkCore.cpp src/Rendering/Vulkan/VkCore.h src/Rendering/Vulkan/Classes/RenderTargetOutput.cpp src/Rendering/Vulkan/Classes/RenderTargetOutput.h src/Rendering/Vulkan/Classes/Swapchain.cpp src/Rendering/Vulkan/Classes/Swapchain.h "src/Utility Classes/NonCopyableNonMovable.h")
+		src/Rendering/Vulkan/VkCore.cpp src/Rendering/Vulkan/VkCore.h src/Rendering/Vulkan/Classes/RenderTargetOutput.cpp src/Rendering/Vulkan/Classes/RenderTargetOutput.h src/Rendering/Vulkan/Classes/Swapchain.cpp src/Rendering/Vulkan/Classes/Swapchain.h "src/Utility Classes/NonCopyableNonMovable.h" src/Rendering/Vulkan/VkUniqueHandle.h src/Rendering/Vulkan/VkUniqueHandle.cpp)
 
 #Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h
 
