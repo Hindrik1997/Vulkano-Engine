@@ -1,0 +1,15 @@
+//
+// Created by hindrik on 30-3-17.
+//
+
+#ifndef VULKANOENGINE_RENDERPASSMANAGER_H
+#define VULKANOENGINE_RENDERPASSMANAGER_H
+
+
+class RenderPassManager
+{
+
+};
+
+
+#endif //VULKANOENGINE_RENDERPASSMANAGER_H

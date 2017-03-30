@@ -14,9 +14,10 @@
 using std::vector;
 using std::string;
 
-class ShaderModule {
+class ShaderModule : NonCopyable
+{
 private:
-    VkUniqueHandle<VkShaderModule>      m_ShaderModule =    {m_Device, vkDestroyShaderModule};
+    VkUniqueHandle<VkShaderModule>      m_ShaderModule      = {m_Device, vkDestroyShaderModule};
     VkDevice                            m_Device            = VK_NULL_HANDLE;
     string                              m_FileName          = "";
     ShaderModuleType                    m_ShaderModuleType  = ShaderModuleType::Null;
@@ -25,10 +26,7 @@ public:
     ShaderModule(const string& fileName, ShaderModuleType shaderType, VkDevice device);
     ~ShaderModule();
 
-    ShaderModule (const ShaderModule&) = delete;
-    ShaderModule (ShaderModule&&)      = default;
-
-    ShaderModule& operator=(const ShaderModule&) = delete;
+    ShaderModule (ShaderModule&&)           = default;
     ShaderModule& operator=(ShaderModule&&) = default;
 
     static vector<char> readSpirFile(const string& fileName);

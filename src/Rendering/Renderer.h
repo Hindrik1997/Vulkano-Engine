@@ -34,7 +34,7 @@ static vector<const char*> enabledDeviceExtensions = {
 
 
 
-class Renderer : NonCopyable {
+class Renderer : NonCopyableNonMovable {
 private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;

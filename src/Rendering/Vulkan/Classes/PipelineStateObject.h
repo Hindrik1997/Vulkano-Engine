@@ -1,22 +1,28 @@
 //
-// Created by hindrik on 14-2-17.
+// Created by hindrik on 30-3-17.
 //
 
-#ifndef VULKANOENGINE_PIPELINE_H
-#define VULKANOENGINE_PIPELINE_H
+#ifndef VULKANOENGINE_PIPELINESTATEOBJECT_H
+#define VULKANOENGINE_PIPELINESTATEOBJECT_H
 
-#include "../Vulkan/VulkanPlatforms/VulkanPlatform.h"
-#include <vector>
+#include "../VulkanPlatforms/VulkanPlatform.h"
+#include "../../../Utility Classes/NonCopyable.h"
 
-using std::vector;
-
-
-class Pipeline {
+class PipelineStateObject : NonCopyable
+{
 public:
+    PipelineStateObject()   = delete;
+    ~PipelineStateObject()  = default;
+
+    PipelineStateObject(PipelineStateObject&&)              = default;
+    PipelineStateObject& operator=(PipelineStateObject&&)   = default;
+
+    
 
 
 
 
+public:
     static VkPipelineVertexInputStateCreateInfo     defaultVertexInputState();
     static VkPipelineInputAssemblyStateCreateInfo   defaultInputAssemplyState();
     static VkViewport                               defaultViewport(VkExtent2D& swapchainExtent);
@@ -29,11 +35,7 @@ public:
     static VkPipelineColorBlendStateCreateInfo      defaultColorBlendState(vector<VkPipelineColorBlendAttachmentState>& attachmentStates);
     static VkPipelineDynamicStateCreateInfo         defaultDynamicState();
     static VkResult                                 defaultPipelineLayout(VkPipelineLayout* layout, VkDevice device);
-
-
-
-
 };
 
 
-#endif //VULKANOENGINE_PIPELINE_H
+#endif //VULKANOENGINE_PIPELINESTATEOBJECT_H

@@ -44,8 +44,8 @@ set(SOURCE_FILES
         "src/Core/Clock.cpp"
         "src/Core/Console.h"
 
-		src/Rendering/Renderer.cpp src/Rendering/Renderer.h src/Rendering/Vulkan/Classes/ShaderModule.cpp src/Rendering/Vulkan/Classes/ShaderModule.h src/Rendering/Utilities/VulkanEnums.h src/Rendering/Utilities/Pipeline.cpp src/Rendering/Utilities/Pipeline.h src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "src/Utility Classes/NonCopyable.h" "src/Utility Classes/NonMovable.h" "src/Utility Classes/Macros.h"
-		src/Rendering/Vulkan/VkCore.cpp src/Rendering/Vulkan/VkCore.h src/Rendering/Vulkan/Classes/RenderTargetOutput.cpp src/Rendering/Vulkan/Classes/RenderTargetOutput.h src/Rendering/Vulkan/Classes/Swapchain.cpp src/Rendering/Vulkan/Classes/Swapchain.h "src/Utility Classes/NonCopyableNonMovable.h" src/Rendering/Vulkan/VkUniqueHandle.h)
+		src/Rendering/Renderer.cpp src/Rendering/Renderer.h src/Rendering/Vulkan/Classes/ShaderModule.cpp src/Rendering/Vulkan/Classes/ShaderModule.h src/Rendering/Utilities/VulkanEnums.h src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.cpp src/Rendering/Vulkan/VulkanPlatforms/VK_GLFW_PLATFORM.h "src/Utility Classes/NonCopyable.h" "src/Utility Classes/NonMovable.h" "src/Utility Classes/Macros.h"
+		src/Rendering/Vulkan/VkCore.cpp src/Rendering/Vulkan/VkCore.h src/Rendering/Vulkan/Classes/RenderTargetOutput.cpp src/Rendering/Vulkan/Classes/RenderTargetOutput.h src/Rendering/Vulkan/Classes/Swapchain.cpp src/Rendering/Vulkan/Classes/Swapchain.h "src/Utility Classes/NonCopyableNonMovable.h" src/Rendering/Vulkan/VkUniqueHandle.h src/Rendering/Vulkan/Classes/PipelineStateObject.cpp src/Rendering/Vulkan/Classes/PipelineStateObject.h src/Rendering/Classes/PipelineStateObjectManager.cpp src/Rendering/Classes/PipelineStateObjectManager.h src/Rendering/Classes/RenderPassManager.cpp src/Rendering/Classes/RenderPassManager.h src/Rendering/Vulkan/Classes/Renderpass.cpp src/Rendering/Vulkan/Classes/Renderpass.h)
 
 #Rendering/VulkanPlatforms/VK_XCB_PLATFORM.cpp Rendering/VulkanPlatforms/VK_XCB_PLATFORM.h
 

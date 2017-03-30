@@ -1,10 +1,10 @@
 //
-// Created by hindrik on 14-2-17.
+// Created by hindrik on 30-3-17.
 //
 
-#include "Pipeline.h"
+#include "PipelineStateObject.h"
 
-VkPipelineVertexInputStateCreateInfo Pipeline::defaultVertexInputState() {
+VkPipelineVertexInputStateCreateInfo PipelineStateObject::defaultVertexInputState() {
 
     VkPipelineVertexInputStateCreateInfo info   = {};
     info.sType                                  = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -17,7 +17,7 @@ VkPipelineVertexInputStateCreateInfo Pipeline::defaultVertexInputState() {
     return info;
 }
 
-VkPipelineInputAssemblyStateCreateInfo Pipeline::defaultInputAssemplyState() {
+VkPipelineInputAssemblyStateCreateInfo PipelineStateObject::defaultInputAssemplyState() {
 
     VkPipelineInputAssemblyStateCreateInfo info = {};
 
@@ -29,7 +29,7 @@ VkPipelineInputAssemblyStateCreateInfo Pipeline::defaultInputAssemplyState() {
     return info;
 }
 
-VkViewport Pipeline::defaultViewport(VkExtent2D& swapchainExtent) {
+VkViewport PipelineStateObject::defaultViewport(VkExtent2D& swapchainExtent) {
 
     VkViewport port = {};
 
@@ -43,7 +43,7 @@ VkViewport Pipeline::defaultViewport(VkExtent2D& swapchainExtent) {
     return port;
 }
 
-VkRect2D Pipeline::defaultScissorRectangle(VkExtent2D& swapchainExtent) {
+VkRect2D PipelineStateObject::defaultScissorRectangle(VkExtent2D& swapchainExtent) {
 
     VkRect2D rect = {};
     rect.offset = {0,0};
@@ -51,7 +51,7 @@ VkRect2D Pipeline::defaultScissorRectangle(VkExtent2D& swapchainExtent) {
     return rect;
 }
 
-VkPipelineViewportStateCreateInfo Pipeline::defaultViewPortState(VkViewport& viewport, VkRect2D& scissorRectangle) {
+VkPipelineViewportStateCreateInfo PipelineStateObject::defaultViewPortState(VkViewport& viewport, VkRect2D& scissorRectangle) {
 
     VkPipelineViewportStateCreateInfo info = {};
 
@@ -65,7 +65,7 @@ VkPipelineViewportStateCreateInfo Pipeline::defaultViewPortState(VkViewport& vie
     return info;
 }
 
-VkPipelineRasterizationStateCreateInfo Pipeline::defaultRasterizerState() {
+VkPipelineRasterizationStateCreateInfo PipelineStateObject::defaultRasterizerState() {
 
     VkPipelineRasterizationStateCreateInfo info = {};
 
@@ -86,7 +86,7 @@ VkPipelineRasterizationStateCreateInfo Pipeline::defaultRasterizerState() {
     return info;
 }
 
-VkPipelineMultisampleStateCreateInfo Pipeline::defaultMultisampleState() {
+VkPipelineMultisampleStateCreateInfo PipelineStateObject::defaultMultisampleState() {
 
     VkPipelineMultisampleStateCreateInfo info = {};
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -100,7 +100,7 @@ VkPipelineMultisampleStateCreateInfo Pipeline::defaultMultisampleState() {
     return info;
 }
 
-VkPipelineColorBlendAttachmentState Pipeline::defaultColorBlendAttachmentState() {
+VkPipelineColorBlendAttachmentState PipelineStateObject::defaultColorBlendAttachmentState() {
 
     VkPipelineColorBlendAttachmentState attachment = {};
     attachment.colorWriteMask =
@@ -119,7 +119,7 @@ VkPipelineColorBlendAttachmentState Pipeline::defaultColorBlendAttachmentState()
     return attachment;
 }
 
-VkPipelineColorBlendStateCreateInfo Pipeline::defaultColorBlendState(vector<VkPipelineColorBlendAttachmentState>& attachmentStates) {
+VkPipelineColorBlendStateCreateInfo PipelineStateObject::defaultColorBlendState(vector<VkPipelineColorBlendAttachmentState>& attachmentStates) {
 
     VkPipelineColorBlendStateCreateInfo info = {};
     info.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -135,7 +135,7 @@ VkPipelineColorBlendStateCreateInfo Pipeline::defaultColorBlendState(vector<VkPi
     return info;
 }
 
-VkPipelineDynamicStateCreateInfo Pipeline::defaultDynamicState() {
+VkPipelineDynamicStateCreateInfo PipelineStateObject::defaultDynamicState() {
 
     VkDynamicState defaultDynamicStates[] = {
             VK_DYNAMIC_STATE_VIEWPORT,
@@ -150,7 +150,7 @@ VkPipelineDynamicStateCreateInfo Pipeline::defaultDynamicState() {
     return info;
 }
 
-VkResult Pipeline::defaultPipelineLayout(VkPipelineLayout* layout, VkDevice device) {
+VkResult PipelineStateObject::defaultPipelineLayout(VkPipelineLayout* layout, VkDevice device) {
 
     VkPipelineLayoutCreateInfo info = {};
 
@@ -163,8 +163,7 @@ VkResult Pipeline::defaultPipelineLayout(VkPipelineLayout* layout, VkDevice devi
     return vkCreatePipelineLayout(device, &info, nullptr, layout);
 }
 
-VkPipelineDepthStencilStateCreateInfo Pipeline::defaultDepthStencilState() {
+VkPipelineDepthStencilStateCreateInfo PipelineStateObject::defaultDepthStencilState() {
     //TODO: IMPLEMENT
-	return VkPipelineDepthStencilStateCreateInfo();
+    return VkPipelineDepthStencilStateCreateInfo();
 }
-

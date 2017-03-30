@@ -15,6 +15,8 @@
 #else
 #include <bits/ios_base.h>
 #include <unistd.h>
+#include <cstring>
+
 #define GetCurrentDir getcwd
 #endif
 /*
@@ -49,11 +51,15 @@ ShaderModule::ShaderModule(const string& fileName, ShaderModuleType shaderType, 
 
     vector<char> data = readSpirFile(m_FileName);
 
+    //alignment
+    vector<uint32_t> alignedData(data.size() / sizeof(uint32_t) + 1);
+    memcpy(alignedData.data(), data.data(), data.size());
+
     VkShaderModuleCreateInfo info   = {};
     info.sType                      = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     info.pNext                      = nullptr;
     info.codeSize                   = static_cast<uint32_t >(data.size());
-    info.pCode                      = reinterpret_cast<uint32_t *>(data.data());
+    info.pCode                      = alignedData.data();
     info.flags                      = {};
 
     VkResult result = vkCreateShaderModule(m_Device, &info, nullptr, m_ShaderModule.reset());
