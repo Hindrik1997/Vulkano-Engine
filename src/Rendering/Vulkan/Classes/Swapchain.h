@@ -13,6 +13,8 @@ private:
     VkCore&                             m_VkCore;
     VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
     VkUniqueHandle<VkSurfaceKHR>        m_Surface;
+    vector<VkImage>                     m_SwapchainImages;
+    vector<VkUniqueHandle<VkImageView>> m_SwapchainImageViews;
 
     VkSurfaceFormatKHR  m_SurfaceFormat;
     VkPresentModeKHR    m_PresentMode;
@@ -25,6 +27,8 @@ public:
     Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface);
 public:
     auto        createSwapchain                 ()                                                                      -> void;
+    auto        retrieveSwapchainImages         ()                                                                      -> void;
+    auto        createSwapchainImageViews       ()                                                                      -> void;
 
     static auto fillSwapChainDetails            (VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)                 -> vk_swapchain_details;
     static auto checkSwapChainDetails           (const vk_swapchain_details &details)                                   -> bool;

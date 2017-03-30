@@ -9,13 +9,14 @@
 #include <string>
 #include "../VulkanPlatforms/VulkanPlatform.h"
 #include "../../Utilities/VulkanEnums.h"
+#include "../VkUniqueHandle.h"
 
 using std::vector;
 using std::string;
 
 class ShaderModule {
 private:
-    VkShaderModule                      m_ShaderModule      = VK_NULL_HANDLE;
+    VkUniqueHandle<VkShaderModule>      m_ShaderModule =    {m_Device, vkDestroyShaderModule};
     VkDevice                            m_Device            = VK_NULL_HANDLE;
     string                              m_FileName          = "";
     ShaderModuleType                    m_ShaderModuleType  = ShaderModuleType::Null;
@@ -23,8 +24,12 @@ private:
 public:
     ShaderModule(const string& fileName, ShaderModuleType shaderType, VkDevice device);
     ~ShaderModule();
-    ShaderModule (const ShaderModule& obj) = delete;
-    ShaderModule (ShaderModule&& obj);
+
+    ShaderModule (const ShaderModule&) = delete;
+    ShaderModule (ShaderModule&&)      = default;
+
+    ShaderModule& operator=(const ShaderModule&) = delete;
+    ShaderModule& operator=(ShaderModule&&) = default;
 
     static vector<char> readSpirFile(const string& fileName);
     static VkPipelineShaderStageCreateInfo createInfoStructure(const ShaderModule& module);

@@ -26,7 +26,8 @@ std::string GetCurrentWorkingDir() {
 } 
 */
 
-vector<char> ShaderModule::readSpirFile(const std::string &fileName) {
+auto ShaderModule::readSpirFile(const std::string &fileName) -> vector<char>
+{
 
     std::ifstream file("Shaders/" + fileName, std::ios::ate | std::ios::binary);
 
@@ -55,30 +56,19 @@ ShaderModule::ShaderModule(const string& fileName, ShaderModuleType shaderType, 
     info.pCode                      = reinterpret_cast<uint32_t *>(data.data());
     info.flags                      = {};
 
-    VkResult result = vkCreateShaderModule(m_Device, &info, nullptr, &m_ShaderModule);
+    VkResult result = vkCreateShaderModule(m_Device, &info, nullptr, m_ShaderModule.reset());
     if(result != VK_SUCCESS)
         throw std::runtime_error("Erorr creating shader module.");
 
     m_ShaderCreateInfo = createInfoStructure(*this);
 }
 
-ShaderModule::~ShaderModule() {
-    if(m_ShaderModule != VK_NULL_HANDLE)
-    {
-        vkDestroyShaderModule(m_Device, m_ShaderModule, nullptr);
-    }
+ShaderModule::~ShaderModule()
+{
 }
 
-ShaderModule::ShaderModule(ShaderModule&& obj) {
-    m_Device                = obj.m_Device;
-    m_ShaderModule          = obj.m_ShaderModule;
-    m_FileName              = obj.m_FileName;
-    m_ShaderModuleType      = obj.m_ShaderModuleType;
-    obj.m_ShaderModule      = VK_NULL_HANDLE;
-    obj.m_Device            = VK_NULL_HANDLE;
-}
-
-VkPipelineShaderStageCreateInfo ShaderModule::createInfoStructure(const ShaderModule& module) {
+auto ShaderModule::createInfoStructure(const ShaderModule& module) -> VkPipelineShaderStageCreateInfo
+{
 
     VkPipelineShaderStageCreateInfo info    = {};
     info.sType                              = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -93,22 +83,27 @@ VkPipelineShaderStageCreateInfo ShaderModule::createInfoStructure(const ShaderMo
     return info;
 }
 
-VkShaderModule ShaderModule::shaderModule() {
+auto ShaderModule::shaderModule() -> VkShaderModule
+{
     return m_ShaderModule;
 }
 
-string ShaderModule::fileName() {
+auto ShaderModule::fileName() -> string
+{
     return m_FileName;
 }
 
-VkDevice ShaderModule::device() {
+auto ShaderModule::device() -> VkDevice
+{
     return m_Device;
 }
 
-VkPipelineShaderStageCreateInfo ShaderModule::info() {
+auto ShaderModule::info() -> VkPipelineShaderStageCreateInfo
+{
     return m_ShaderCreateInfo;
 }
 
-ShaderModuleType ShaderModule::type() {
+auto ShaderModule::type() -> ShaderModuleType
+{
     return m_ShaderModuleType;
 }

@@ -14,6 +14,8 @@ Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue p
     m_Surface({surface, m_VkCore.instance(), vkDestroySurfaceKHR})
 {
     createSwapchain();
+    retrieveSwapchainImages();
+    createSwapchainImageViews();
 }
 
 
@@ -133,6 +135,47 @@ auto Swapchain::createSwapchain() -> void
 
     if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
         throw std::runtime_error("Error, failed to create swapchain!");
+    }
+}
+
+auto Swapchain::retrieveSwapchainImages() -> void
+{
+    uint32_t imageCount = 0;
+    vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, nullptr);
+    m_SwapchainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, m_SwapchainImages.data());
+}
+
+auto Swapchain::createSwapchainImageViews() -> void
+{
+    m_SwapchainImageViews.resize(m_SwapchainImages.size());
+
+    for(auto& imageView : m_SwapchainImageViews)
+    {
+        imageView = VkUniqueHandle<VkImageView>{m_VkCore.device(), vkDestroyImageView};
+    }
+
+    VkComponentMapping componentMapping = {};
+    componentMapping.a = componentMapping.b = componentMapping.g = componentMapping.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+    for(uint32_t i = 0; i < static_cast<uint32_t >(m_SwapchainImageViews.size()); ++i)
+    {
+        VkImageViewCreateInfo createInfo            = {};
+        createInfo.sType                            = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.pNext                            = nullptr;
+        createInfo.image                            = m_SwapchainImages[i];
+        createInfo.viewType                         = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format                           = m_SurfaceFormat.format;
+        createInfo.components                       = componentMapping;
+
+        createInfo.subresourceRange.aspectMask      = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel    = 0;
+        createInfo.subresourceRange.levelCount      = 1;
+        createInfo.subresourceRange.baseArrayLayer  = 0;
+        createInfo.subresourceRange.layerCount      = 1;
+
+        VkResult result = vkCreateImageView(m_VkCore.device(), &createInfo, nullptr, m_SwapchainImageViews[i].reset());
+        vkIfFailThrowMessage(result, "Error creating VkImageView for swapchain!");
     }
 }
 

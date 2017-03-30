@@ -69,19 +69,23 @@ public:
         m_Object = value;
     }
 
-
-    VkUniqueHandle(VkUniqueHandle&& other)
+    VkUniqueHandle(VkUniqueHandle<T>&& other) noexcept
     {
         cleanup();
         m_Object = other.release();
     }
 
-    VkUniqueHandle& operator=(VkUniqueHandle&& other)
+    VkUniqueHandle<T>& operator=(VkUniqueHandle<T>&& other) noexcept
     {
         cleanup();
         m_Object = other.release();
         return *this;
     };
+
+    VkUniqueHandle(const VkUniqueHandle<T>&) = delete;
+    VkUniqueHandle<T>& operator=(const VkUniqueHandle<T>&) = delete;
+
+
 
     ~VkUniqueHandle() {
         cleanup();
@@ -128,11 +132,13 @@ public:
 
     }
 
-    operator T() const {
+    operator T() const
+    {
         return m_Object;
     }
 
-    void operator=(T rhs) {
+    void operator=(T rhs)
+    {
         if (rhs != m_Object) {
             cleanup();
             m_Object = rhs;

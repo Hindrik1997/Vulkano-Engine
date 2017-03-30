@@ -9,7 +9,8 @@
 using std::tuple;
 using std::make_tuple;
 
-ostream& operator<<(ostream& o, VkPhysicalDeviceType& t) {
+auto operator<<(ostream& o, VkPhysicalDeviceType& t) -> ostream&
+{
     switch(t)
     {
         case VK_PHYSICAL_DEVICE_TYPE_OTHER:
@@ -34,7 +35,8 @@ ostream& operator<<(ostream& o, VkPhysicalDeviceType& t) {
     return o;
 }
 
-ostream& operator<<(ostream& o, VkPhysicalDeviceProperties& p) {
+auto operator<<(ostream& o, VkPhysicalDeviceProperties& p) -> ostream&
+{
 
     string vendorName = getVendorNameForID(p.vendorID);
 
@@ -52,7 +54,8 @@ ostream& operator<<(ostream& o, VkPhysicalDeviceProperties& p) {
     return o;
 }
 
-ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
+auto operator<<(ostream &o, VkQueueFamilyProperties p) -> ostream&
+{
 
     o << "------------QUEUE_FAMILY------------" << std::endl;
 
@@ -69,7 +72,7 @@ ostream &operator<<(ostream &o, VkQueueFamilyProperties p) {
     return o;
 }
 
-ostream& operator<<(ostream& o, vk_layer_extension_properties p)
+auto operator<<(ostream& o, vk_layer_extension_properties p) -> ostream&
 {
     o << "------------------------------LAYER PROPERTIES------------------------------" << std::endl;
     o << "Layer name: "                     << p.m_layerProperties.layerName                << std::endl;
@@ -91,7 +94,8 @@ ostream& operator<<(ostream& o, vk_layer_extension_properties p)
     return o;
 }
 
-ostream& operator<<(ostream &o, VkExtensionProperties p) {
+auto operator<<(ostream &o, VkExtensionProperties p) -> ostream&
+{
 
     o << "------------------------------EXTENSION PROPERTIES------------------------------" << std::endl;
     o << "Extension name: "         << p.extensionName  << std::endl;
@@ -101,7 +105,8 @@ ostream& operator<<(ostream &o, VkExtensionProperties p) {
     return o;
 }
 
-string getVendorNameForID(uint32_t id) {
+auto getVendorNameForID(uint32_t id) -> string
+{
     vector<tuple<uint32_t,string>> names =
             {
                     make_tuple(0x1002, "AMD"),
@@ -121,4 +126,10 @@ string getVendorNameForID(uint32_t id) {
     }
     std::cout << "No vendor found!" << std::endl;
     return std::to_string(id);
+}
+
+auto vkIfFailThrowMessage(VkResult result, std::string message) -> void
+{
+    if(result != VK_SUCCESS)
+        throw std::runtime_error(message);
 }

@@ -20,7 +20,7 @@ VkCore::~VkCore()
     cleanUpDebugFacilities();
 }
 
-void VkCore::vkInit(vk_core_create_info createInfo)
+auto VkCore::vkInit(vk_core_create_info createInfo) -> void
 {
     vkInitInstance(createInfo);
 
@@ -34,7 +34,7 @@ void VkCore::vkInit(vk_core_create_info createInfo)
     vkInitAssignQueues();
 }
 
-void VkCore::vkInitInstance(vk_core_create_info createInfo)
+auto VkCore::vkInitInstance(vk_core_create_info createInfo) -> void
 {
 
     VkResult result;
@@ -64,7 +64,7 @@ void VkCore::vkInitInstance(vk_core_create_info createInfo)
     vkIfFailThrowMessage(result, "Error creating VkInstance.");
 }
 
-void VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo)
+auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
 {
 
     VkResult                    result;
@@ -147,7 +147,7 @@ void VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo)
     }
 }
 
-void VkCore::vkInitLogicalDevice(vk_core_create_info createInfo)
+auto VkCore::vkInitLogicalDevice(vk_core_create_info createInfo) -> void
 {
 
     VkResult result;

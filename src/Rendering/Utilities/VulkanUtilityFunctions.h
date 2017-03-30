@@ -21,10 +21,7 @@ ostream& operator<<(ostream& o, vk_layer_extension_properties p);
 
 ostream& operator<<(ostream& o, VkExtensionProperties p);
 
-inline void vkIfFailThrowMessage(VkResult result, std::string message){
-    if(result != VK_SUCCESS)
-        throw std::runtime_error(message);
-}
+void vkIfFailThrowMessage(VkResult result, std::string message);
 
 string getVendorNameForID(uint32_t id);
 
