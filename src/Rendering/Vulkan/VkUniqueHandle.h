@@ -69,21 +69,21 @@ public:
         m_Object = value;
     }
 
-    VkUniqueHandle(VkUniqueHandle<T>&& other) noexcept
+    VkUniqueHandle(VkUniqueHandle&& other) noexcept
     {
         cleanup();
         m_Object = other.release();
     }
 
-    VkUniqueHandle<T>& operator=(VkUniqueHandle<T>&& other) noexcept
+    VkUniqueHandle& operator=(VkUniqueHandle&& other) noexcept
     {
         cleanup();
         m_Object = other.release();
         return *this;
     };
 
-    VkUniqueHandle(const VkUniqueHandle<T>&) = delete;
-    VkUniqueHandle<T>& operator=(const VkUniqueHandle<T>&) = delete;
+    VkUniqueHandle(const VkUniqueHandle&) = delete;
+    VkUniqueHandle& operator=(const VkUniqueHandle&) = delete;
 
 
 

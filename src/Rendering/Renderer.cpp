@@ -37,9 +37,11 @@ auto Renderer::processAPI(float deltaTime) -> bool
 
 Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
-    m_Outputs.emplace_back(1280, 800, m_VkCore, m_Platform);
+    m_Outputs.emplace_back(RenderTargetOutput(1280, 800, m_VkCore,m_Platform));
 }
 
 Renderer::~Renderer()
 {
 }
+
+

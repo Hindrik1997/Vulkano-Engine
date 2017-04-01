@@ -8,6 +8,8 @@
 #include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "Vulkan/VkCore.h"
 #include "Vulkan/Classes/RenderTargetOutput.h"
+#include "Classes/VulkanPipelineManager.h"
+#include "Classes/ManagedTargetOutput.h"
 
 const bool enableDebugLayers =
 #ifdef NDEBUG
@@ -33,12 +35,11 @@ static vector<const char*> enabledDeviceExtensions = {
 };
 
 
-
 class Renderer : NonCopyableNonMovable {
 private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
-    vector<RenderTargetOutput> m_Outputs;
+    vector<ManagedTargetOutput> m_Outputs;
 public:
     Renderer();
     ~Renderer();

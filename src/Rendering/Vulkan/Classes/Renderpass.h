@@ -10,7 +10,7 @@
 
 using std::vector;
 
-class Renderpass : NonCopyable
+class Renderpass
 {
 private:
     VkUniqueHandle<VkRenderPass>    m_Renderpass;
@@ -20,6 +20,9 @@ public:
 
     Renderpass(Renderpass&&)            = default;
     Renderpass& operator=(Renderpass&&) = default;
+
+    Renderpass(const Renderpass&) = delete;
+    Renderpass& operator=(const Renderpass&) = delete;
 };
 
 

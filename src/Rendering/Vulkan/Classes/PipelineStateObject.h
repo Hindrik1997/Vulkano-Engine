@@ -17,7 +17,7 @@ public:
     PipelineStateObject(PipelineStateObject&&)              = default;
     PipelineStateObject& operator=(PipelineStateObject&&)   = default;
 
-    
+
 
 
 
