@@ -14,11 +14,11 @@
 using std::vector;
 using std::string;
 
-class ShaderModule : NonCopyable
+class ShaderModule final : NonCopyable
 {
 private:
-    VkUniqueHandle<VkShaderModule>      m_ShaderModule      = {m_Device, vkDestroyShaderModule};
     VkDevice                            m_Device            = VK_NULL_HANDLE;
+    VkUniqueHandle<VkShaderModule>      m_ShaderModule      = {m_Device, vkDestroyShaderModule};
     string                              m_FileName          = "";
     ShaderModuleType                    m_ShaderModuleType  = ShaderModuleType::Null;
     VkPipelineShaderStageCreateInfo     m_ShaderCreateInfo  = {};

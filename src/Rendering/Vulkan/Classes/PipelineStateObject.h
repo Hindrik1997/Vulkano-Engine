@@ -8,8 +8,10 @@
 #include "../VulkanPlatforms/VulkanPlatform.h"
 #include "../../../Utility Classes/NonCopyable.h"
 
-class PipelineStateObject : NonCopyable
+class PipelineStateObject final : NonCopyable
 {
+private:
+    
 public:
     PipelineStateObject()   = delete;
     ~PipelineStateObject()  = default;

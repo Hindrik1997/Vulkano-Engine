@@ -4,5 +4,5 @@
 .idea/workspace.xml
 cmake-build-debug/
 .vs
-.vs
+.idea
 CMakeSettings.json

@@ -15,7 +15,7 @@
 using std::vector;
 using std::string;
 
-class VkCore : public NonCopyable
+class VkCore final : NonCopyable
 {
 private:
     bool                                    m_IsDebugEnabled                                = false;
@@ -34,6 +34,12 @@ private:
 public:
     VkCore                                  (vk_core_create_info createInfo);
     ~VkCore                                 ();
+
+    VkCore(const VkCore&) = delete;
+    VkCore(VkCore&&) = delete;
+
+    VkCore& operator=(const VkCore&) = delete;
+    VkCore& operator=(VkCore&&) = delete;
 private:
     auto vkInit                             (vk_core_create_info createInfo)                                -> void;
     auto vkInitInstance                     (vk_core_create_info createInfo)                                -> void;

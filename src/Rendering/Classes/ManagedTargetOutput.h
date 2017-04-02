@@ -10,16 +10,46 @@
 #include "../Vulkan/Classes/PipelineStateObject.h"
 #include "../Vulkan/Classes/Renderpass.h"
 
-struct ManagedTargetOutput : NonCopyable
+class ManagedTargetOutput final : NonCopyable
 {
-    RenderTargetOutput      m_Output;
+private:
     VulkanPipelineManager   m_Manager;
-
+public:
     ManagedTargetOutput(RenderTargetOutput&& output);
+
+    ManagedTargetOutput(const ManagedTargetOutput&) = delete;
+    ManagedTargetOutput& operator=(const ManagedTargetOutput&) = delete;
 
     ManagedTargetOutput(ManagedTargetOutput&&) = default;
     ManagedTargetOutput& operator=(ManagedTargetOutput&&) = default;
+
+
+    template<typename ...Args>
+    uint16_t getNewRenderpass(Args... args);
+
+    template<typename ...Args>
+    uint16_t getNewPipelineStateObject(Args... args);
+
+    Renderpass& getRenderpass(uint16_t handle);
+    PipelineStateObject& getPipelineStateObject(uint16_t handle);
+
+    Swapchain& swapchain();
+
+
+
+
 };
 
+template<typename ...Args>
+uint16_t ManagedTargetOutput::getNewPipelineStateObject(Args... args)
+{
+    return m_Manager.getNewPipelineStateObject(args...);
+}
+
+template<typename ...Args>
+uint16_t ManagedTargetOutput::getNewRenderpass(Args... args)
+{
+    return m_Manager.getNewRenderpass(args...);
+}
 
 #endif //VULKANOENGINE_MANAGEDTARGETOUTPUT_H

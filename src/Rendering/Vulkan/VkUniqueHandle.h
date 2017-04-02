@@ -15,70 +15,54 @@ template <typename T>
 class VkUniqueHandle : NonCopyable
 {
 private:
-    T m_Object {VK_NULL_HANDLE};
-    std::function<void(T)> m_Deleter;
+    T m_Object                  = VK_NULL_HANDLE;
+    function<void(T)> m_Deleter = nullptr;
 public:
-    VkUniqueHandle() : VkUniqueHandle([](T, VkAllocationCallbacks*) {}) {}
+    VkUniqueHandle() = default;
 
-    VkUniqueHandle(std::function<void(T, VkAllocationCallbacks*)> deletef)
+    VkUniqueHandle(function<void(T,VkAllocationCallbacks*)> deletef)
     {
-        this->m_Deleter = [=](T obj) { deletef(obj, nullptr); };
+        m_Deleter = [deletef](T obj){ deletef(obj, nullptr); };
     }
 
-    VkUniqueHandle(const VkUniqueHandle<VkInstance>& instance, std::function<void(VkInstance, T, VkAllocationCallbacks*)> deletef)
+    VkUniqueHandle(VkInstance instance, function<void(VkInstance,T,VkAllocationCallbacks*)> deletef)
     {
-        this->m_Deleter = [&instance, deletef](T obj) { deletef(instance, obj, nullptr); };
+        m_Deleter = [instance,deletef](T obj){ deletef(instance,obj, nullptr); };
     }
 
-    VkUniqueHandle(const VkUniqueHandle<VkDevice>& device, std::function<void(VkDevice, T, VkAllocationCallbacks*)> deletef)
+    VkUniqueHandle(VkDevice device, function<void(VkDevice,T,VkAllocationCallbacks*)> deletef)
     {
-        this->m_Deleter = [&device, deletef](T obj) { deletef(device, obj, nullptr); };
+        m_Deleter = [device,deletef](T obj){ deletef(device,obj, nullptr); };
     }
 
-    VkUniqueHandle(const VkInstance& instance, std::function<void(VkInstance, T, VkAllocationCallbacks*)> deletef)
+    VkUniqueHandle(T value, VkInstance instance, function<void(VkInstance,T,VkAllocationCallbacks*)> deletef)
     {
-        this->m_Deleter = [&instance, deletef](T obj) { deletef(instance, obj, nullptr); };
-    }
-
-    VkUniqueHandle(const VkDevice& device, std::function<void(VkDevice, T, VkAllocationCallbacks*)> deletef)
-    {
-        this->m_Deleter = [&device, deletef](T obj) { deletef(device, obj, nullptr); };
-    }
-
-    VkUniqueHandle(const T& value, const VkInstance& instance, std::function<void(VkInstance, T, VkAllocationCallbacks*)> deletef)
-    {
-        this->m_Deleter = [&instance, deletef](T obj) { deletef(instance, obj, nullptr); };
+        m_Deleter = [instance,deletef](T obj){ deletef(instance,obj, nullptr); };
         m_Object = value;
     }
 
-    VkUniqueHandle(const T& value, const VkDevice& device, std::function<void(VkDevice, T, VkAllocationCallbacks*)> deletef)
+    VkUniqueHandle(T value, VkDevice device, function<void(VkDevice,T,VkAllocationCallbacks*)> deletef)
     {
-        this->m_Deleter = [&device, deletef](T obj) { deletef(device, obj, nullptr); };
-        m_Object = value;
-    }
-
-    VkUniqueHandle(const T& value, const VkUniqueHandle<VkInstance>& instance, std::function<void(VkInstance, T, VkAllocationCallbacks*)> deletef)
-    {
-        this->m_Deleter = [&instance, deletef](T obj) { deletef(instance, obj, nullptr); };
-        m_Object = value;
-    }
-
-    VkUniqueHandle(const T& value, const VkUniqueHandle<VkDevice>& device, std::function<void(VkDevice, T, VkAllocationCallbacks*)> deletef)
-    {
-        this->m_Deleter = [&device, deletef](T obj) { deletef(device, obj, nullptr); };
+        m_Deleter = [device,deletef](T obj){ deletef(device,obj, nullptr); };
         m_Object = value;
     }
 
     VkUniqueHandle(VkUniqueHandle&& other) noexcept
     {
         cleanup();
-        m_Object = other.release();
+        m_Object = std::move(other.m_Object);
+        m_Deleter = std::move(other.m_Deleter);
+        other.m_Deleter = nullptr;
+        other.m_Object = VK_NULL_HANDLE;
     }
 
     VkUniqueHandle& operator=(VkUniqueHandle&& other) noexcept
     {
         cleanup();
-        m_Object = other.release();
+        m_Object = std::move(other.m_Object);
+        m_Deleter = std::move(other.m_Deleter);
+        other.m_Deleter = nullptr;
+        other.m_Object = VK_NULL_HANDLE;
         return *this;
     };
 
@@ -124,12 +108,14 @@ public:
         return &m_Object;
     }
 
-    void swap(VkUniqueHandle<T>& other)
+    void swap(VkUniqueHandle& other)
     {
         T oldHandle = m_Object;
+        function<void(T)> f = m_Deleter;
         m_Object = other.release();
+        m_Deleter = other.m_Deleter;
         other.reset(oldHandle);
-
+        other.m_Deleter = f;
     }
 
     operator T() const

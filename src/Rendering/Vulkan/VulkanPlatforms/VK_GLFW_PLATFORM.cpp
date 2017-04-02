@@ -9,11 +9,6 @@
 
 using std::string;
 
-VkResult VK_GLFW_PLATFORM::CreateSurface(VkInstance instance, VkSurfaceKHR& surface) {
-
-    return glfwCreateWindowSurface(instance, m_Window, nullptr, &surface);
-}
-
 VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
 
     glfwInit();
@@ -90,4 +85,9 @@ VkResult VK_GLFW_PLATFORM::createSurface(VkInstance instance, VkSurfaceKHR& surf
 
     GLFWwindow* window = m_Windows[handle];
     return glfwCreateWindowSurface(instance, window, nullptr, &surface);
+}
+
+VK_GLFW_PLATFORM::~VK_GLFW_PLATFORM()
+{
+    glfwTerminate();
 }

@@ -10,7 +10,7 @@
 
 using std::vector;
 
-class Renderpass
+class Renderpass final
 {
 private:
     VkUniqueHandle<VkRenderPass>    m_Renderpass;

@@ -10,12 +10,12 @@ Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue p
     m_Height(height),
     m_Width(width),
     m_VkCore(vkCore),
-    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR}),
-    m_Surface({surface, m_VkCore.instance(), vkDestroySurfaceKHR})
+    m_Surface(surface),
+    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR})
 {
-    createSwapchain();
-    retrieveSwapchainImages();
-    createSwapchainImageViews();
+    //createSwapchain();
+    //retrieveSwapchainImages();
+    //createSwapchainImageViews();
 }
 
 
@@ -117,6 +117,7 @@ auto Swapchain::createSwapchain() -> void
     VkSwapchainCreateInfoKHR createInfo = {};
 
     createInfo.sType                    = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface                  = m_Surface;
     createInfo.pNext                    = nullptr;
     createInfo.minImageCount            = imageCount;
     createInfo.imageFormat              = m_SurfaceFormat.format;
@@ -150,11 +151,6 @@ auto Swapchain::createSwapchainImageViews() -> void
 {
     m_SwapchainImageViews.resize(m_SwapchainImages.size());
 
-    for(auto& imageView : m_SwapchainImageViews)
-    {
-        imageView = VkUniqueHandle<VkImageView>{m_VkCore.device(), vkDestroyImageView};
-    }
-
     VkComponentMapping componentMapping = {};
     componentMapping.a = componentMapping.b = componentMapping.g = componentMapping.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 
@@ -174,9 +170,32 @@ auto Swapchain::createSwapchainImageViews() -> void
         createInfo.subresourceRange.baseArrayLayer  = 0;
         createInfo.subresourceRange.layerCount      = 1;
 
-        VkResult result = vkCreateImageView(m_VkCore.device(), &createInfo, nullptr, m_SwapchainImageViews[i].reset());
+        VkImageView view;
+
+        VkResult result = vkCreateImageView(m_VkCore.device(), &createInfo, nullptr, &view);
         vkIfFailThrowMessage(result, "Error creating VkImageView for swapchain!");
+        m_SwapchainImageViews[i] = VkUniqueHandle<VkImageView>(view, m_VkCore.device(), vkDestroyImageView);
     }
+}
+
+VkSwapchainKHR Swapchain::swapchain()
+{
+    return m_Swapchain;
+}
+
+VkSurfaceFormatKHR Swapchain::surfaceFormat()
+{
+    return m_SurfaceFormat;
+}
+
+VkPresentModeKHR Swapchain::presentMode()
+{
+    return m_PresentMode;
+}
+
+VkExtent2D Swapchain::extent2D()
+{
+    return m_Extent;
 }
 
 

@@ -12,6 +12,9 @@ VkCore::VkCore(vk_core_create_info createInfo)
     checkLayersAndInstanceExtensionsSupport(createInfo);
     vkInit(createInfo);
     Console::printLine("Initialized Vulkan API succesfully.");
+    m_IsDebugEnabled = createInfo.m_EnableDebugLayers;
+    if(m_IsDebugEnabled)
+        setupDebugFacilities();
 }
 
 VkCore::~VkCore()
@@ -296,7 +299,6 @@ auto VkCore::cleanUpDebugFacilities() -> void
 {
     if(m_IsDebugEnabled)
     {
-
         VkResult result = destroyDebugReportCallbackEXT(m_Instance, m_DebugCallback, NULL);
         if(result  != VK_SUCCESS)
             Console::printLine("Error when destroying debug reporter callback.");

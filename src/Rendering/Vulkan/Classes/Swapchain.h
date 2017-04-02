@@ -8,11 +8,11 @@
 #include "../VulkanPlatforms/VulkanPlatform.h"
 #include "../VkCore.h"
 
-class Swapchain : NonCopyable {
+class Swapchain final : NonCopyable {
 private:
     VkCore&                             m_VkCore;
+    VkSurfaceKHR                        m_Surface;
     VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
-    VkUniqueHandle<VkSurfaceKHR>        m_Surface;
     vector<VkImage>                     m_SwapchainImages;
     vector<VkUniqueHandle<VkImageView>> m_SwapchainImageViews;
 
@@ -36,6 +36,11 @@ public:
     static auto pickSwapChainPresentMode        (const vk_swapchain_details& details)                                   -> VkPresentModeKHR;
     static auto pickSwapChainExtent2D           (const vk_swapchain_details& details, uint32_t width, uint32_t height)  -> VkExtent2D;
 
+public:
+    VkSwapchainKHR      swapchain();
+    VkSurfaceFormatKHR  surfaceFormat();
+    VkPresentModeKHR    presentMode();
+    VkExtent2D          extent2D();
 };
 
 

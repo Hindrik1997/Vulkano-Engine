@@ -10,7 +10,7 @@
 #include "../Rendering/Renderer.h"
 #include "../Utility Classes/NonCopyableNonMovable.h"
 
-class Engine : NonCopyableNonMovable {
+class Engine final : NonCopyableNonMovable {
 public:
     Engine();
     ~Engine();
