@@ -22,7 +22,6 @@ private:
     vk_queue                        m_PresentQueue      = {};
 
     unique_ptr<Swapchain>           m_CurrentSwapchain;
-    //unique_ptr<Swapchain>           m_OldSwapchain;
 public:
     RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue);
     RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);

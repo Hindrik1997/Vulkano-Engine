@@ -167,3 +167,8 @@ VkPipelineDepthStencilStateCreateInfo PipelineStateObject::defaultDepthStencilSt
     //TODO: IMPLEMENT
     return VkPipelineDepthStencilStateCreateInfo();
 }
+
+VkPipeline PipelineStateObject::pipeline()
+{
+    return m_Pipeline;
+}

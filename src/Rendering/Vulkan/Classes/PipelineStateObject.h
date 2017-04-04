@@ -7,11 +7,12 @@
 
 #include "../VulkanPlatforms/VulkanPlatform.h"
 #include "../../../Utility Classes/NonCopyable.h"
+#include "../VkUniqueHandle.h"
 
 class PipelineStateObject final : NonCopyable
 {
 private:
-    
+    VkUniqueHandle<VkPipeline> m_Pipeline;
 public:
     PipelineStateObject()   = delete;
     ~PipelineStateObject()  = default;
@@ -19,11 +20,7 @@ public:
     PipelineStateObject(PipelineStateObject&&)              = default;
     PipelineStateObject& operator=(PipelineStateObject&&)   = default;
 
-
-
-
-
-
+    VkPipeline pipeline();
 public:
     static VkPipelineVertexInputStateCreateInfo     defaultVertexInputState();
     static VkPipelineInputAssemblyStateCreateInfo   defaultInputAssemplyState();
