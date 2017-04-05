@@ -23,6 +23,8 @@ public:
 
     Renderpass(const Renderpass&) = delete;
     Renderpass& operator=(const Renderpass&) = delete;
+
+    VkRenderPass renderpass();
 };
 
 

@@ -302,6 +302,8 @@ auto VkCore::cleanUpDebugFacilities() -> void
         VkResult result = destroyDebugReportCallbackEXT(m_Instance, m_DebugCallback, NULL);
         if(result  != VK_SUCCESS)
             Console::printLine("Error when destroying debug reporter callback.");
+        else
+            Console::printLine("Succefully cleaned up debug facilities!");
     }
 }
 

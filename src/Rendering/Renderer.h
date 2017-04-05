@@ -10,6 +10,7 @@
 #include "Vulkan/Classes/RenderTargetOutput.h"
 #include "Classes/VulkanPipelineManager.h"
 #include "Classes/ManagedTargetOutput.h"
+#include "RenderModes/RenderMode.h"
 
 const bool enableDebugLayers =
 #ifdef NDEBUG
@@ -40,13 +41,15 @@ private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
     vector<ManagedTargetOutput> m_Outputs;
+    unique_ptr<RenderMode>      m_RenderMode;
 public:
     Renderer();
+    Renderer(RenderMode* renderMode);
     ~Renderer();
 public:
     void render(float deltaTime);
     bool processAPI(float deltaTime);
-
+    RenderMode* assignRenderMode(RenderMode* mode);
 
 
 

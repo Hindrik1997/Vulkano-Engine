@@ -26,7 +26,7 @@ auto Renderer::render(float deltaTime) -> void
 {
     for(const auto& output : m_Outputs)
     {
-
+        m_RenderMode->render(output, deltaTime);
     }
 }
 
@@ -35,36 +35,34 @@ auto Renderer::processAPI(float deltaTime) -> bool
     return m_Platform.processAPI(deltaTime);
 }
 
-Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
+Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform)), m_RenderMode(new NullRenderMode())
 {
+    m_RenderMode->initialize();
+
     m_Outputs.emplace_back(RenderTargetOutput(1280, 800, m_VkCore,m_Platform));
 
-    //ManagedTargetOutput& targetOutput = m_Outputs.back();
-
-    //Swapchain& swapchain = targetOutput.swapchain();
-
-    VkAttachmentDescription colorAttachment = {};
-    //colorAttachment.format = swapchain.surfaceFormat().format;
-    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-
-
-    //targetOutput.getNewRenderpass();
-
-
-
-
+    ManagedTargetOutput& output = m_Outputs.back();
 
 }
 
 Renderer::~Renderer()
 {
+}
+
+RenderMode* Renderer::assignRenderMode(RenderMode *mode)
+{
+    RenderMode* md = m_RenderMode.release();
+    m_RenderMode.reset(mode);
+    return md;
+}
+
+Renderer::Renderer(RenderMode *renderMode) : m_VkCore(fill_vk_core_create_info(m_Platform)), m_RenderMode(renderMode)
+{
+    m_RenderMode->initialize();
+
+    m_Outputs.emplace_back(RenderTargetOutput(1280, 800, m_VkCore,m_Platform));
+
+    ManagedTargetOutput& output = m_Outputs.back();
 }
 
 
