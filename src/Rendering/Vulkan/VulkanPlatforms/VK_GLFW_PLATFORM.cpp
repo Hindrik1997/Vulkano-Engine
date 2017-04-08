@@ -20,26 +20,6 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
 
 }
 
-bool VK_GLFW_PLATFORM::processAPI(GLFWwindow* window, float deltaTime) {
-
-    bool shouldClose = glfwWindowShouldClose(window) > 0;
-    if(shouldClose)
-        return false;
-
-    glfwPollEvents();
-
-    if(deltaTime > 0.0f)
-    {
-        float fps = 1000.0f / deltaTime;
-        string c = "Vulkano Engine ";
-        c.append(std::to_string(static_cast<int>(fps)));
-        c.append(" FPS");
-        glfwSetWindowTitle(window, c.c_str());
-    }
-
-    return true;
-}
-
 void VK_GLFW_PLATFORM::ProcessExtensions(vector<const char *>& instanceExtensions) {
     uint32_t glfwExtensionCount = 0;
     const char** extensions;
@@ -71,16 +51,6 @@ WindowHandle VK_GLFW_PLATFORM::createWindow(uint32_t windowWidth, uint32_t windo
     return handle;
 }
 
-bool VK_GLFW_PLATFORM::processAPI(float deltaTime) {
-
-    for(GLFWwindow* window : m_Windows)
-    {
-        if(!processAPI(window,deltaTime))
-            return false;
-    }
-    return true;
-}
-
 VkResult VK_GLFW_PLATFORM::createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle) {
 
     GLFWwindow* window = m_Windows[handle];
@@ -90,4 +60,32 @@ VkResult VK_GLFW_PLATFORM::createSurface(VkInstance instance, VkSurfaceKHR& surf
 VK_GLFW_PLATFORM::~VK_GLFW_PLATFORM()
 {
     glfwTerminate();
+}
+
+bool VK_GLFW_PLATFORM::processAPI(WindowHandle window, float deltaTime)
+{
+    GLFWwindow* pointer = m_Windows[static_cast<uint16_t >(window)];
+    bool shouldClose = glfwWindowShouldClose(pointer) > 0;
+    if(shouldClose)
+        return false;
+
+    glfwPollEvents();
+
+    if(deltaTime > 0.0f)
+    {
+        float fps = 1000.0f / deltaTime;
+        string c = "Vulkano Engine ";
+        c.append(std::to_string(static_cast<int>(fps)));
+        c.append(" FPS");
+        glfwSetWindowTitle(pointer, c.c_str());
+    }
+
+    return true;
+}
+
+void VK_GLFW_PLATFORM::destroyWindow(WindowHandle handle)
+{
+    GLFWwindow* pointer = m_Windows[static_cast<uint16_t >(handle)];
+    glfwDestroyWindow(pointer);
+    m_Windows.removeItem(static_cast<uint16_t >(handle));
 }

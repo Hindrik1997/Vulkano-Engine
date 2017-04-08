@@ -4,6 +4,7 @@
 
 #include <limits>
 #include "Renderer.h"
+#include "RenderModes/ForwardRenderMode.h"
 
 auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 {
@@ -26,43 +27,37 @@ auto Renderer::render(float deltaTime) -> void
 {
     for(const auto& output : m_Outputs)
     {
-        m_RenderMode->render(output, deltaTime);
+        output.render(deltaTime);
     }
 }
 
 auto Renderer::processAPI(float deltaTime) -> bool
 {
-    return m_Platform.processAPI(deltaTime);
-}
+    vector<bool> bools(m_Outputs.size());
 
-Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform)), m_RenderMode(new NullRenderMode())
-{
-    m_RenderMode->initialize();
+    vector<size_t> removeIndices;
 
-    m_Outputs.emplace_back(RenderTargetOutput(1280, 800, m_VkCore,m_Platform));
-
-    ManagedTargetOutput& output = m_Outputs.back();
-
+    for(size_t i = m_Outputs.size(); i-- > 0;)
+    {
+        bool j = m_Outputs[i].processAPI(deltaTime);
+        if(!j)
+        {
+            m_Outputs.erase(m_Outputs.begin() + i);
+        }
+    }
+    return m_Outputs.size() != 0;
 }
 
 Renderer::~Renderer()
 {
 }
 
-RenderMode* Renderer::assignRenderMode(RenderMode *mode)
+Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
-    RenderMode* md = m_RenderMode.release();
-    m_RenderMode.reset(mode);
-    return md;
-}
+    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(1280, 800, m_VkCore, m_Platform)));
+    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(1280, 800, m_VkCore, m_Platform)));
 
-Renderer::Renderer(RenderMode *renderMode) : m_VkCore(fill_vk_core_create_info(m_Platform)), m_RenderMode(renderMode)
-{
-    m_RenderMode->initialize();
 
-    m_Outputs.emplace_back(RenderTargetOutput(1280, 800, m_VkCore,m_Platform));
-
-    ManagedTargetOutput& output = m_Outputs.back();
 }
 
 

@@ -26,12 +26,12 @@ public:
     ~VK_GLFW_PLATFORM();
 public:
     WindowHandle createWindow(uint32_t windowWidth, uint32_t windowHeight, string windowTitle);
+    void destroyWindow(WindowHandle handle);
 
     VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle);
 
     void ProcessExtensions(vector<const char*>& instanceExtensions);
-    bool processAPI(float deltaTime);
-    bool processAPI(GLFWwindow* window, float deltaTime);
+    bool processAPI(WindowHandle window, float deltaTime);
 };
 
 

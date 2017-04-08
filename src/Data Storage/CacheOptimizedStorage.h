@@ -82,7 +82,7 @@ void CacheOptimizedStorage<T, SIZE>::removeItem(const uint16_t nonMappedIndex) {
 
         //laatste moven en index setten
         m_Indices[mappedLastIndex] = mappedIndex;
-        m_Items[mappedIndex] = std::move(m_Items[nonMappedLastIndex]);
+        m_Items[mappedIndex].m_Object.m_Object = std::move(m_Items[nonMappedLastIndex].m_Object.m_Object);
 
         m_InUseCounter--;
     }

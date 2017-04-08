@@ -1,42 +1,28 @@
 //
-// Created by hindrik on 26-3-17.
+// Created by hindrik on 8-4-17.
 //
 
 #ifndef VULKANOENGINE_RENDERTARGETOUTPUT_H
 #define VULKANOENGINE_RENDERTARGETOUTPUT_H
 
-#include "../VulkanPlatforms/VulkanPlatform.h"
-#include "../VkCore.h"
-#include "Swapchain.h"
+#include "RenderMode.h"
 #include <memory>
 
-using std::make_unique;
 using std::unique_ptr;
 
-class RenderTargetOutput final : NonCopyable {
-private:
-    VkCore&                         m_VkCore;
-    VK_PLATFORM&                    m_Platform;
-    WindowHandle                    m_Window;
-    VkUniqueHandle<VkSurfaceKHR>    m_Surface;
-    vk_queue                        m_PresentQueue      = {};
+class RenderTarget;
 
-    unique_ptr<Swapchain>           m_CurrentSwapchain;
-public:
-    RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue);
-    RenderTargetOutput(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);
-    ~RenderTargetOutput();
-
-    RenderTargetOutput(RenderTargetOutput&&) = default;
-    RenderTargetOutput& operator=(RenderTargetOutput&&) = default;
-public:
-    VkSurfaceKHR surface();
-    Swapchain&   swapchain();
+class RenderTargetOutput
+{
 private:
-    void            createSwapchain(uint32_t width, uint32_t height);
-    static VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle, VK_PLATFORM& platform);
-    static vk_queue getPresentCapableQueue(VkSurfaceKHR surface, VkCore& vkCore);
+    unique_ptr<RenderMode> m_RenderMode;
+public:
+    RenderTargetOutput(RenderMode* renderMode);
+public:
+    void render(float deltaTime) const;
+    bool processAPI(float deltaTime) const;
 };
+
 
 
 #endif //VULKANOENGINE_RENDERTARGETOUTPUT_H

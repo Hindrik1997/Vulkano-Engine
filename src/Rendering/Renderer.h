@@ -7,10 +7,8 @@
 
 #include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
 #include "Vulkan/VkCore.h"
+#include "../Utility Classes/NonCopyableNonMovable.h"
 #include "Vulkan/Classes/RenderTargetOutput.h"
-#include "Classes/VulkanPipelineManager.h"
-#include "Classes/ManagedTargetOutput.h"
-#include "RenderModes/RenderMode.h"
 
 const bool enableDebugLayers =
 #ifdef NDEBUG
@@ -40,16 +38,13 @@ class Renderer final : NonCopyableNonMovable {
 private:
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
-    vector<ManagedTargetOutput> m_Outputs;
-    unique_ptr<RenderMode>      m_RenderMode;
+    vector<RenderTargetOutput> m_Outputs;
 public:
     Renderer();
-    Renderer(RenderMode* renderMode);
     ~Renderer();
 public:
     void render(float deltaTime);
     bool processAPI(float deltaTime);
-    RenderMode* assignRenderMode(RenderMode* mode);
 
 
 
