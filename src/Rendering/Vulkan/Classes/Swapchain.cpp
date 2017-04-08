@@ -13,9 +13,9 @@ Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue p
     m_Surface(surface),
     m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR})
 {
-    //createSwapchain();
-    //retrieveSwapchainImages();
-    //createSwapchainImageViews();
+    createSwapchain();
+    retrieveSwapchainImages();
+    createSwapchainImageViews();
 }
 
 

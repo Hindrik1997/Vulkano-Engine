@@ -8,19 +8,28 @@
 
 #include "../Vulkan/Classes/RenderMode.h"
 #include "../Vulkan/Classes/RenderTarget.h"
+#include "../Classes/RenderpassResourceManager.h"
 
-class ForwardRenderMode : public RenderMode
+class ForwardRenderMode final : public RenderMode
 {
 private:
-
-
+    CacheOptimizedStorage<RenderpassResourceManager, 128> m_Renderpasses;
 public:
     ForwardRenderMode(RenderTarget&& target);
-public:
-    void initialize() override;
+    ~ForwardRenderMode() = default;
 
+    ForwardRenderMode(const ForwardRenderMode&) = delete;
+    ForwardRenderMode& operator=(const ForwardRenderMode&) = delete;
+
+    ForwardRenderMode(ForwardRenderMode&&) = default;
+    ForwardRenderMode& operator=(ForwardRenderMode&&) = default;
+
+public:
     void render(float deltaTime) override;
 
+
+private:
+    uint16_t createDefaultRenderpass();
 };
 
 

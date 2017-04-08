@@ -18,5 +18,3 @@ bool RenderTargetOutput::processAPI(float deltaTime) const
 {
     return m_RenderMode->processAPI(deltaTime);
 }
-
-

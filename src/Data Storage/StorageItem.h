@@ -6,6 +6,7 @@
 #define VULKANO_ENGINE_STORAGEITEM_H
 
 #include "../Utility Classes/NonCopyable.h"
+#include <utility>
 
 template<typename T>
 class StorageItem final
@@ -60,8 +61,8 @@ template<typename T>
 template<typename... Args>
 void StorageItem<T>::reset(Args... arguments)
 {
-    void* tVoid = &m_Object.m_Object;
-    new (tVoid) T(arguments...);
+    void* tVoid = &(m_Object.m_Object);
+    new (tVoid) T(std::move(arguments)...);
 }
 
 #endif //VULKANO_ENGINE_STORAGEITEM_H

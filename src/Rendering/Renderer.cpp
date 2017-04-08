@@ -42,7 +42,7 @@ auto Renderer::processAPI(float deltaTime) -> bool
         bool j = m_Outputs[i].processAPI(deltaTime);
         if(!j)
         {
-            m_Outputs.erase(m_Outputs.begin() + i);
+            m_Outputs.erase(m_Outputs.end() - i);
         }
     }
     return m_Outputs.size() != 0;
@@ -55,9 +55,6 @@ Renderer::~Renderer()
 Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
     m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(1280, 800, m_VkCore, m_Platform)));
-    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(1280, 800, m_VkCore, m_Platform)));
-
-
 }
 
 

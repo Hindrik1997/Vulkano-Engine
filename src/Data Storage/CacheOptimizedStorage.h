@@ -8,6 +8,7 @@
 #include "StorageItem.h"
 #include "Pool.h"
 #include "../Utility Classes/NonCopyable.h"
+#include <iostream>
 
 template <typename T, uint16_t SIZE = (UINT16_MAX-1)>
 class CacheOptimizedStorage final
@@ -15,6 +16,7 @@ class CacheOptimizedStorage final
     static_assert(SIZE <= (UINT16_MAX-1) && SIZE >= 2, "You must bind a max_size between (and including) #MIN_SIZE and (including) #MAX_SIZE!");
 public:
     CacheOptimizedStorage();
+    ~CacheOptimizedStorage();
 private:
     array <StorageItem<T>, SIZE> m_Items;
     array <uint16_t, SIZE> m_MappedIndices;
@@ -48,8 +50,8 @@ template<typename... Args>
 uint16_t CacheOptimizedStorage<T, SIZE>::getNewItem(Args... args) {
 
     uint16_t newIndex = static_cast<uint16_t>(m_Indices.getNewItem(m_InUseCounter));
-    m_Items[newIndex].reset(args...);
-    m_InUseCounter++;
+    m_Items[newIndex].reset(std::move(args)...);
+    ++m_InUseCounter;
     m_Indices[newIndex] = newIndex;
     m_MappedIndices[newIndex] = newIndex;
     return newIndex;
@@ -67,7 +69,7 @@ void CacheOptimizedStorage<T, SIZE>::removeItem(const uint16_t nonMappedIndex) {
         m_Items[mappedIndex].cleanUp();
         m_MappedIndices[nonMappedIndex] = 65535;
         m_Indices.removeItem(nonMappedIndex);
-        m_InUseCounter--;
+        --m_InUseCounter;
     }
     else
     {
@@ -84,7 +86,7 @@ void CacheOptimizedStorage<T, SIZE>::removeItem(const uint16_t nonMappedIndex) {
         m_Indices[mappedLastIndex] = mappedIndex;
         m_Items[mappedIndex].m_Object.m_Object = std::move(m_Items[nonMappedLastIndex].m_Object.m_Object);
 
-        m_InUseCounter--;
+        --m_InUseCounter;
     }
 }
 
@@ -185,6 +187,11 @@ CacheOptimizedStorage<T,SIZE>& CacheOptimizedStorage<T,SIZE>::operator=(const Ca
 template<typename T, uint16_t SIZE>
 void CacheOptimizedStorage<T,SIZE>::reset()
 {
+    for(uint16_t  i = 0; i < m_InUseCounter; ++i)
+    {
+        m_Items[i].cleanUp();
+    }
+
     for(uint16_t i = 0; i < SIZE; ++i)
     {
         m_MappedIndices[i] = 65535;
@@ -193,6 +200,11 @@ void CacheOptimizedStorage<T,SIZE>::reset()
     m_Indices.reset();
 
     m_InUseCounter = 0;
+}
+
+template<typename T, uint16_t SIZE>
+CacheOptimizedStorage<T,SIZE>::~CacheOptimizedStorage()
+{
 }
 
 #endif //VULKANO_ENGINE_COMPONENTSTORAGE_H

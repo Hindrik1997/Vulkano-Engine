@@ -26,13 +26,14 @@ private:
 public:
     RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue);
     RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);
-    ~RenderTarget();
+    ~RenderTarget() = default;
 
     RenderTarget(RenderTarget&&) = default;
     RenderTarget& operator=(RenderTarget&&) = default;
 public:
     VkSurfaceKHR surface();
     Swapchain&   swapchain();
+    VkCore&      vkCore();
     bool processAPI(float deltaTime);
 private:
     void            createSwapchain(uint32_t width, uint32_t height);

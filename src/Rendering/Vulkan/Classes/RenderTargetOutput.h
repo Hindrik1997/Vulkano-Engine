@@ -18,6 +18,14 @@ private:
     unique_ptr<RenderMode> m_RenderMode;
 public:
     RenderTargetOutput(RenderMode* renderMode);
+    ~RenderTargetOutput() = default;
+
+    RenderTargetOutput(RenderTargetOutput&&) = default;
+    RenderTargetOutput(const RenderTargetOutput&) = delete;
+
+    RenderTargetOutput& operator=(const RenderTargetOutput&) = delete;
+    RenderTargetOutput&operator=(RenderTargetOutput&&) = default;
+
 public:
     void render(float deltaTime) const;
     bool processAPI(float deltaTime) const;

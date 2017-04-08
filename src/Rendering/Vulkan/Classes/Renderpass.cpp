@@ -5,7 +5,7 @@
 #include "Renderpass.h"
 #include "../../Utilities/VulkanUtilityFunctions.h"
 
-Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription>& imageAttachments, const vector<VkSubpassDescription>& subpasses)
+Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription>& imageAttachments, const vector<VkSubpassDescription>& subpasses) : m_Renderpass({device,vkDestroyRenderPass})
 {
     VkRenderPassCreateInfo renderPassCreateInfo = {};
 
@@ -19,15 +19,13 @@ Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription>& i
     renderPassCreateInfo.dependencyCount    = 0;
     renderPassCreateInfo.pDependencies      = nullptr;
 
-    m_Renderpass = {device, vkDestroyRenderPass};
-
     VkResult result = vkCreateRenderPass(device, &renderPassCreateInfo,nullptr, m_Renderpass.reset());
 
     vkIfFailThrowMessage(result,"Error creating renderpass!");
 }
 
 Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription> &imageAttachments,
-                       const vector<VkSubpassDescription> &subpasses, const vector<VkSubpassDependency> &dependecies)
+                       const vector<VkSubpassDescription> &subpasses, const vector<VkSubpassDependency> &dependecies) : m_Renderpass({device,vkDestroyRenderPass})
 {
     VkRenderPassCreateInfo renderPassCreateInfo = {};
 
@@ -41,7 +39,6 @@ Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription> &i
     renderPassCreateInfo.dependencyCount    = static_cast<uint32_t >(dependecies.size());
     renderPassCreateInfo.pDependencies      = dependecies.data();
 
-    m_Renderpass = {device, vkDestroyRenderPass};
 
     VkResult result = vkCreateRenderPass(device, &renderPassCreateInfo,nullptr, m_Renderpass.reset());
 

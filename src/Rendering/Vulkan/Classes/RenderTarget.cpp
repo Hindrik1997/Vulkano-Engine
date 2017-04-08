@@ -33,12 +33,6 @@ RenderTarget::RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore &
     createSwapchain(windowWidth, windowHeight);
 }
 
-
-RenderTarget::~RenderTarget()
-{
-    //m_Platform.destroyWindow(m_Window);
-}
-
 VkResult RenderTarget::createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle, VK_PLATFORM& platform)
 {
     return platform.createSurface(instance, surface, handle);
@@ -76,4 +70,9 @@ Swapchain &RenderTarget::swapchain()
 bool RenderTarget::processAPI(float deltaTime)
 {
     return m_Platform.processAPI(m_Window,deltaTime);
+}
+
+VkCore &RenderTarget::vkCore()
+{
+    return m_VkCore;
 }

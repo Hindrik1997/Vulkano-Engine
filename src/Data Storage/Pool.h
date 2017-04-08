@@ -131,6 +131,7 @@ void Pool<T,SIZE>::reset()
 
     for(uint16_t i = 0; i < max_size(); ++i)
     {
+        m_Storage[i].cleanUp();
         m_Storage[i].m_IsUsed = false;
     }
 };

@@ -24,6 +24,9 @@ public:
     Renderpass(const Renderpass&) = delete;
     Renderpass& operator=(const Renderpass&) = delete;
 
+    ~Renderpass() = default;
+
+public:
     VkRenderPass renderpass();
 };
 
