@@ -9,11 +9,16 @@
 #include "../Vulkan/Classes/RenderMode.h"
 #include "../Vulkan/Classes/RenderTarget.h"
 #include "../Classes/RenderpassResourceManager.h"
+#include "../Vulkan/Classes/Framebuffer.h"
+#include "../Vulkan/Classes/CommandPool.h"
 
 class ForwardRenderMode final : public RenderMode
 {
 private:
     CacheOptimizedStorage<RenderpassResourceManager, 128> m_Renderpasses;
+    VkUniqueHandle<VkPipelineLayout>                      m_TempLayout;
+    vector<Framebuffer>                                   m_Framebuffers;
+    CommandPool                                           m_Commandpool;
 public:
     ForwardRenderMode(RenderTarget&& target);
     ~ForwardRenderMode() = default;

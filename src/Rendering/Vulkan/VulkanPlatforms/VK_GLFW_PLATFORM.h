@@ -20,7 +20,6 @@ class VK_GLFW_PLATFORM {
 private:
     CacheOptimizedStorage<GLFWwindow*, 64> m_Windows;
     GLFWwindow* m_Window;
-
 public:
     VK_GLFW_PLATFORM();
     ~VK_GLFW_PLATFORM();

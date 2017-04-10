@@ -147,7 +147,7 @@ auto Swapchain::retrieveSwapchainImages() -> void
     vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, m_SwapchainImages.data());
 }
 
-auto Swapchain::createSwapchainImageViews() -> void
+auto Swapchain::createSwapchainImageViews()  -> void
 {
     m_SwapchainImageViews.resize(m_SwapchainImages.size());
 
@@ -178,24 +178,41 @@ auto Swapchain::createSwapchainImageViews() -> void
     }
 }
 
-VkSwapchainKHR Swapchain::swapchain()
+vector<VkImageView> Swapchain::imageViews() const
+{
+    vector<VkImageView> vec;
+
+    for(const auto& handle : m_SwapchainImageViews)
+    {
+        vec.push_back(handle.get());
+    }
+
+    return vec;
+}
+
+VkSwapchainKHR Swapchain::swapchain() const
 {
     return m_Swapchain;
 }
 
-VkSurfaceFormatKHR Swapchain::surfaceFormat()
+VkSurfaceFormatKHR Swapchain::surfaceFormat() const
 {
     return m_SurfaceFormat;
 }
 
-VkPresentModeKHR Swapchain::presentMode()
+VkPresentModeKHR Swapchain::presentMode() const
 {
     return m_PresentMode;
 }
 
-VkExtent2D Swapchain::extent2D()
+VkExtent2D Swapchain::extent2D() const
 {
     return m_Extent;
+}
+
+vk_queue Swapchain::presentQueue() const
+{
+    return m_PresentQueue;
 }
 
 

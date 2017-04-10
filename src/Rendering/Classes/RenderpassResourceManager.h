@@ -23,9 +23,20 @@ public:
 
     RenderpassResourceManager& operator=(RenderpassResourceManager&&) = default;
     RenderpassResourceManager& operator=(const RenderpassResourceManager&) = delete;
+public:
+    template<typename... Args>
+    uint16_t getNewPipelineStateObject(Args... args);
+
 
 public:
+    Renderpass& renderpass();
 };
+
+template<typename... Args>
+uint16_t RenderpassResourceManager::getNewPipelineStateObject(Args... args)
+{
+    return m_PSOs.getNewItem(std::move(args)...);
+}
 
 
 #endif //VULKANOENGINE_RENDERPASSRESOURCEMANAGER_H

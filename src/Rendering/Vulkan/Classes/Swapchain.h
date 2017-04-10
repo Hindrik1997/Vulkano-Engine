@@ -37,10 +37,12 @@ public:
     static auto pickSwapChainExtent2D           (const vk_swapchain_details& details, uint32_t width, uint32_t height)  -> VkExtent2D;
 
 public:
-    VkSwapchainKHR      swapchain();
-    VkSurfaceFormatKHR  surfaceFormat();
-    VkPresentModeKHR    presentMode();
-    VkExtent2D          extent2D();
+    VkSwapchainKHR      swapchain() const;
+    VkSurfaceFormatKHR  surfaceFormat() const;
+    VkPresentModeKHR    presentMode() const;
+    VkExtent2D          extent2D() const;
+    vector<VkImageView> imageViews() const;
+    vk_queue            presentQueue() const;
 };
 
 

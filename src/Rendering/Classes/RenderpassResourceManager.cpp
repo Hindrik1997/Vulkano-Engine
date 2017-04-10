@@ -8,3 +8,10 @@ RenderpassResourceManager::RenderpassResourceManager(Renderpass &&renderpass) : 
 {
 
 }
+
+Renderpass &RenderpassResourceManager::renderpass()
+{
+    return m_Renderpass;
+}
+
+

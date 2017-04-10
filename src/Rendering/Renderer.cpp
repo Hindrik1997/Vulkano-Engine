@@ -2,7 +2,7 @@
 // Created by hindrik on 30-1-17.
 //
 
-#include <limits>
+#include <algorithm>
 #include "Renderer.h"
 #include "RenderModes/ForwardRenderMode.h"
 
@@ -33,18 +33,25 @@ auto Renderer::render(float deltaTime) -> void
 
 auto Renderer::processAPI(float deltaTime) -> bool
 {
-    vector<bool> bools(m_Outputs.size());
-
-    vector<size_t> removeIndices;
-
-    for(size_t i = m_Outputs.size(); i-- > 0;)
+    vector<uint32_t > mustBeClosed;
+    uint32_t  i = 0;
+    for(auto& output : m_Outputs)
     {
-        bool j = m_Outputs[i].processAPI(deltaTime);
-        if(!j)
+        bool x = output.processAPI(deltaTime);
+        if(!x)
         {
-            m_Outputs.erase(m_Outputs.end() - i);
+            mustBeClosed.push_back(i);
         }
+        ++i;
     }
+
+    std::sort(mustBeClosed.begin(), mustBeClosed.end(), std::greater<uint32_t>());
+    for(auto& item : mustBeClosed)
+    {
+        m_Outputs.erase(m_Outputs.begin() + item);
+    }
+
+
     return m_Outputs.size() != 0;
 }
 

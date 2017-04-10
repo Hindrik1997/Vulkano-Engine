@@ -27,7 +27,7 @@ public:
     ~Renderpass() = default;
 
 public:
-    VkRenderPass renderpass();
+    VkRenderPass renderpass()const;
 };
 
 

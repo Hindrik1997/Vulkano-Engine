@@ -19,7 +19,7 @@ const bool enableDebugLayers =
 
 static vector<const char*> enabledInstanceValidationLayers = {
         "VK_LAYER_LUNARG_standard_validation",
-        "VK_LAYER_LUNARG_api_dump"
+        //"VK_LAYER_LUNARG_api_dump"
 };
 
 static vector<const char*> enabledInstanceExtensions = {

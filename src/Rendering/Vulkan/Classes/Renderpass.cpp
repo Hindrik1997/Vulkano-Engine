@@ -45,7 +45,7 @@ Renderpass::Renderpass(VkDevice device, const vector<VkAttachmentDescription> &i
     vkIfFailThrowMessage(result,"Error creating renderpass!");
 }
 
-VkRenderPass Renderpass::renderpass()
+VkRenderPass Renderpass::renderpass()const
 {
     return m_Renderpass;
 }
