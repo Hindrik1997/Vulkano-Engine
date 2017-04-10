@@ -22,7 +22,7 @@ private:
     vector<VkCommandBuffer> m_Buffers;
 public:
     ForwardRenderMode(RenderTarget&& target);
-    ~ForwardRenderMode() = default;
+    ~ForwardRenderMode();
 
     ForwardRenderMode(const ForwardRenderMode&) = delete;
     ForwardRenderMode& operator=(const ForwardRenderMode&) = delete;

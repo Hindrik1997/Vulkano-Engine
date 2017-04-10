@@ -149,3 +149,8 @@ void ForwardRenderMode::render(float deltaTime)
     m_Target.swapchain().present(swapImageIndex);
 
 }
+
+ForwardRenderMode::~ForwardRenderMode()
+{
+    vkDeviceWaitIdle(m_Target.vkCore().device());
+}
