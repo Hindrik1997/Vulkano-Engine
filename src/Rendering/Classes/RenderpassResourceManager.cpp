@@ -14,4 +14,7 @@ Renderpass &RenderpassResourceManager::renderpass()
     return m_Renderpass;
 }
 
-
+PipelineStateObject &RenderpassResourceManager::getPSObyHandle(uint16_t handle)
+{
+    return m_PSOs[handle];
+}

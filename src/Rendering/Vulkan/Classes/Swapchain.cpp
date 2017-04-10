@@ -11,11 +11,14 @@ Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue p
     m_Width(width),
     m_VkCore(vkCore),
     m_Surface(surface),
-    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR})
+    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR}),
+    m_ImageAvailableSemaphore({m_VkCore.device(), vkDestroySemaphore}),
+    m_RenderingFinishedSemaphore({m_VkCore.device(), vkDestroySemaphore})
 {
     createSwapchain();
     retrieveSwapchainImages();
     createSwapchainImageViews();
+    createSemaphores();
 }
 
 
@@ -215,7 +218,61 @@ vk_queue Swapchain::presentQueue() const
     return m_PresentQueue;
 }
 
+VkViewport Swapchain::viewport() const
+{
+    VkViewport viewport = {};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width = static_cast<float>(extent2D().width);
+    viewport.height = static_cast<float>(extent2D().height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
 
+    return viewport;
+}
+
+VkSemaphore Swapchain::imgAvailableSemaphore() const
+{
+    return m_ImageAvailableSemaphore;
+}
+
+VkSemaphore Swapchain::renderFinishedSemaphore() const
+{
+    return m_RenderingFinishedSemaphore;
+}
+
+auto Swapchain::createSemaphores() -> void
+{
+    VkSemaphoreCreateInfo semaphoreInfo = {};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    VkResult result = vkCreateSemaphore(m_VkCore.device(), &semaphoreInfo, nullptr, m_ImageAvailableSemaphore.reset());
+    vkIfFailThrowMessage(result, "Semaphore creation failed!");
+    result = vkCreateSemaphore(m_VkCore.device(), &semaphoreInfo, nullptr, m_RenderingFinishedSemaphore.reset());
+    vkIfFailThrowMessage(result, "Semaphore creation failed!");
+}
+
+auto Swapchain::getAvailableImageIndex() -> uint32_t
+{
+    uint32_t index;
+    vkAcquireNextImageKHR(m_VkCore.device(), m_Swapchain,UINT64_MAX, m_ImageAvailableSemaphore.get(), VK_NULL_HANDLE, &index);
+    return index;
+}
+
+auto Swapchain::present(uint32_t presentIndex) -> void
+{
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = &m_RenderingFinishedSemaphore;
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = &m_Swapchain;
+    presentInfo.pImageIndices = &presentIndex;
+    presentInfo.pResults = nullptr;
+
+    vkQueuePresentKHR(m_PresentQueue.m_Queue, &presentInfo);
+}
 
 
 

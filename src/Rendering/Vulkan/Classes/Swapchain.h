@@ -15,6 +15,8 @@ private:
     VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
     vector<VkImage>                     m_SwapchainImages;
     vector<VkUniqueHandle<VkImageView>> m_SwapchainImageViews;
+    VkUniqueHandle<VkSemaphore >        m_ImageAvailableSemaphore;
+    VkUniqueHandle<VkSemaphore >        m_RenderingFinishedSemaphore;
 
     VkSurfaceFormatKHR  m_SurfaceFormat;
     VkPresentModeKHR    m_PresentMode;
@@ -29,6 +31,10 @@ public:
     auto        createSwapchain                 ()                                                                      -> void;
     auto        retrieveSwapchainImages         ()                                                                      -> void;
     auto        createSwapchainImageViews       ()                                                                      -> void;
+    auto        createSemaphores                ()                                                                      -> void;
+
+    auto        present                         (uint32_t presentIndex)                                                 -> void;
+    auto        getAvailableImageIndex          ()                                                                      -> uint32_t;
 
     static auto fillSwapChainDetails            (VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)                 -> vk_swapchain_details;
     static auto checkSwapChainDetails           (const vk_swapchain_details &details)                                   -> bool;
@@ -43,6 +49,11 @@ public:
     VkExtent2D          extent2D() const;
     vector<VkImageView> imageViews() const;
     vk_queue            presentQueue() const;
+    VkViewport          viewport() const;
+    VkSemaphore         imgAvailableSemaphore() const;
+    VkSemaphore         renderFinishedSemaphore() const;
+
+
 };
 
 

@@ -27,6 +27,8 @@ public:
     template<typename... Args>
     uint16_t getNewPipelineStateObject(Args... args);
 
+    PipelineStateObject& getPSObyHandle(uint16_t handle);
+
 
 public:
     Renderpass& renderpass();
@@ -37,6 +39,8 @@ uint16_t RenderpassResourceManager::getNewPipelineStateObject(Args... args)
 {
     return m_PSOs.getNewItem(std::move(args)...);
 }
+
+
 
 
 #endif //VULKANOENGINE_RENDERPASSRESOURCEMANAGER_H
