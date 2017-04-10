@@ -50,7 +50,7 @@ ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forwar
     vector<VkCommandBuffer> buffers = m_Commandpool.allocateCommandBuffers(frameBufferCount, CommandBufferLevel::Primary);
 
 
-    
+
 
 
 

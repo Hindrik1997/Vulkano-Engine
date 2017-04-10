@@ -1,8 +1,7 @@
 *.spv
-.idea/VulkanoEngine.iml
-.idea/modules.xml
-.idea/workspace.xml
-cmake-build-debug/
-.vs
 .idea
+cmake-build-debug/
+cmake-build-release/
+.vs
+
 CMakeSettings.json
