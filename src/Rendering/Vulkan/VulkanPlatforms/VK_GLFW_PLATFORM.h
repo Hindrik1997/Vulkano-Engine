@@ -16,7 +16,7 @@ using std::string;
 #define VK_PLATFORM VK_GLFW_PLATFORM
 
 
-class VK_GLFW_PLATFORM {
+class VK_GLFW_PLATFORM : VulkanPlatform {
 private:
     CacheOptimizedStorage<GLFWwindow*, 64> m_Windows;
     GLFWwindow* m_Window;
@@ -29,7 +29,7 @@ public:
 
     VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle);
 
-    void ProcessExtensions(vector<const char*>& instanceExtensions);
+    void processExtensions(vector<const char *> &instanceExtensions);
     bool processAPI(WindowHandle window, float deltaTime);
 };
 

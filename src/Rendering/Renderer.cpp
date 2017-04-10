@@ -10,7 +10,7 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 {
     vk_core_create_info info;
 
-    platform.ProcessExtensions(enabledInstanceExtensions);
+    platform.processExtensions(enabledInstanceExtensions);
 
     info.m_ApplicationName                          = "Vulkano Engine";
     info.m_EnabledInstanceValidationLayerNames      = &enabledInstanceValidationLayers;
@@ -61,7 +61,8 @@ Renderer::~Renderer()
 
 Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
-    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(1280, 800, m_VkCore, m_Platform)));
+    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
+    //m_Outputs.emplace_back(new NullRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
 }
 
 

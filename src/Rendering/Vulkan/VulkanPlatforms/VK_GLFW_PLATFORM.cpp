@@ -9,7 +9,7 @@
 
 using std::string;
 
-VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
+VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW Platform") {
 
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -20,7 +20,7 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() {
 
 }
 
-void VK_GLFW_PLATFORM::ProcessExtensions(vector<const char *>& instanceExtensions) {
+void VK_GLFW_PLATFORM::processExtensions(vector<const char *> &instanceExtensions) {
     uint32_t glfwExtensionCount = 0;
     const char** extensions;
 
