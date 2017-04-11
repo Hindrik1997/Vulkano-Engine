@@ -31,7 +31,7 @@ ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forwar
     vector<VkPipelineColorBlendAttachmentState> vec = { PipelineStateDescriptor::defaultColorBlendAttachmentState() };
     descriptor.setColorBlendingState(PipelineStateDescriptor::defaultColorBlendState(vec));
 
-    descriptor.setDynamicState(PipelineStateDescriptor::defaultDynamicState());
+    //descriptor.setDynamicState(PipelineStateDescriptor::defaultDynamicState());
 
     PipelineStateDescriptor::defaultPipelineLayout(m_TempLayout.reset(), m_Target.vkCore().device());
     descriptor.setPipelineLayout(m_TempLayout);
@@ -72,9 +72,9 @@ ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forwar
 
         vkCmdBindPipeline(m_Buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, resourceManager.getPSObyHandle(handle).pipeline());
 
-        VkViewport v = m_Target.swapchain().viewport();
+        //VkViewport v = m_Target.swapchain().viewport();
 
-        vkCmdSetViewport(m_Buffers[i], 0,1, &v);
+        //vkCmdSetViewport(m_Buffers[i], 0,1, &v);
 
         vkCmdDraw(m_Buffers[i], 3,1,0,0);
 
@@ -153,4 +153,14 @@ void ForwardRenderMode::render(float deltaTime)
 ForwardRenderMode::~ForwardRenderMode()
 {
     vkDeviceWaitIdle(m_Target.vkCore().device());
+}
+
+void ForwardRenderMode::recreateSwapchain(uint32_t width, uint32_t height)
+{
+    vkDeviceWaitIdle(m_Target.vkCore().device());
+
+    m_Target.swapchain().recreateSwapchain(width, height);
+
+
+
 }

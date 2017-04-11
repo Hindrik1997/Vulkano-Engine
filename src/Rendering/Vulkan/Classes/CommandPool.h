@@ -29,6 +29,10 @@ public:
     VkCommandBuffer         allocateCommandBuffer(CommandBufferLevel level);
     vector<VkCommandBuffer> allocateCommandBuffers(uint32_t amount, CommandBufferLevel level);
 
+    void deallocateCommandBuffer(VkCommandBuffer buffer);
+    void deallocateCommandBuffers(const vector<VkCommandBuffer> buffers);
+    void deallocateAllCommandBuffers();
+
 
     VkDevice device() const;
     uint32_t queueFamilyIndex() const;

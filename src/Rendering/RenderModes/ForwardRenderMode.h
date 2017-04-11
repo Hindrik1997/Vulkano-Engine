@@ -36,6 +36,7 @@ public:
 
 private:
     uint16_t createDefaultRenderpass();
+    void recreateSwapchain(uint32_t  width, uint32_t height);
 };
 
 

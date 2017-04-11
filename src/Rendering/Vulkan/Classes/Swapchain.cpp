@@ -101,7 +101,7 @@ auto Swapchain::pickSwapChainExtent2D(const vk_swapchain_details& details, uint3
     return newExtent;
 }
 
-auto Swapchain::createSwapchain() -> void
+auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
 {
     vk_swapchain_details details = fillSwapChainDetails(m_VkCore.physicalDevice(), m_Surface);
     if(!checkSwapChainDetails(details))
@@ -135,11 +135,25 @@ auto Swapchain::createSwapchain() -> void
     createInfo.compositeAlpha           = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
     createInfo.presentMode              = m_PresentMode;
     createInfo.clipped                  = VK_TRUE;
-    createInfo.oldSwapchain             = VK_NULL_HANDLE;
 
-    if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
-        throw std::runtime_error("Error, failed to create swapchain!");
+    if(oldSwapchain == VK_NULL_HANDLE)
+    {
+        createInfo.oldSwapchain             = VK_NULL_HANDLE;
+        if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
+            throw std::runtime_error("Error, failed to create swapchain!");
+        }
     }
+    else
+    {
+        createInfo.oldSwapchain = oldSwapchain;
+        VkSwapchainKHR newSwapchain;
+
+        if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, &newSwapchain) != VK_SUCCESS) {
+            throw std::runtime_error("Error, failed to create swapchain!");
+        }
+        m_Swapchain = newSwapchain;
+    }
+
 }
 
 auto Swapchain::retrieveSwapchainImages() -> void
@@ -272,6 +286,17 @@ auto Swapchain::present(uint32_t presentIndex) -> void
     presentInfo.pResults = nullptr;
 
     vkQueuePresentKHR(m_PresentQueue.m_Queue, &presentInfo);
+}
+
+auto Swapchain::recreateSwapchain(uint32_t width, uint32_t height) -> void
+{
+    m_Width = width;
+    m_Height = height;
+
+    VkSwapchainKHR oldSwapper = m_Swapchain;
+    createSwapchain(oldSwapper);
+    retrieveSwapchainImages();
+    createSwapchainImageViews();
 }
 
 

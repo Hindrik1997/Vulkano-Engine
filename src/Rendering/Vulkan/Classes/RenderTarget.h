@@ -21,8 +21,7 @@ private:
     WindowHandleWrapper             m_Window;
     VkUniqueHandle<VkSurfaceKHR>    m_Surface;
     vk_queue                        m_PresentQueue      = {};
-
-    unique_ptr<Swapchain>           m_CurrentSwapchain;
+    unique_ptr<Swapchain>           m_Swapchain;
 public:
     RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue);
     RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform);

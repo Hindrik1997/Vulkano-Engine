@@ -80,3 +80,25 @@ VkDevice CommandPool::device() const
 {
     return m_Device;
 }
+
+void CommandPool::deallocateAllCommandBuffers()
+{
+    if(m_Commandbuffers.size() > 0)
+    {
+        vkFreeCommandBuffers(m_Device, m_Commandpool, static_cast<uint32_t >(m_Commandbuffers.size()), m_Commandbuffers.data());
+    }
+}
+
+void CommandPool::deallocateCommandBuffers(const vector<VkCommandBuffer> buffers)
+{
+    if(m_Commandbuffers.size() > 0)
+    {
+        vkFreeCommandBuffers(m_Device, m_Commandpool, static_cast<uint32_t >(buffers.size()), buffers.data());
+    }
+}
+
+void CommandPool::deallocateCommandBuffer(VkCommandBuffer buffer)
+{
+    vector<VkCommandBuffer> vec = {buffer};
+    deallocateCommandBuffers(vec);
+}

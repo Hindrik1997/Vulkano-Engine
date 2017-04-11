@@ -27,14 +27,17 @@ private:
     uint32_t            m_Height            = 0;
 public:
     Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface);
-public:
-    auto        createSwapchain                 ()                                                                      -> void;
+private:
+    auto        createSwapchain                 (VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE)                          -> void;
     auto        retrieveSwapchainImages         ()                                                                      -> void;
     auto        createSwapchainImageViews       ()                                                                      -> void;
     auto        createSemaphores                ()                                                                      -> void;
 
+
+public:
     auto        present                         (uint32_t presentIndex)                                                 -> void;
     auto        getAvailableImageIndex          ()                                                                      -> uint32_t;
+    auto        recreateSwapchain               (uint32_t width, uint32_t height)                                       -> void;
 
     static auto fillSwapChainDetails            (VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)                 -> vk_swapchain_details;
     static auto checkSwapChainDetails           (const vk_swapchain_details &details)                                   -> bool;

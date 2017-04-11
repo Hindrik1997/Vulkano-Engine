@@ -59,12 +59,12 @@ auto RenderTarget::getPresentCapableQueue(VkSurfaceKHR surface, VkCore &vkCore) 
 
 void RenderTarget::createSwapchain(uint32_t width, uint32_t height)
 {
-    m_CurrentSwapchain.reset(new Swapchain(width,height, m_VkCore, m_PresentQueue, m_Surface));
+    m_Swapchain.reset(new Swapchain(width,height, m_VkCore, m_PresentQueue, m_Surface));
 }
 
 Swapchain &RenderTarget::swapchain()
 {
-    return *m_CurrentSwapchain;
+    return *m_Swapchain;
 }
 
 bool RenderTarget::processAPI(float deltaTime)
