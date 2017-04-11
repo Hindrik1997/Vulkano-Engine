@@ -15,8 +15,8 @@ public:
     PoolItem();
     ~PoolItem();
 
-    PoolItem(const PoolItem& rhs);
-    PoolItem&operator=(const PoolItem& rhs);
+    PoolItem(const PoolItem& rhs) = delete;
+    PoolItem&operator=(const PoolItem& rhs) = delete;
 
     PoolItem(PoolItem&& rhs);
     PoolItem& operator=(PoolItem&& rhs);
@@ -52,64 +52,39 @@ PoolItem<T>::PoolItem()
 template<typename T>
 inline PoolItem<T>::~PoolItem()
 {
-    if (m_IsUsed)
-    {
-        cleanUp();
-    }
+    cleanUp();
 }
 
 template<typename T>
 inline void PoolItem<T>::cleanUp()
 {
-    m_CurrentState.m_Object.~T();
+    if(m_IsUsed)
+    {
+        m_CurrentState.m_Object.~T();
+        m_IsUsed = false;
+    }
 }
 
 template<typename T>
 template<typename... Args>
 void PoolItem<T>::reset(Args... arguments)
 {
+    cleanUp();
     void* tVoid = &m_CurrentState;
-    new (tVoid) T(arguments...);
+    new (tVoid) T(std::move(arguments)...);
+    m_IsUsed = true;
 }
 
-template<typename T>
-PoolItem<T>::PoolItem(const PoolItem<T>& rhs)
-{
-    if(!rhs.m_IsUsed)
-    {
-        m_IsUsed = false;
-        m_CurrentState.m_NextItemIndex = rhs.m_CurrentState.m_NextItemIndex;
-    }
-    else
-    {
-        m_IsUsed = true;
-        m_CurrentState.m_Object = rhs.m_CurrentState.m_Object;
-    }
-}
-
-template<typename T>
-PoolItem<T>& PoolItem<T>::operator=(const PoolItem<T> & rhs)
-{
-    if(!rhs.m_IsUsed)
-    {
-        m_IsUsed = false;
-        m_CurrentState.m_NextItemIndex = rhs.m_CurrentState.m_NextItemIndex;
-    }
-    else
-    {
-        m_IsUsed = true;
-        m_CurrentState.m_Object = rhs.m_CurrentState.m_Object;
-    }
-    return *this;
-}
 
 template<typename T>
 PoolItem<T>::PoolItem(PoolItem<T> && rhs)
 {
+    cleanUp();
     if(!rhs.m_IsUsed)
     {
         m_IsUsed = false;
         m_CurrentState.m_NextItemIndex = rhs.m_CurrentState.m_NextItemIndex;
+        rhs.m_CurrentState.m_NextItemIndex = -1;
     }
     else
     {
@@ -121,15 +96,17 @@ PoolItem<T>::PoolItem(PoolItem<T> && rhs)
 template<typename T>
 PoolItem<T>& PoolItem<T>::operator=(PoolItem<T> && rhs)
 {
+    cleanUp();
     if(!rhs.m_IsUsed)
     {
-        m_IsUsed = false;
         m_CurrentState.m_NextItemIndex = rhs.m_CurrentState.m_NextItemIndex;
+        rhs.m_CurrentState.m_NextItemIndex = -1;
+        m_IsUsed = false;
     }
     else
     {
-        m_IsUsed = true;
         m_CurrentState = std::move(rhs.m_CurrentState);
+        m_IsUsed = true;
     }
     return *this;
 }

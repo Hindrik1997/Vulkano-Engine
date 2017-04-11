@@ -77,10 +77,10 @@ uint16_t Pool<T, SIZE>::getNewItem(Args... args) {
 
     if(m_FirstFreeIndex == -1)
         throw "No free item left in the pool!";
+
     uint16_t tempIndex = getFirstFreeIndex();
     m_FirstFreeIndex = m_Storage[m_FirstFreeIndex].m_CurrentState.m_NextItemIndex;
-    m_Storage[tempIndex].m_IsUsed = true;
-    m_Storage[tempIndex].reset(args...);
+    m_Storage[tempIndex].reset(std::move(args)...);
     m_InUseCounter++;
     return tempIndex;
 }
@@ -89,12 +89,11 @@ uint16_t Pool<T, SIZE>::getNewItem(Args... args) {
 template<typename T, uint16_t SIZE>
 void Pool<T, SIZE>::removeItem(const uint16_t item)
 {
-    if(item < 0 || item > size())
+    if(item < 0 || item > max_size())
         throw "Out of range exception!";
 
     m_Storage[item].m_CurrentState.m_NextItemIndex = getFirstFreeIndex();
     m_FirstFreeIndex = item;
-    m_Storage[item].m_IsUsed = false;
     m_Storage[item].cleanUp();
     m_InUseCounter--;
 }
@@ -108,7 +107,7 @@ inline T& Pool<T,SIZE>::operator[](const uint16_t index)
 template<typename T, uint16_t SIZE>
 inline T& Pool<T,SIZE>::at(const uint16_t index)
 {
-    if(index > 0 && index < size())
+    if(index > 0 && index < max_size())
         return m_Storage[index];
     throw "Out of range exception!";
 }
@@ -132,12 +131,7 @@ void Pool<T,SIZE>::reset()
     for(uint16_t i = 0; i < max_size(); ++i)
     {
         m_Storage[i].cleanUp();
-        m_Storage[i].m_IsUsed = false;
     }
 };
-
-#undef MAX_SIZE
-#undef MIN_SIZE
-#undef DEFAULT_SIZE
 
 #endif //VULKANO_ENGINE_POOL_H
