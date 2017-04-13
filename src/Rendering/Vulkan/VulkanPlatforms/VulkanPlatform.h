@@ -9,9 +9,13 @@
 #include <string>
 #include <vulkan/vulkan.h>
 #include <vector>
+#include <functional>
+#include <algorithm>
 
 using std::vector;
 using std::string;
+using std::function;
+using std::remove;
 
 ////SELECT PLATFORM HERE////
 
@@ -25,6 +29,7 @@ class VulkanPlatform
 {
 private:
     string m_PlatformName;
+    vector<function<void(uint32_t,uint32_t)>> m_Callbacks;
 protected:
     VulkanPlatform(string platformName);
     virtual ~VulkanPlatform() = 0;
@@ -45,6 +50,14 @@ public:
 
     virtual void processExtensions(vector<const char *> &instanceExtensions) = 0;
     virtual bool processAPI(WindowHandle window, float deltaTime) = 0;
+
+    static void  resizeSwapchain(uint32_t width, uint32_t height, VulkanPlatform* platform);
+
+    void addResizeCallback(function<void(uint32_t, uint32_t)> func);
+
+private:
+    void resizeSwapchain(uint32_t width, uint32_t height);
+
 };
 
 inline VulkanPlatform::VulkanPlatform(string platformName) : m_PlatformName(platformName)
@@ -58,6 +71,27 @@ inline VulkanPlatform::~VulkanPlatform()
 inline string VulkanPlatform::getPlatformName()
 {
     return m_PlatformName;
+}
+
+inline void VulkanPlatform::resizeSwapchain(uint32_t width, uint32_t height, VulkanPlatform* platform)
+{
+    if(platform != nullptr)
+    {
+        platform->resizeSwapchain(width, height);
+    }
+}
+
+inline void VulkanPlatform::resizeSwapchain(uint32_t width, uint32_t height)
+{
+    for(auto&& func : m_Callbacks)
+    {
+        func(width,height);
+    }
+}
+
+inline void VulkanPlatform::addResizeCallback(function<void(uint32_t, uint32_t)> func)
+{
+    m_Callbacks.push_back(func);
 }
 
 #if defined(VK_USE_PLATFORM_GLFW)

@@ -127,7 +127,7 @@ uint16_t CacheOptimizedStorage<T, SIZE>::size() const {
 template<typename T, uint16_t SIZE>
 CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage(const CacheOptimizedStorage<T,SIZE> & rhs)
 {
-    m_Indices = rhs.m_Indices;
+    m_Indices = std::move(rhs.m_Indices);
     m_InUseCounter = rhs.m_InUseCounter;
     m_MappedIndices = rhs.m_MappedIndices;
 
@@ -141,7 +141,7 @@ CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage(const CacheOptimizedStorage
 template<typename T, uint16_t SIZE>
 CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage(CacheOptimizedStorage<T,SIZE> && rhs)
 {
-    m_Indices = rhs.m_Indices;
+    m_Indices = std::move(rhs.m_Indices);
     m_InUseCounter = rhs.m_InUseCounter;
     m_MappedIndices = rhs.m_MappedIndices;
 
@@ -156,7 +156,7 @@ CacheOptimizedStorage<T,SIZE>::CacheOptimizedStorage(CacheOptimizedStorage<T,SIZ
 template<typename T, uint16_t SIZE>
 CacheOptimizedStorage<T,SIZE>& CacheOptimizedStorage<T,SIZE>::operator=(CacheOptimizedStorage<T,SIZE> && rhs)
 {
-    m_Indices = rhs.m_Indices;
+    m_Indices = std::move(rhs.m_Indices);
     m_InUseCounter = rhs.m_InUseCounter;
     m_MappedIndices = rhs.m_MappedIndices;
 
@@ -172,7 +172,7 @@ CacheOptimizedStorage<T,SIZE>& CacheOptimizedStorage<T,SIZE>::operator=(CacheOpt
 template<typename T, uint16_t SIZE>
 CacheOptimizedStorage<T,SIZE>& CacheOptimizedStorage<T,SIZE>::operator=(const CacheOptimizedStorage<T,SIZE> & rhs)
 {
-    m_Indices = rhs.m_Indices;
+    m_Indices = std::move(rhs.m_Indices);
     m_InUseCounter = rhs.m_InUseCounter;
     m_MappedIndices = rhs.m_MappedIndices;
 

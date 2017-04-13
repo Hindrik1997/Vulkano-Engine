@@ -9,11 +9,22 @@
 
 using std::string;
 
+static void onWindowResized(GLFWwindow* window, int width, int height)
+{
+    if (width == 0 || height == 0) return;
+
+    VulkanPlatform* platform = reinterpret_cast<VulkanPlatform*>(glfwGetWindowUserPointer(window));
+    platform->resizeSwapchain(static_cast<uint32_t >(width), static_cast<uint32_t>(height), platform);
+}
+
+
+
+
 VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW Platform") {
 
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     if(glfwVulkanSupported() != GLFW_TRUE)
         throw std::runtime_error("Vulkan loader not found!");
@@ -48,6 +59,10 @@ WindowHandle VK_GLFW_PLATFORM::createWindow(uint32_t windowWidth, uint32_t windo
 {
     WindowHandle handle = m_Windows.getNewItem(nullptr);
     m_Windows[handle] = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), nullptr, nullptr);
+
+    glfwSetWindowUserPointer(m_Windows[handle], this);
+    glfwSetWindowSizeCallback(m_Windows[handle], onWindowResized);
+
     return handle;
 }
 

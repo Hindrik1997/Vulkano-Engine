@@ -31,6 +31,7 @@ public:
     RenderTarget& operator=(RenderTarget&&) = default;
 public:
     VkSurfaceKHR surface();
+    VK_PLATFORM& platform();
     Swapchain&   swapchain();
     VkCore&      vkCore();
     bool processAPI(float deltaTime);

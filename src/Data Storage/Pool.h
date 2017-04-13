@@ -24,9 +24,9 @@ public:
     inline T& at(const uint16_t index);
 
 
-    Pool(const Pool&)               = default;
+    Pool(const Pool&)               = delete;
     Pool(Pool&&)                    = default;
-    Pool& operator=(const Pool&)    = default;
+    Pool& operator=(const Pool&)    = delete;
     Pool& operator=(Pool&&)         = default;
 
     template<typename... Args>

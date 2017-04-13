@@ -8,14 +8,15 @@
 
 #include "../Vulkan/Classes/RenderMode.h"
 #include "../Vulkan/Classes/RenderTarget.h"
-#include "../Classes/RenderpassResourceManager.h"
 #include "../Vulkan/Classes/Framebuffer.h"
 #include "../Vulkan/Classes/CommandPool.h"
+#include "../Vulkan/Classes/PipelineStateObject.h"
 
 class ForwardRenderMode final : public RenderMode
 {
 private:
-    CacheOptimizedStorage<RenderpassResourceManager, 128> m_Renderpasses;
+    vector<Renderpass>                                    m_Renderpasses;
+    vector<PipelineStateObject>                           m_PSOs;
     VkUniqueHandle<VkPipelineLayout>                      m_TempLayout;
     vector<Framebuffer>                                   m_Framebuffers;
     CommandPool                                           m_Commandpool;
@@ -35,7 +36,12 @@ public:
 
 
 private:
-    uint16_t createDefaultRenderpass();
+    void createRenderpass();
+    void createPipeline();
+    void createFramebuffers();
+    void createCommandbuffers();
+
+    Renderpass createDefaultRenderpass();
     void recreateSwapchain(uint32_t  width, uint32_t height);
 };
 

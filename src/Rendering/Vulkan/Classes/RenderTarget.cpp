@@ -76,3 +76,8 @@ VkCore &RenderTarget::vkCore()
 {
     return m_VkCore;
 }
+
+VK_PLATFORM &RenderTarget::platform()
+{
+    return m_Platform;
+}

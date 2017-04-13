@@ -88,7 +88,6 @@ auto Swapchain::pickSwapChainPresentMode(const vk_swapchain_details& details) ->
 
 auto Swapchain::pickSwapChainExtent2D(const vk_swapchain_details& details, uint32_t width, uint32_t height) -> VkExtent2D
 {
-
     if(details.m_Capabilities.currentExtent.width != std::numeric_limits<uint32_t >::max())
     {
         return details.m_Capabilities.currentExtent;
@@ -158,6 +157,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
 
 auto Swapchain::retrieveSwapchainImages() -> void
 {
+    m_SwapchainImages.clear();
     uint32_t imageCount = 0;
     vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, nullptr);
     m_SwapchainImages.resize(imageCount);
@@ -166,6 +166,7 @@ auto Swapchain::retrieveSwapchainImages() -> void
 
 auto Swapchain::createSwapchainImageViews()  -> void
 {
+    m_SwapchainImageViews.clear();
     m_SwapchainImageViews.resize(m_SwapchainImages.size());
 
     VkComponentMapping componentMapping = {};

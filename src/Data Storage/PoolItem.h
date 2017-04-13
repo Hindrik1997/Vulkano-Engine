@@ -89,7 +89,7 @@ PoolItem<T>::PoolItem(PoolItem<T> && rhs)
     else
     {
         m_IsUsed = true;
-        m_CurrentState = std::move(rhs.m_CurrentState);
+        m_CurrentState.m_Object = std::move(rhs.m_CurrentState.m_Object);
     }
 }
 
@@ -105,7 +105,7 @@ PoolItem<T>& PoolItem<T>::operator=(PoolItem<T> && rhs)
     }
     else
     {
-        m_CurrentState = std::move(rhs.m_CurrentState);
+        m_CurrentState.m_Object = std::move(rhs.m_CurrentState.m_Object);
         m_IsUsed = true;
     }
     return *this;

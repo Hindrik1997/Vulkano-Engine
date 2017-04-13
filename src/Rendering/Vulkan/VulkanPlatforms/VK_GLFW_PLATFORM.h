@@ -16,7 +16,7 @@ using std::string;
 #define VK_PLATFORM VK_GLFW_PLATFORM
 
 
-class VK_GLFW_PLATFORM : VulkanPlatform {
+class VK_GLFW_PLATFORM : public VulkanPlatform {
 private:
     CacheOptimizedStorage<GLFWwindow*, 64> m_Windows;
     GLFWwindow* m_Window;
