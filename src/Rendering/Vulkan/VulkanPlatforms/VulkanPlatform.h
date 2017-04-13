@@ -12,6 +12,7 @@
 #include <functional>
 #include <algorithm>
 #include <utility>
+#include "FunctionWrapper.h"
 
 using std::make_pair;
 using std::pair;
@@ -32,7 +33,7 @@ class VulkanPlatform
 {
 private:
     string m_PlatformName;
-    vector<function<void(uint32_t,uint32_t)>> m_Callbacks;
+    vector<FunctionWrapper> m_Callbacks;
 protected:
     VulkanPlatform(string platformName);
     virtual ~VulkanPlatform() = 0;
@@ -58,7 +59,8 @@ public:
 
     static void  resizeSwapchain(uint32_t width, uint32_t height, VulkanPlatform* platform);
 
-    void addResizeCallback(function<void(uint32_t, uint32_t)> func);
+    void addResizeCallback(function<void(uint32_t, uint32_t)> func, void* compare_ptr);
+    void removeResizeCallback(void* compare_ptr);
 
 private:
     void resizeSwapchain(uint32_t width, uint32_t height);
@@ -90,13 +92,18 @@ inline void VulkanPlatform::resizeSwapchain(uint32_t width, uint32_t height)
 {
     for(auto&& func : m_Callbacks)
     {
-        func(width,height);
+        func(width, height);
     }
 }
 
-inline void VulkanPlatform::addResizeCallback(function<void(uint32_t, uint32_t)> func)
+inline void VulkanPlatform::addResizeCallback(function<void(uint32_t, uint32_t)> func, void* compare_ptr)
 {
-    m_Callbacks.push_back(func);
+    m_Callbacks.emplace_back(func, compare_ptr);
+}
+
+inline void VulkanPlatform::removeResizeCallback(void *compare_ptr)
+{
+    m_Callbacks.erase(remove(m_Callbacks.begin(), m_Callbacks.end(), compare_ptr), m_Callbacks.end());
 }
 
 #if defined(VK_USE_PLATFORM_GLFW)

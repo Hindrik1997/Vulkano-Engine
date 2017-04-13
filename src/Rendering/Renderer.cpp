@@ -61,6 +61,7 @@ Renderer::~Renderer()
 
 Renderer::Renderer() : m_VkCore(fill_vk_core_create_info(m_Platform))
 {
+    for(auto i = 0; i < 5; ++i)
     m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
     //m_Outputs.emplace_back(new NullRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
 }

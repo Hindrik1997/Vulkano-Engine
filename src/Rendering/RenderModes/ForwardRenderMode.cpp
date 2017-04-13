@@ -9,9 +9,9 @@
 
 
 
-ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex)
+ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this)
 {
-    m_Target.platform().addResizeCallback([this](uint32_t width, uint32_t height){ recreateSwapchain(width, height); });
+    m_Target.platform().addResizeCallback([this](uint32_t width, uint32_t height){ recreateSwapchain(width, height); }, m_ComparePtr);
     createRenderpass();
     createPipeline();
     createFramebuffers();
@@ -87,6 +87,7 @@ void ForwardRenderMode::render(float deltaTime)
 ForwardRenderMode::~ForwardRenderMode()
 {
     vkDeviceWaitIdle(m_Target.vkCore().device());
+    m_Target.platform().removeResizeCallback(m_ComparePtr);
 }
 
 void ForwardRenderMode::recreateSwapchain(uint32_t width, uint32_t height)

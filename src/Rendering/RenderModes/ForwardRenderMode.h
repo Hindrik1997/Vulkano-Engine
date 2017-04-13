@@ -20,6 +20,7 @@ private:
     VkUniqueHandle<VkPipelineLayout>                      m_TempLayout;
     vector<Framebuffer>                                   m_Framebuffers;
     CommandPool                                           m_Commandpool;
+    void*                                                 m_ComparePtr;
     vector<VkCommandBuffer> m_Buffers;
 public:
     ForwardRenderMode(RenderTarget&& target);
