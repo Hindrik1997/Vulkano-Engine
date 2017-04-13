@@ -29,6 +29,8 @@ public:
 
     VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle);
 
+    pair<uint32_t, uint32_t> getWindowSize(WindowHandle handle) override;
+
     void processExtensions(vector<const char *> &instanceExtensions);
     bool processAPI(WindowHandle window, float deltaTime);
 };

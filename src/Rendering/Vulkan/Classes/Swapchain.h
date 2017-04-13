@@ -35,8 +35,8 @@ private:
 
 
 public:
-    auto        present                         (uint32_t presentIndex)                                                 -> void;
-    auto        getAvailableImageIndex          ()                                                                      -> uint32_t;
+    auto present                         (uint32_t presentIndex)                                                        -> VkResult;
+    auto        getAvailableImageIndex          (VkResult& result)                                                      -> uint32_t;
     auto        recreateSwapchain               (uint32_t width, uint32_t height)                                       -> void;
 
     static auto fillSwapChainDetails            (VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)                 -> vk_swapchain_details;

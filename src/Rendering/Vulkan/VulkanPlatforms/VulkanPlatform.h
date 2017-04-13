@@ -11,7 +11,10 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <utility>
 
+using std::make_pair;
+using std::pair;
 using std::vector;
 using std::string;
 using std::function;
@@ -50,6 +53,8 @@ public:
 
     virtual void processExtensions(vector<const char *> &instanceExtensions) = 0;
     virtual bool processAPI(WindowHandle window, float deltaTime) = 0;
+
+    virtual pair<uint32_t,uint32_t> getWindowSize(WindowHandle handle) = 0;
 
     static void  resizeSwapchain(uint32_t width, uint32_t height, VulkanPlatform* platform);
 

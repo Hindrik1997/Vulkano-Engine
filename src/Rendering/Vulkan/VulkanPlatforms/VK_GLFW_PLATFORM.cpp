@@ -104,3 +104,12 @@ void VK_GLFW_PLATFORM::destroyWindow(WindowHandle handle)
     glfwDestroyWindow(pointer);
     m_Windows.removeItem(static_cast<uint16_t >(handle));
 }
+
+pair<uint32_t, uint32_t> VK_GLFW_PLATFORM::getWindowSize(WindowHandle handle)
+{
+    GLFWwindow* pointer = m_Windows[static_cast<uint16_t >(handle)];
+    int x,y;
+    glfwGetWindowSize(pointer, &x,&y);
+
+    return make_pair(static_cast<uint32_t>(x), static_cast<uint32_t>(y));
+}

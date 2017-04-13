@@ -81,3 +81,8 @@ VK_PLATFORM &RenderTarget::platform()
 {
     return m_Platform;
 }
+
+WindowHandleWrapper& RenderTarget::window()
+{
+    return m_Window;
+}

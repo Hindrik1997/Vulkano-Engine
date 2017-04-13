@@ -57,7 +57,9 @@ Renderpass ForwardRenderMode::createDefaultRenderpass()
 
 void ForwardRenderMode::render(float deltaTime)
 {
-    uint32_t swapImageIndex = m_Target.swapchain().getAvailableImageIndex();
+    VkResult result;
+    uint32_t swapImageIndex = m_Target.swapchain().getAvailableImageIndex(result);
+    handleSwapchainErrorCodes(result);
 
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -77,7 +79,8 @@ void ForwardRenderMode::render(float deltaTime)
         throw std::runtime_error("Failed to submit draw command buffer!");
     }
 
-    m_Target.swapchain().present(swapImageIndex);
+    VkResult presentResult = m_Target.swapchain().present(swapImageIndex);
+    handleSwapchainErrorCodes(presentResult);
 
 }
 
@@ -193,5 +196,20 @@ void ForwardRenderMode::createCommandbuffers()
 
         VkResult result = vkEndCommandBuffer(m_Buffers[i]);
         vkIfFailThrowMessage(result, "Error occured during recording of command buffer!");
+    }
+}
+
+void ForwardRenderMode::handleSwapchainErrorCodes(VkResult result)
+{
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        auto p = m_Target.platform().getWindowSize(m_Target.window());
+        recreateSwapchain(p.first,p.second);
+        return;
+    } else if(result == VK_SUBOPTIMAL_KHR)
+            {
+                std::cout << "Swapchain became sub-optimal!" << std::endl;
+            }
+        else if (result != VK_SUCCESS) {
+        throw std::runtime_error("failed to acquire swap chain image!");
     }
 }

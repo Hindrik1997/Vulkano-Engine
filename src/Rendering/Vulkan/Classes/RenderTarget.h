@@ -34,6 +34,7 @@ public:
     VK_PLATFORM& platform();
     Swapchain&   swapchain();
     VkCore&      vkCore();
+    WindowHandleWrapper& window();
     bool processAPI(float deltaTime);
 private:
     void            createSwapchain(uint32_t width, uint32_t height);

@@ -267,14 +267,14 @@ auto Swapchain::createSemaphores() -> void
     vkIfFailThrowMessage(result, "Semaphore creation failed!");
 }
 
-auto Swapchain::getAvailableImageIndex() -> uint32_t
+auto Swapchain::getAvailableImageIndex(VkResult& result) -> uint32_t
 {
     uint32_t index;
-    vkAcquireNextImageKHR(m_VkCore.device(), m_Swapchain,UINT64_MAX, m_ImageAvailableSemaphore.get(), VK_NULL_HANDLE, &index);
+    result = vkAcquireNextImageKHR(m_VkCore.device(), m_Swapchain,UINT64_MAX, m_ImageAvailableSemaphore.get(), VK_NULL_HANDLE, &index);
     return index;
 }
 
-auto Swapchain::present(uint32_t presentIndex) -> void
+auto Swapchain::present(uint32_t presentIndex) -> VkResult
 {
     VkPresentInfoKHR presentInfo = {};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -286,7 +286,7 @@ auto Swapchain::present(uint32_t presentIndex) -> void
     presentInfo.pImageIndices = &presentIndex;
     presentInfo.pResults = nullptr;
 
-    vkQueuePresentKHR(m_PresentQueue.m_Queue, &presentInfo);
+    return vkQueuePresentKHR(m_PresentQueue.m_Queue, &presentInfo);
 }
 
 auto Swapchain::recreateSwapchain(uint32_t width, uint32_t height) -> void
