@@ -55,6 +55,7 @@ public:
 
 public:
     static VkPipelineVertexInputStateCreateInfo     defaultVertexInputState();
+    static VkPipelineVertexInputStateCreateInfo     defaultVertexInputState(const vector<VkVertexInputBindingDescription>& bindingDescriptions, const vector<VkVertexInputAttributeDescription>& attributeDescriptions);
     static VkPipelineInputAssemblyStateCreateInfo   defaultInputAssemplyState();
     static VkViewport                               defaultViewport(VkExtent2D& swapchainExtent);
     static VkRect2D                                 defaultScissorRectangle(VkExtent2D& swapchainExtent);

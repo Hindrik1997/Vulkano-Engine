@@ -25,5 +25,7 @@ void vkIfFailThrowMessage(VkResult result, std::string message);
 
 string getVendorNameForID(uint32_t id);
 
+uint32_t getSuitableMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 
 #endif //VULKANO_ENGINE_VULKANCOREUTILITYFUNCTIONS_H

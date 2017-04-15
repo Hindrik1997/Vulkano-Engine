@@ -11,12 +11,14 @@
 #include "../Vulkan/Classes/Framebuffer.h"
 #include "../Vulkan/Classes/CommandPool.h"
 #include "../Vulkan/Classes/PipelineStateObject.h"
+#include "../Vulkan/Classes/VertexBuffer.h"
 
 class ForwardRenderMode final : public RenderMode
 {
 private:
     vector<Renderpass>                                    m_Renderpasses;
     vector<PipelineStateObject>                           m_PSOs;
+    vector<VertexBuffer>                                  m_VertexBuffers;
     VkUniqueHandle<VkPipelineLayout>                      m_TempLayout;
     vector<Framebuffer>                                   m_Framebuffers;
     CommandPool                                           m_Commandpool;
@@ -39,6 +41,7 @@ public:
 private:
     void handleSwapchainErrorCodes(VkResult result);
     void createRenderpass();
+    void createVertexBuffer();
     void createPipeline();
     void createFramebuffers();
     void createCommandbuffers();

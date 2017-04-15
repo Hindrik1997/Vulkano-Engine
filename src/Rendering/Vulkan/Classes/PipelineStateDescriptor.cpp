@@ -22,6 +22,21 @@ VkPipelineVertexInputStateCreateInfo PipelineStateDescriptor::defaultVertexInput
     return info;
 }
 
+VkPipelineVertexInputStateCreateInfo PipelineStateDescriptor::defaultVertexInputState(const vector<VkVertexInputBindingDescription>& bindingDescriptions, const vector<VkVertexInputAttributeDescription>& attributeDescriptions)
+{
+
+    VkPipelineVertexInputStateCreateInfo info   = {};
+    info.sType                                  = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    info.pNext                                  = nullptr;
+    info.vertexBindingDescriptionCount          = static_cast<uint32_t >(bindingDescriptions.size());
+    info.vertexAttributeDescriptionCount        = static_cast<uint32_t >(attributeDescriptions.size());
+    info.pVertexAttributeDescriptions           = attributeDescriptions.data();
+    info.pVertexBindingDescriptions             = bindingDescriptions.data();
+
+    return info;
+}
+
+
 VkPipelineInputAssemblyStateCreateInfo PipelineStateDescriptor::defaultInputAssemplyState() {
 
     VkPipelineInputAssemblyStateCreateInfo info = {};

@@ -5,13 +5,14 @@
 #include "ForwardRenderMode.h"
 #include "../Vulkan/Classes/ShaderModule.h"
 #include "../Vulkan/Classes/PipelineStateDescriptor.h"
-
-
+#include "../Vulkan/Classes/Vertex.h"
 
 
 ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this)
 {
     m_Target.platform().addResizeCallback([this](uint32_t width, uint32_t height){ recreateSwapchain(width, height); }, m_ComparePtr);
+
+    createVertexBuffer();
     createRenderpass();
     createPipeline();
     createFramebuffers();
@@ -101,7 +102,9 @@ void ForwardRenderMode::recreateSwapchain(uint32_t width, uint32_t height)
     m_PSOs.clear();
     m_Commandpool.deallocateCommandBuffers(m_Buffers);
     m_Buffers.clear();
+    m_VertexBuffers.clear();
 
+    createVertexBuffer();
     createRenderpass();
     createPipeline();
     createFramebuffers();
@@ -127,7 +130,15 @@ void ForwardRenderMode::createPipeline()
     descriptor.setViewportPropsFromSwapchain(m_Target.swapchain());
 
     descriptor.setInputAssemblerState(PipelineStateDescriptor::defaultInputAssemplyState());
-    descriptor.setVertexInputState(PipelineStateDescriptor::defaultVertexInputState());
+
+    auto bdesc = Vertex::bindingDescription();
+    auto adesc = Vertex::attributeDescriptions();
+    vector<VkVertexInputBindingDescription> bdescs = { bdesc };
+    vector<VkVertexInputAttributeDescription> adescs = {};
+    for(const auto& a : adesc)
+        adescs.push_back(a);
+
+    descriptor.setVertexInputState(PipelineStateDescriptor::defaultVertexInputState(bdescs,adescs));
     descriptor.setRasterizerState(PipelineStateDescriptor::defaultRasterizerState());
     descriptor.setMultisampleState(PipelineStateDescriptor::predefinedMultisampleState(SampleCount::None));
 
@@ -187,6 +198,11 @@ void ForwardRenderMode::createCommandbuffers()
 
         vkCmdBindPipeline(m_Buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipeline());
 
+        VkBuffer vertexBuffers[] = {m_VertexBuffers[0].buffer().buffer()};
+        VkDeviceSize offsets[] = {0};
+
+        vkCmdBindVertexBuffers(m_Buffers[i], 0, 1, vertexBuffers, offsets);
+
         //VkViewport v = m_Target.swapchain().viewport();
 
         //vkCmdSetViewport(m_Buffers[i], 0,1, &v);
@@ -213,4 +229,16 @@ void ForwardRenderMode::handleSwapchainErrorCodes(VkResult result)
         else if (result != VK_SUCCESS) {
         throw std::runtime_error("failed to acquire swap chain image!");
     }
+}
+
+void ForwardRenderMode::createVertexBuffer()
+{
+    const vector<Vertex> vertices =
+    {
+            {{0.0f, -0.5f}, {1.0f, 0.0f, 1.0f}},
+            {{0.5f, 0.5f},  {1.0f, 1.0f, 1.0f}},
+            {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}}
+    };
+
+    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices);
 }
