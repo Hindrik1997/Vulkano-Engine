@@ -11,7 +11,7 @@
 #include "../Vulkan/Classes/Framebuffer.h"
 #include "../Vulkan/Classes/CommandPool.h"
 #include "../Vulkan/Classes/PipelineStateObject.h"
-#include "../Vulkan/Classes/VertexBuffer.h"
+#include "../Vulkan/Classes/Buffers/VertexBuffer.h"
 
 class ForwardRenderMode final : public RenderMode
 {

@@ -240,5 +240,6 @@ void ForwardRenderMode::createVertexBuffer()
             {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}}
     };
 
-    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices);
+    vector<uint32_t> t {0,1};
+    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices, m_Target.vkCore(), t);
 }

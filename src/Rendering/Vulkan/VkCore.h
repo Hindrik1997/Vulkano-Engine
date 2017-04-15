@@ -11,6 +11,7 @@
 #include "../Utilities/VulkanStructs.h"
 #include "../Utilities/VulkanUtilityFunctions.h"
 #include "VkUniqueHandle.h"
+#include "Classes/CommandPool.h"
 
 using std::vector;
 using std::string;
@@ -31,6 +32,9 @@ private:
     vector<vk_queue>                        m_ComputeQueues                                 = {};
     vector<vk_queue>                        m_TransferOnlyQueues                            = {};
     vector<vk_queue>                        m_SparseBindingQueues                           = {};
+
+    vector<uint32_t>                        m_TransferQueueFamilies                         = {};
+    vector<CommandPool>                     m_TransferCommandPools                          = {};
 public:
     VkCore                                  (vk_core_create_info createInfo);
     ~VkCore                                 ();
@@ -47,6 +51,7 @@ private:
     auto vkInitSetupQueueFamilies           (const vector<VkQueueFamilyProperties>& queueFamilies)          -> void;
     auto vkInitLogicalDevice                (vk_core_create_info createInfo)                                -> void;
     auto vkInitAssignQueues                 ()                                                              -> void;
+    auto vkInitSetupTransferFacilities      ()                                                              -> void;
 private:
     auto setupDebugFacilities               ()                                                              -> void;
     auto cleanUpDebugFacilities             ()                                                              -> void;
@@ -75,6 +80,10 @@ public:
     auto        computeQueues()          const -> const vector<vk_queue>&;
     auto        transferOnlyQueues()     const -> const vector<vk_queue>&;
     auto        sparseBindingQueues()    const -> const vector<vk_queue>&;
+    auto        transferQueueFamilies()  const -> const vector<uint32_t>&;
+public:
+    auto        copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset = 0, VkDeviceSize dstOffset = 0) -> void;
+
 };
 
 VkResult createDebugReportCallbackEXT(VkInstance instance, const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,

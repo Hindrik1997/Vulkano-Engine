@@ -5,7 +5,7 @@
 #ifndef VULKANOENGINE_BUFFER_H
 #define VULKANOENGINE_BUFFER_H
 
-#include "../VkUniqueHandle.h"
+#include "../../VkUniqueHandle.h"
 #include <vector>
 
 using std::vector;
@@ -24,6 +24,7 @@ private:
     VkMemoryRequirements m_AllocatedMemoryRequirements;
 public:
     Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags);
+    Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies);
 
 
     Buffer()  = delete;
@@ -47,6 +48,10 @@ public:
     VkMemoryPropertyFlags memoryFlags();
     VkSharingMode sharingMode();
     VkMemoryRequirements memoryRequirements();
+
+public:
+
+    static void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 
 

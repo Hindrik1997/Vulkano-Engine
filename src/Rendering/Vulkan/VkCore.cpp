@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "VkCore.h"
 #include "../../Core/Console.h"
+#include <algorithm>
 
 VkCore::VkCore(vk_core_create_info createInfo)
 {
@@ -35,6 +36,7 @@ auto VkCore::vkInit(vk_core_create_info createInfo) -> void
     vkInitPhysicalDevice(createInfo);
     vkInitLogicalDevice(createInfo);
     vkInitAssignQueues();
+    vkInitSetupTransferFacilities();
 }
 
 auto VkCore::vkInitInstance(vk_core_create_info createInfo) -> void
@@ -652,4 +654,54 @@ auto VkCore::sparseBindingQueues() const -> const vector<vk_queue>&
     return m_SparseBindingQueues;
 }
 
+auto VkCore::vkInitSetupTransferFacilities() -> void
+{
+    m_TransferQueueFamilies.clear();
+    for(const auto& q : m_TransferOnlyQueues)
+    {
+        if(std::find(m_TransferQueueFamilies.begin(), m_TransferQueueFamilies.end(), q.m_FamilyIndex) == m_TransferQueueFamilies.end())
+            m_TransferQueueFamilies.push_back(q.m_FamilyIndex);
+    }
 
+    for(const auto& q : m_TransferQueueFamilies)
+    {
+        m_TransferCommandPools.emplace_back(m_Device, q, true, false);
+    }
+}
+
+auto VkCore::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset, VkDeviceSize dstOffset) -> void
+{
+    VkCommandBuffer buffer = m_TransferCommandPools[0].allocateCommandBuffer(CommandBufferLevel::Primary);
+
+    VkCommandBufferBeginInfo info = {};
+    info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    info.pNext = nullptr;
+    info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(buffer, &info);
+
+    VkBufferCopy copy = {};
+    copy.srcOffset = srcOffset;
+    copy.dstOffset = dstOffset;
+    copy.size = size;
+
+    vkCmdCopyBuffer(buffer, src,dst, 1, &copy);
+
+    vkEndCommandBuffer(buffer);
+
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.pNext = nullptr;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &buffer;
+
+    vkQueueSubmit(m_TransferOnlyQueues[0].m_Queue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(m_TransferOnlyQueues[0].m_Queue);
+
+    m_TransferCommandPools[0].deallocateCommandBuffer(buffer);
+}
+
+auto VkCore::transferQueueFamilies() const -> const vector<uint32_t> &
+{
+    return m_TransferQueueFamilies;
+}
