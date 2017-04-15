@@ -13,21 +13,21 @@
 
 using std::vector;
 
-class VertexBuffer
+class VertexBuffer final
 {
 private:
     Buffer m_Buffer;
 public:
     VertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices);
 
-    VertexBuffer() = delete;
-    virtual ~VertexBuffer() = default;
+    VertexBuffer()  = delete;
+    ~VertexBuffer() = default;
 
-    VertexBuffer(const VertexBuffer&) = delete;
-    VertexBuffer(VertexBuffer&&) = default;
+    VertexBuffer(const VertexBuffer&)   = delete;
+    VertexBuffer(VertexBuffer&&)        = default;
 
-    VertexBuffer& operator=(const VertexBuffer&) = delete;
-    VertexBuffer& operator=(VertexBuffer&&) = default;
+    VertexBuffer& operator=(const VertexBuffer&)    = delete;
+    VertexBuffer& operator=(VertexBuffer&&)         = default;
 
 public:
     Buffer& buffer();

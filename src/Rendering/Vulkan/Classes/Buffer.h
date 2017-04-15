@@ -10,9 +10,9 @@
 
 using std::vector;
 
-class Buffer
+class Buffer final
 {
-protected:
+private:
     VkUniqueHandle<VkBuffer> m_Buffer;
     VkUniqueHandle<VkDeviceMemory> m_DeviceAllocatedMemory;
     VkDevice m_Device;
@@ -26,14 +26,14 @@ public:
     Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags);
 
 
-    Buffer() = delete;
-    virtual ~Buffer() = default;
+    Buffer()  = delete;
+    ~Buffer() = default;
 
-    Buffer(const Buffer&) = delete;
-    Buffer(Buffer&&) = default;
+    Buffer(const Buffer&)   = delete;
+    Buffer(Buffer&&)        = default;
 
-    Buffer& operator=(const Buffer&) = delete;
-    Buffer& operator=(Buffer&&) = default;
+    Buffer& operator=(const Buffer&)    = delete;
+    Buffer& operator=(Buffer&&)         = default;
 
 
 
