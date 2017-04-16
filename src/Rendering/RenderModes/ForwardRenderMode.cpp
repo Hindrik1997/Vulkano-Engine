@@ -203,11 +203,14 @@ void ForwardRenderMode::createCommandbuffers()
 
         vkCmdBindVertexBuffers(m_Buffers[i], 0, 1, vertexBuffers, offsets);
 
+        vkCmdBindIndexBuffer(m_Buffers[i], vertexBuffers[0],  m_VertexBuffers[0].indexOffset(), VK_INDEX_TYPE_UINT16);
+
         //VkViewport v = m_Target.swapchain().viewport();
 
         //vkCmdSetViewport(m_Buffers[i], 0,1, &v);
 
-        vkCmdDraw(m_Buffers[i], 3,1,0,0);
+        vkCmdDrawIndexed(m_Buffers[i], m_VertexBuffers[0].indicesCount(), 1,0,0,0);
+        //vkCmdDraw(m_Buffers[i], 3,1,0,0);
 
         vkCmdEndRenderPass(m_Buffers[i]);
 
@@ -233,13 +236,20 @@ void ForwardRenderMode::handleSwapchainErrorCodes(VkResult result)
 
 void ForwardRenderMode::createVertexBuffer()
 {
-    const vector<Vertex> vertices =
-    {
-            {{0.0f, -0.5f}, {1.0f, 0.0f, 1.0f}},
-            {{0.5f, 0.5f},  {1.0f, 1.0f, 1.0f}},
-            {{-0.5f, 0.5f}, {1.0f, 0.0f, 1.0f}}
+    const std::vector<Vertex> vertices = {
+            {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+            {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+            {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+            {{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}}
     };
 
-    vector<uint32_t> t {0,1};
-    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices, m_Target.vkCore(), t);
+    const std::vector<uint16_t> indices = {
+            0, 1, 2, 2, 3, 0
+    };
+
+
+    uint32_t index = m_Target.swapchain().presentQueue().m_FamilyIndex;
+    vector<uint32_t> t = m_Target.vkCore().transferQueueFamilies();
+    t.push_back(index);
+    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices, indices, m_Target.vkCore(), t);
 }

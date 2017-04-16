@@ -12,13 +12,14 @@
 #include "../Vulkan/Classes/CommandPool.h"
 #include "../Vulkan/Classes/PipelineStateObject.h"
 #include "../Vulkan/Classes/Buffers/VertexBuffer.h"
+#include "../Vulkan/Classes/Buffers/IndexedVertexBuffer.h"
 
 class ForwardRenderMode final : public RenderMode
 {
 private:
     vector<Renderpass>                                    m_Renderpasses;
     vector<PipelineStateObject>                           m_PSOs;
-    vector<VertexBuffer>                                  m_VertexBuffers;
+    vector<IndexedVertexBuffer>                                  m_VertexBuffers;
     VkUniqueHandle<VkPipelineLayout>                      m_TempLayout;
     vector<Framebuffer>                                   m_Framebuffers;
     CommandPool                                           m_Commandpool;

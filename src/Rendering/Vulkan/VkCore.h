@@ -16,9 +16,12 @@
 using std::vector;
 using std::string;
 
+class Engine;
+
 class VkCore final : NonCopyable
 {
 private:
+    Engine&                                 m_Engine;
     bool                                    m_IsDebugEnabled                                = false;
     VkDebugReportCallbackEXT                m_DebugCallback                                 = nullptr;
 
@@ -35,8 +38,9 @@ private:
 
     vector<uint32_t>                        m_TransferQueueFamilies                         = {};
     vector<CommandPool>                     m_TransferCommandPools                          = {};
+
 public:
-    VkCore                                  (vk_core_create_info createInfo);
+    VkCore                                  (vk_core_create_info createInfo, Engine& engine);
     ~VkCore                                 ();
 
     VkCore(const VkCore&) = delete;

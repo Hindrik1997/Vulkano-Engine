@@ -33,14 +33,16 @@ static vector<const char*> enabledDeviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 };
 
+class Engine;
 
 class Renderer final : NonCopyableNonMovable {
 private:
+    Engine& m_Engine;
     VK_PLATFORM m_Platform;
     VkCore m_VkCore;
     vector<RenderTargetOutput> m_Outputs;
 public:
-    Renderer();
+    Renderer(Engine& engine);
     ~Renderer();
 public:
     void render(float deltaTime);

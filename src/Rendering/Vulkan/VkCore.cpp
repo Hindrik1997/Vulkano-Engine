@@ -7,8 +7,10 @@
 #include "VkCore.h"
 #include "../../Core/Console.h"
 #include <algorithm>
+#include <shared_mutex>
+#include "../../Core/Engine.h"
 
-VkCore::VkCore(vk_core_create_info createInfo)
+VkCore::VkCore(vk_core_create_info createInfo, Engine& engine) : m_Engine(engine)
 {
     checkLayersAndInstanceExtensionsSupport(createInfo);
     vkInit(createInfo);
@@ -673,6 +675,14 @@ auto VkCore::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceS
 {
     VkCommandBuffer buffer = m_TransferCommandPools[0].allocateCommandBuffer(CommandBufferLevel::Primary);
 
+    VkFenceCreateInfo fenceCreateInfo = {};
+    fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceCreateInfo.pNext = nullptr;
+    fenceCreateInfo.flags = 0;
+
+    VkUniqueHandle<VkFence> fence = {m_Device, vkDestroyFence};
+    vkCreateFence(m_Device, &fenceCreateInfo, nullptr, fence.reset());
+
     VkCommandBufferBeginInfo info = {};
     info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     info.pNext = nullptr;
@@ -685,7 +695,7 @@ auto VkCore::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceS
     copy.dstOffset = dstOffset;
     copy.size = size;
 
-    vkCmdCopyBuffer(buffer, src,dst, 1, &copy);
+    vkCmdCopyBuffer(buffer, src, dst, 1, &copy);
 
     vkEndCommandBuffer(buffer);
 
@@ -695,8 +705,10 @@ auto VkCore::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceS
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &buffer;
 
-    vkQueueSubmit(m_TransferOnlyQueues[0].m_Queue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(m_TransferOnlyQueues[0].m_Queue);
+    vkQueueSubmit(m_TransferOnlyQueues[0].m_Queue, 1, &submitInfo, fence);
+
+    //Wait for transfer operation to be completed...
+    vkWaitForFences(m_Device, 1, &fence, VK_TRUE, UINT64_MAX);
 
     m_TransferCommandPools[0].deallocateCommandBuffer(buffer);
 }

@@ -19,10 +19,14 @@ void Engine::run() {
     }
 }
 
-Engine::Engine()
+Engine::Engine() : m_Threadpool(std::thread::hardware_concurrency()), m_renderer(*this)
 {
-
 }
 
 Engine::~Engine() {
+}
+
+ThreadPool &Engine::threadPool()
+{
+    return m_Threadpool;
 }

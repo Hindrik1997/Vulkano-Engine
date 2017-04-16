@@ -9,6 +9,7 @@
 #include "../Data Storage/CacheOptimizedStorage.h"
 #include "../Rendering/Renderer.h"
 #include "../Utility Classes/NonCopyableNonMovable.h"
+#include "Threadpool.h"
 
 class Engine final : NonCopyableNonMovable {
 public:
@@ -17,9 +18,14 @@ public:
 private:
     bool m_quit = false;
     Clock m_internalClock;
+    ThreadPool m_Threadpool;
     Renderer m_renderer;
 public:
     void run();
+
+    ThreadPool& threadPool();
+
+
 };
 
 
