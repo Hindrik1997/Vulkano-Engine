@@ -2,16 +2,25 @@
 // Created by hindrik on 8-4-17.
 //
 
+#include <chrono>
 #include "ForwardRenderMode.h"
 #include "../Vulkan/Classes/ShaderModule.h"
 #include "../Vulkan/Classes/PipelineStateDescriptor.h"
 #include "../Vulkan/Classes/Vertex.h"
+#include "../../Core/glm/glm.hpp"
+#include "../../Core/glm/gtc/quaternion.hpp"
+#include "../../Core/glm/gtx/quaternion.hpp"
+#include "../../Core/glm/gtc/matrix_transform.hpp"
 
 
-ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this)
+ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
 {
     m_Target.platform().addResizeCallback([this](uint32_t width, uint32_t height){ recreateSwapchain(width, height); }, m_ComparePtr);
 
+    createDescriptorSetLayout();
+    createUniformBuffer();
+    createDescriptorPool();
+    addDescriptorSet();
     createVertexBuffer();
     createRenderpass();
     createPipeline();
@@ -58,6 +67,8 @@ Renderpass ForwardRenderMode::createDefaultRenderpass()
 
 void ForwardRenderMode::render(float deltaTime)
 {
+    updateUniformBuffer(deltaTime);
+
     VkResult result;
     uint32_t swapImageIndex = m_Target.swapchain().getAvailableImageIndex(result);
     handleSwapchainErrorCodes(result);
@@ -71,7 +82,7 @@ void ForwardRenderMode::render(float deltaTime)
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &m_Buffers[swapImageIndex];
+    submitInfo.pCommandBuffers = &m_CommandBuffers[swapImageIndex];
     VkSemaphore signalSemaphores[] = {m_Target.swapchain().renderFinishedSemaphore()};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
@@ -100,9 +111,9 @@ void ForwardRenderMode::recreateSwapchain(uint32_t width, uint32_t height)
     m_Framebuffers.clear();
     m_Renderpasses.clear();
     m_PSOs.clear();
-    m_Commandpool.deallocateCommandBuffers(m_Buffers);
-    m_Buffers.clear();
-    m_VertexBuffers.clear();
+    m_Commandpool.deallocateCommandBuffers(m_CommandBuffers);
+    m_CommandBuffers.clear();
+    m_IndexedVertexBuffers.clear();
 
     createVertexBuffer();
     createRenderpass();
@@ -147,7 +158,14 @@ void ForwardRenderMode::createPipeline()
 
     //descriptor.setDynamicState(PipelineStateDescriptor::defaultDynamicState());
 
-    PipelineStateDescriptor::defaultPipelineLayout(m_TempLayout.reset(), m_Target.vkCore().device());
+    VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {};
+    pipelineLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutCreateInfo.pNext = nullptr;
+    pipelineLayoutCreateInfo.setLayoutCount = 1;
+    pipelineLayoutCreateInfo.pSetLayouts = &m_DescriptorSetLayout;
+
+    vkCreatePipelineLayout(m_Target.vkCore().device(), &pipelineLayoutCreateInfo, nullptr, m_TempLayout.reset());
+
     descriptor.setPipelineLayout(m_TempLayout);
 
     m_PSOs.emplace_back(std::move(descriptor.createGraphicsPipeline(m_Target.vkCore().device())));
@@ -170,9 +188,9 @@ void ForwardRenderMode::createCommandbuffers()
     Renderpass& renderpass = m_Renderpasses.back();
     PipelineStateObject& pipeline = m_PSOs.back();
 
-    m_Buffers = m_Commandpool.allocateCommandBuffers(frameBufferCount, CommandBufferLevel::Primary);
+    m_CommandBuffers = m_Commandpool.allocateCommandBuffers(frameBufferCount, CommandBufferLevel::Primary);
 
-    for(uint32_t i = 0; i < static_cast<uint32_t >(m_Buffers.size()); ++i)
+    for(uint32_t i = 0; i < static_cast<uint32_t >(m_CommandBuffers.size()); ++i)
     {
         VkCommandBufferBeginInfo commandBufferBeginInfo = {};
         commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -180,7 +198,7 @@ void ForwardRenderMode::createCommandbuffers()
         commandBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
         commandBufferBeginInfo.pInheritanceInfo = nullptr;
 
-        vkBeginCommandBuffer(m_Buffers[i], &commandBufferBeginInfo);
+        vkBeginCommandBuffer(m_CommandBuffers[i], &commandBufferBeginInfo);
 
         VkRenderPassBeginInfo renderPassBeginInfo = {};
         renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -194,27 +212,29 @@ void ForwardRenderMode::createCommandbuffers()
         renderPassBeginInfo.clearValueCount = 1;
         renderPassBeginInfo.pClearValues = &clearColorValue;
 
-        vkCmdBeginRenderPass(m_Buffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(m_CommandBuffers[i], &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(m_Buffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipeline());
+        vkCmdBindPipeline(m_CommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.pipeline());
 
-        VkBuffer vertexBuffers[] = {m_VertexBuffers[0].buffer().buffer()};
+        VkBuffer vertexBuffers[] = {m_IndexedVertexBuffers[0].buffer().buffer()};
         VkDeviceSize offsets[] = {0};
 
-        vkCmdBindVertexBuffers(m_Buffers[i], 0, 1, vertexBuffers, offsets);
+        vkCmdBindVertexBuffers(m_CommandBuffers[i], 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(m_Buffers[i], vertexBuffers[0],  m_VertexBuffers[0].indexOffset(), VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(m_CommandBuffers[i], vertexBuffers[0],  m_IndexedVertexBuffers[0].indexOffset(), VK_INDEX_TYPE_UINT16);
+
+        vkCmdBindDescriptorSets(m_CommandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_TempLayout, 0, 1, m_DescriptorSets.data(), 0, nullptr);
 
         //VkViewport v = m_Target.swapchain().viewport();
 
-        //vkCmdSetViewport(m_Buffers[i], 0,1, &v);
+        //vkCmdSetViewport(m_CommandBuffers[i], 0,1, &v);
 
-        vkCmdDrawIndexed(m_Buffers[i], m_VertexBuffers[0].indicesCount(), 1,0,0,0);
-        //vkCmdDraw(m_Buffers[i], 3,1,0,0);
+        vkCmdDrawIndexed(m_CommandBuffers[i], m_IndexedVertexBuffers[0].indicesCount(), 1,0,0,0);
+        //vkCmdDraw(m_CommandBuffers[i], 3,1,0,0);
 
-        vkCmdEndRenderPass(m_Buffers[i]);
+        vkCmdEndRenderPass(m_CommandBuffers[i]);
 
-        VkResult result = vkEndCommandBuffer(m_Buffers[i]);
+        VkResult result = vkEndCommandBuffer(m_CommandBuffers[i]);
         vkIfFailThrowMessage(result, "Error occured during recording of command buffer!");
     }
 }
@@ -251,5 +271,103 @@ void ForwardRenderMode::createVertexBuffer()
     uint32_t index = m_Target.swapchain().presentQueue().m_FamilyIndex;
     vector<uint32_t> t = m_Target.vkCore().transferQueueFamilies();
     t.push_back(index);
-    m_VertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices, indices, m_Target.vkCore(), t);
+    m_IndexedVertexBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), vertices, indices, m_Target.vkCore(), t);
+}
+
+void ForwardRenderMode::createDescriptorSetLayout()
+{
+    VkDescriptorSetLayoutBinding layoutBinding = {};
+    layoutBinding.binding = 0;
+    layoutBinding.descriptorCount = 1;
+    layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    layoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    layoutBinding.pImmutableSamplers = nullptr;
+
+    VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo = {};
+    descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    descriptorSetLayoutCreateInfo.pNext = nullptr;
+    descriptorSetLayoutCreateInfo.bindingCount = 1;
+    descriptorSetLayoutCreateInfo.pBindings = &layoutBinding;
+
+    VkResult result = vkCreateDescriptorSetLayout(m_Target.vkCore().device(), &descriptorSetLayoutCreateInfo, nullptr, m_DescriptorSetLayout.reset());
+    vkIfFailThrowMessage(result, "Error creating descriptor set layout!");
+}
+
+void ForwardRenderMode::updateUniformBuffer(float deltaTime)
+{
+    static auto startTime = std::chrono::high_resolution_clock::now();
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0f;
+
+    m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime * glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+    m_UBOData.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    m_UBOData.projection = glm::perspective(glm::radians(45.0f), m_Target.swapchain().extent2D().width / (float) m_Target.swapchain().extent2D().height, 0.1f, 10.0f);
+    //ubo.projection[1][1] *= -1;
+
+
+
+    m_UniformBuffers[0].updateGPUBuffer(static_cast<void*>(&m_UBOData), sizeof(WorldViewProjectionUBO));
+}
+
+void ForwardRenderMode::createUniformBuffer()
+{
+    uint32_t index = m_Target.swapchain().presentQueue().m_FamilyIndex;
+    vector<uint32_t> t = m_Target.vkCore().transferQueueFamilies();
+    t.push_back(index);
+
+    m_UniformBuffers.emplace_back(m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), sizeof(WorldViewProjectionUBO), m_Target.vkCore(), t);
+
+}
+
+void ForwardRenderMode::createDescriptorPool()
+{
+    VkDescriptorPoolSize poolSize = {};
+    poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    poolSize.descriptorCount = 1;
+
+    VkDescriptorPoolCreateInfo descriptorPoolCreateInfo = {};
+    descriptorPoolCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    descriptorPoolCreateInfo.pNext = nullptr;
+    descriptorPoolCreateInfo.poolSizeCount = 1;
+    descriptorPoolCreateInfo.pPoolSizes = &poolSize;
+    descriptorPoolCreateInfo.maxSets = 1;
+
+    VkResult result = vkCreateDescriptorPool(m_Target.vkCore().device(), &descriptorPoolCreateInfo, nullptr, m_DescriptorPool.reset());
+    vkIfFailThrowMessage(result, "Failed to create descriptor pooly babeey!");
+}
+
+void ForwardRenderMode::addDescriptorSet()
+{
+    VkDescriptorSet set;
+
+    VkDescriptorSetAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+    allocInfo.pNext = nullptr;
+    allocInfo.descriptorPool = m_DescriptorPool;
+    allocInfo.descriptorSetCount = 1;
+    allocInfo.pSetLayouts = &m_DescriptorSetLayout;
+
+    VkResult result = vkAllocateDescriptorSets(m_Target.vkCore().device(), &allocInfo, &set);
+    vkIfFailThrowMessage(result, "Descriptor set allocation failed!");
+
+    VkDescriptorBufferInfo bufferInfo = {};
+    bufferInfo.buffer = m_UniformBuffers[0].buffer().buffer();
+    bufferInfo.offset = 0;
+    bufferInfo.range = sizeof(WorldViewProjectionUBO);
+
+    VkWriteDescriptorSet descriptorWrite = {};
+    descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite.pNext = nullptr;
+    descriptorWrite.dstSet = set;
+    descriptorWrite.dstBinding = 0;
+    descriptorWrite.dstArrayElement = 0;
+    descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    descriptorWrite.descriptorCount = 1;
+    descriptorWrite.pBufferInfo = &bufferInfo;
+    descriptorWrite.pTexelBufferView = nullptr;
+    descriptorWrite.pImageInfo = nullptr;
+
+    vkUpdateDescriptorSets(m_Target.vkCore().device(), 1, &descriptorWrite, 0, nullptr);
+    m_DescriptorSets.push_back(set);
 }

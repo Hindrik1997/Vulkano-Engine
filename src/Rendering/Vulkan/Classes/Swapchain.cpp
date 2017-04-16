@@ -74,7 +74,6 @@ auto Swapchain::pickSwapChainSurfaceFormat(const vk_swapchain_details& details) 
 
 auto Swapchain::pickSwapChainPresentMode(const vk_swapchain_details& details) -> VkPresentModeKHR
 {
-
     for(const auto& presentMode : details.m_PresentModes)
     {
         if(presentMode == VK_PRESENT_MODE_MAILBOX_KHR)

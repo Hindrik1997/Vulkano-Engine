@@ -5,7 +5,7 @@
 #ifndef VULKANOENGINE_VERTEX_H
 #define VULKANOENGINE_VERTEX_H
 
-#include "../../glm/glm.hpp"
+#include "../../../Core/glm/glm.hpp"
 #include "../VulkanPlatforms/VulkanPlatform.h"
 
 struct Vertex
