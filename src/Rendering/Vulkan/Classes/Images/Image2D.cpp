@@ -16,7 +16,7 @@ Image2D::Image2D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t widt
 
 }
 
-Image &Image2D::image() const
+const Image& Image2D::image() const
 {
     return m_Image;
 }

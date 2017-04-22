@@ -18,7 +18,7 @@ Image3D::Image3D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t widt
 
 }
 
-Image &Image3D::image() const
+const Image &Image3D::image() const
 {
     return m_Image;
 }

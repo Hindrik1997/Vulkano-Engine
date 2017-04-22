@@ -20,7 +20,7 @@ Image1D::Image1D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t widt
 
 }
 
-Image& Image1D::image() const
+const Image& Image1D::image() const
 {
     return m_Image;
 }
