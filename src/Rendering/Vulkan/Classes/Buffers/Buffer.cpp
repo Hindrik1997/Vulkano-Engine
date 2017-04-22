@@ -50,14 +50,14 @@ VkBufferUsageFlags Buffer::usageFlags()
     return m_UsageFlags;
 }
 
-Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags)
+Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryFlags)
         : m_Buffer({device, vkDestroyBuffer}),
           m_DeviceAllocatedMemory({device, vkFreeMemory}),
           m_Device(device),
           m_PhysicalDevice(physicalDevice),
           m_BufferSize(bufferSize),
           m_UsageFlags(usageFlags),
-          m_SharingMode(sharingMode),
+          m_SharingMode(VK_SHARING_MODE_EXCLUSIVE),
           m_MemoryFlags(memoryFlags)
 {
     //Create buffer
@@ -101,14 +101,14 @@ void Buffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize siz
 }
 
 Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags,
-               VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies)
+               VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies)
         : m_Buffer({device, vkDestroyBuffer}),
           m_DeviceAllocatedMemory({device, vkFreeMemory}),
           m_Device(device),
           m_PhysicalDevice(physicalDevice),
           m_BufferSize(bufferSize),
           m_UsageFlags(usageFlags),
-          m_SharingMode(sharingMode),
+          m_SharingMode(VK_SHARING_MODE_CONCURRENT),
           m_MemoryFlags(memoryFlags)
 {
     //Create buffer

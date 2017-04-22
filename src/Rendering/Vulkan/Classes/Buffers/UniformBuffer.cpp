@@ -6,7 +6,7 @@
 #include "UniformBuffer.h"
 
 UniformBuffer::UniformBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize,  VkCore &core, const vector<uint32_t> &queueFamilies)
-        : m_Buffer(device,physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_SHARING_MODE_CONCURRENT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, queueFamilies),
+        : m_Buffer(device,physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, queueFamilies),
           m_StagingBuffer(device, physicalDevice, bufferSize, queueFamilies), m_VkCore(core)
 {
 }

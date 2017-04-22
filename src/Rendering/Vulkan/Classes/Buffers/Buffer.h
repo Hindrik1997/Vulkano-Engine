@@ -23,8 +23,8 @@ private:
     VkSharingMode m_SharingMode;
     VkMemoryRequirements m_AllocatedMemoryRequirements;
 public:
-    Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags);
-    Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkSharingMode sharingMode, VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies);
+    Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryFlags);
+    Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags, VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies);
 
 
     Buffer()  = delete;

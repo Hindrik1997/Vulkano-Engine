@@ -14,7 +14,6 @@ StagingBuffer::StagingBuffer(VkDevice device, VkPhysicalDevice physicalDevice, V
         physicalDevice,
         bufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        VK_SHARING_MODE_EXCLUSIVE,
         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
         queueFamilies
 )
