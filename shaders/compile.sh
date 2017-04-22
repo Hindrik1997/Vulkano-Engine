@@ -5,13 +5,13 @@
 
 #$VULKAN_SDK/bin/glslangValidator -V shader.vert
 
-echo "Vertex Shaders:"
+echo "Vertex shaders:"
 for file in *.vert
 do
     ${VULKAN_SDK}/bin/glslangValidator -V "$file"
 done
 
-echo "Fragment Shaders:"
+echo "Fragment shaders:"
 for file in *.frag
 do
     ${VULKAN_SDK}/bin/glslangValidator -V "$file"

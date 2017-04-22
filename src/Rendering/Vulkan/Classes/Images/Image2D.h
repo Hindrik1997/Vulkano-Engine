@@ -14,7 +14,7 @@ private:
     Image m_Image;
 public:
     Image2D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height, uint32_t mipCount, VkFormat format, VkSampleCountFlagBits sampleCount);
-    Image2D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height, uint32_t mipCount, VkFormat format, VkSampleCountFlagBits sampleCount, const vector<uint32_t>& queueFamilies);
+    Image2D(void* pixelData, VkDeviceSize imageSize,VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height, uint32_t mipCount, VkFormat format, VkSampleCountFlagBits sampleCount, const vector<uint32_t>& queueFamilies);
 public:
     const Image& image() const;
 };

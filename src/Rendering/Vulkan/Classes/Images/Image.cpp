@@ -23,6 +23,7 @@ Image::Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType image
 {
     VkImageCreateInfo imageCreateInfo = {};
 
+    imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageCreateInfo.imageType = m_Type;
     imageCreateInfo.extent = m_Extent;
     imageCreateInfo.mipLevels = m_MipLevels;
@@ -73,6 +74,7 @@ Image::Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType image
 {
     VkImageCreateInfo imageCreateInfo = {};
 
+    imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageCreateInfo.imageType = m_Type;
     imageCreateInfo.extent = m_Extent;
     imageCreateInfo.mipLevels = m_MipLevels;

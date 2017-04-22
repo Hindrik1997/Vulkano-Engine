@@ -2,17 +2,13 @@
 // Created by hindrik on 8-4-17.
 //
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 #include <chrono>
 #include "ForwardRenderMode.h"
 #include "../Vulkan/Classes/ShaderModule.h"
 #include "../Vulkan/Classes/PipelineStateDescriptor.h"
 #include "../Vulkan/Classes/Vertex.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "../Vulkan/Classes/Images/Image2D.h"
 
 
 ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
@@ -28,6 +24,19 @@ ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forwar
     createPipeline();
     createFramebuffers();
     createCommandbuffers();
+
+    int width, height, texChannels;
+    stbi_uc* pixels = stbi_load("textures/stone_grid.jpg", &width, &height,&texChannels, STBI_rgb_alpha);
+    VkDeviceSize imageSize = static_cast<VkDeviceSize>(width * height * 4);
+
+    if(!pixels)
+        throw "ERROR loading image!";
+
+    uint32_t index = m_Target.swapchain().presentQueue().m_FamilyIndex;
+    vector<uint32_t> t = m_Target.vkCore().transferQueueFamilies();
+    t.push_back(index);
+    Image2D image(static_cast<void*>(pixels),imageSize,m_Target.vkCore().device(), m_Target.vkCore().physicalDevice(), static_cast<uint32_t >(width),static_cast<uint32_t >(height),1, VK_FORMAT_R8G8B8A8_UNORM, VK_SAMPLE_COUNT_1_BIT, t);
+    stbi_image_free(pixels);
 }
 
 Renderpass ForwardRenderMode::createDefaultRenderpass()

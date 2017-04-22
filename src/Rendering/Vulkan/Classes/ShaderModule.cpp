@@ -31,7 +31,7 @@ std::string GetCurrentWorkingDir() {
 auto ShaderModule::readSpirFile(const std::string &fileName) -> vector<char>
 {
 
-    std::ifstream file("Shaders/" + fileName, std::ios::ate | std::ios::binary);
+    std::ifstream file("shaders/" + fileName, std::ios::ate | std::ios::binary);
 
     if(!file.is_open())
     {
