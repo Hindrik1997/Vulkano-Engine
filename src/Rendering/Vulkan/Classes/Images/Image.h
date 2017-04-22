@@ -25,6 +25,7 @@ private:
     VkDevice                        m_Device;
     VkPhysicalDevice                m_PhysicalDevice;
     VkMemoryPropertyFlags           m_MemoryPropertyFlags;
+    VkMemoryRequirements            m_MemoryRequirements;
 public:
     Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType imageType, VkExtent3D imageSize, uint32_t mipCount, uint32_t arrayLayers, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkSampleCountFlagBits sampleCount, VkImageLayout initialLayout, VkMemoryPropertyFlags memoryPropertyFlags);
     Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType imageType, VkExtent3D imageSize, uint32_t mipCount, uint32_t arrayLayers, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkSampleCountFlagBits sampleCount, VkImageLayout initialLayout, VkMemoryPropertyFlags memoryPropertyFlags, const vector<uint32_t>& queueFamilies);
@@ -34,6 +35,24 @@ public:
     Image(Image&&) = default;
     Image& operator=(const Image&) = delete;
     Image& operator=(Image&&) = default;
+public:
+    VkImage image() const;
+    VkDeviceMemory memory() const;
+    VkImageType imageType() const;
+    VkExtent3D imageDimensions() const;
+    uint32_t mipCount() const;
+    uint32_t arrayLayers() const;
+    VkFormat format() const;
+    VkImageTiling tiling() const;
+    VkImageUsageFlags usageFlags() const;
+    VkSharingMode sharingMode() const;
+    VkSampleCountFlagBits sampleCountFlagBits() const;
+    VkDevice device() const;
+    VkPhysicalDevice physicalDevice() const;
+    VkMemoryPropertyFlags memoryPropertyFlags() const;
+    VkMemoryRequirements memoryRequirements() const;
+
+
 };
 
 

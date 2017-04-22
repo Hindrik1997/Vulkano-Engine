@@ -15,6 +15,8 @@ private:
 public:
     Image1D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t mipCount, VkFormat format, VkSampleCountFlagBits sampleCount);
     Image1D(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t mipCount, VkFormat format, VkSampleCountFlagBits sampleCount, const vector<uint32_t>& queueFamilies);
+public:
+    Image& image() const;
 };
 
 

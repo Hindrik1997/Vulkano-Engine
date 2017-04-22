@@ -42,6 +42,7 @@ Image::Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType image
 
     VkMemoryRequirements memoryRequirements = {};
     vkGetImageMemoryRequirements(m_Device, m_Image, &memoryRequirements);
+    m_MemoryRequirements = memoryRequirements;
 
     VkMemoryAllocateInfo allocateInfo = {};
     allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -91,6 +92,7 @@ Image::Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType image
 
     VkMemoryRequirements memoryRequirements = {};
     vkGetImageMemoryRequirements(m_Device, m_Image, &memoryRequirements);
+    m_MemoryRequirements = memoryRequirements;
 
     VkMemoryAllocateInfo allocateInfo = {};
     allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -101,4 +103,79 @@ Image::Image(VkDevice device, VkPhysicalDevice physicalDevice, VkImageType image
     vkIfFailThrowMessage(result, "Memory allocation failed!");
 
     vkBindImageMemory(m_Device, m_Image, m_Memory, 0);
+}
+
+VkMemoryRequirements Image::memoryRequirements() const
+{
+    return m_MemoryRequirements;
+}
+
+VkMemoryPropertyFlags Image::memoryPropertyFlags() const
+{
+    return m_MemoryPropertyFlags;
+}
+
+VkPhysicalDevice Image::physicalDevice() const
+{
+    return m_PhysicalDevice;
+}
+
+VkDevice Image::device() const
+{
+    return m_Device;
+}
+
+VkSampleCountFlagBits Image::sampleCountFlagBits() const
+{
+    return m_SampleCount;
+}
+
+VkSharingMode Image::sharingMode() const
+{
+    return m_SharingMode;
+}
+
+VkImageUsageFlags Image::usageFlags() const
+{
+    return m_UsageFlags;
+}
+
+VkImageTiling Image::tiling() const
+{
+    return m_Tiling;
+}
+
+VkFormat Image::format() const
+{
+    return m_Format;
+}
+
+uint32_t Image::arrayLayers() const
+{
+    return m_ArrayLayers;
+}
+
+uint32_t Image::mipCount() const
+{
+    return m_MipLevels;
+}
+
+VkImageType Image::imageType() const
+{
+    return m_Type;
+}
+
+VkExtent3D Image::imageDimensions() const
+{
+    return m_Extent;
+}
+
+VkDeviceMemory Image::memory() const
+{
+    return m_Memory;
+}
+
+VkImage Image::image() const
+{
+    return m_Image;
 }
