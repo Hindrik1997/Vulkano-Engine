@@ -5,7 +5,6 @@
 #include "Engine.h"
 #include <memory>
 
-
 void Engine::run() {
     while(!m_quit)
     {

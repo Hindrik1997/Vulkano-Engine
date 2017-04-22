@@ -14,6 +14,9 @@
 #include <utility>
 #include "FunctionWrapper.h"
 
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
 using std::make_pair;
 using std::pair;
 using std::vector;

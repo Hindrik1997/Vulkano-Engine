@@ -8,7 +8,7 @@ if (WIN32)
 
 	include_directories("G:/Libraries/glfw-3.2.1/include")
 
-		#link_directories("G:/Libraries/glfw-3.2.1/x64-debug-vs2017")
+		#link_directories("G:/libraries/glfw-3.2.1/x64-debug-vs2017")
 		link_directories("G:/Libraries/glfw-3.2.1/x64-release-vs2017")
 
 	link_directories("C:/VulkanSDK/1.0.39.1/Bin")
@@ -22,7 +22,7 @@ link_directories($ENV{VULKAN_SDK}/lib)
 
 endif(WIN32)
 
-
+include_directories("libraries/")
 
 set(CMAKE_CXX_STANDARD 14)
 

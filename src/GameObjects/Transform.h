@@ -5,9 +5,9 @@
 #ifndef VULKANOENGINE_TRANSFORM_H
 #define VULKANOENGINE_TRANSFORM_H
 
-#include "../Core/glm/glm.hpp"
-#include "../Core/glm/gtc/quaternion.hpp"
-#include "../Core/glm/gtx/quaternion.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 struct Transform
 {

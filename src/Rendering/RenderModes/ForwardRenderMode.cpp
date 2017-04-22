@@ -2,15 +2,17 @@
 // Created by hindrik on 8-4-17.
 //
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <chrono>
 #include "ForwardRenderMode.h"
 #include "../Vulkan/Classes/ShaderModule.h"
 #include "../Vulkan/Classes/PipelineStateDescriptor.h"
 #include "../Vulkan/Classes/Vertex.h"
-#include "../../Core/glm/glm.hpp"
-#include "../../Core/glm/gtc/quaternion.hpp"
-#include "../../Core/glm/gtx/quaternion.hpp"
-#include "../../Core/glm/gtc/matrix_transform.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
@@ -257,14 +259,20 @@ void ForwardRenderMode::handleSwapchainErrorCodes(VkResult result)
 void ForwardRenderMode::createVertexBuffer()
 {
     const std::vector<Vertex> vertices = {
-            {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-            {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-            {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-            {{-0.5f, 0.5f}, {0.5f, 1.0f, 0.5f}}
+            {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+            {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+            {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+            {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+            {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+            {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+            {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+            {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
     const std::vector<uint16_t> indices = {
-            0, 1, 2, 2, 3, 0
+            0, 1, 2, 2, 3, 0,
+            4, 5, 6, 6, 7, 4
     };
 
 
@@ -302,8 +310,8 @@ void ForwardRenderMode::updateUniformBuffer(float deltaTime)
 
     m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime * glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_UBOData.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    m_UBOData.projection = glm::perspective(glm::radians(45.0f), m_Target.swapchain().extent2D().width / (float) m_Target.swapchain().extent2D().height, 0.1f, 10.0f);
-    //ubo.projection[1][1] *= -1;
+    m_UBOData.projection = glm::perspective(glm::radians(90.0f), m_Target.swapchain().extent2D().width / (float) m_Target.swapchain().extent2D().height, 0.1f, 10.0f);
+    //m_UBOData.projection[1][1] *= -1;
 
 
 

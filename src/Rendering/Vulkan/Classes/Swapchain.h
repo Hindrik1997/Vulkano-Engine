@@ -15,6 +15,9 @@ private:
     VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
     vector<VkImage>                     m_SwapchainImages;
     vector<VkUniqueHandle<VkImageView>> m_SwapchainImageViews;
+    VkUniqueHandle<VkImage>             m_DepthImage;
+    VkUniqueHandle<VkDeviceMemory>      m_DepthImageMemory;
+    VkUniqueHandle<VkImageView>         m_DepthImageView;
     VkUniqueHandle<VkSemaphore >        m_ImageAvailableSemaphore;
     VkUniqueHandle<VkSemaphore >        m_RenderingFinishedSemaphore;
 
@@ -38,6 +41,7 @@ public:
     auto present                         (uint32_t presentIndex)                                                        -> VkResult;
     auto        getAvailableImageIndex          (VkResult& result)                                                      -> uint32_t;
     auto        recreateSwapchain               (uint32_t width, uint32_t height)                                       -> void;
+    auto        createDepthBuffer()                                                                                     -> void;
 
     static auto fillSwapChainDetails            (VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)                 -> vk_swapchain_details;
     static auto checkSwapChainDetails           (const vk_swapchain_details &details)                                   -> bool;

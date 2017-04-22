@@ -11,14 +11,18 @@ Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue p
     m_Width(width),
     m_VkCore(vkCore),
     m_Surface(surface),
-    m_Swapchain({m_VkCore.device(), vkDestroySwapchainKHR}),
-    m_ImageAvailableSemaphore({m_VkCore.device(), vkDestroySemaphore}),
-    m_RenderingFinishedSemaphore({m_VkCore.device(), vkDestroySemaphore})
+    m_Swapchain({vkCore.device(), vkDestroySwapchainKHR}),
+    m_ImageAvailableSemaphore({vkCore.device(), vkDestroySemaphore}),
+    m_RenderingFinishedSemaphore({vkCore.device(), vkDestroySemaphore}),
+    m_DepthImage({vkCore.device(), vkDestroyImage}),
+    m_DepthImageMemory({vkCore.device(), vkFreeMemory}),
+    m_DepthImageView({vkCore.device(), vkDestroyImageView})
 {
     createSwapchain();
     retrieveSwapchainImages();
     createSwapchainImageViews();
     createSemaphores();
+    createDepthBuffer();
 }
 
 
@@ -297,6 +301,12 @@ auto Swapchain::recreateSwapchain(uint32_t width, uint32_t height) -> void
     createSwapchain(oldSwapper);
     retrieveSwapchainImages();
     createSwapchainImageViews();
+    createDepthBuffer();
+}
+
+auto Swapchain::createDepthBuffer() -> void
+{
+
 }
 
 
