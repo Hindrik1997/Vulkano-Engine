@@ -84,16 +84,18 @@ bool VK_GLFW_PLATFORM::processAPI(WindowHandle window, float deltaTime)
     if(shouldClose)
         return false;
 
-    glfwPollEvents();
+    
 
     if(deltaTime > 0.0f)
     {
-        float fps = 1000.0f / deltaTime;
+        float fps = 1000000000.0f / deltaTime;
         string c = "Vulkano Engine ";
         c.append(std::to_string(static_cast<int>(fps)));
         c.append(" FPS");
         glfwSetWindowTitle(pointer, c.c_str());
     }
+
+	glfwPollEvents();
 
     return true;
 }

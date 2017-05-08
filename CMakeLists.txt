@@ -6,12 +6,14 @@ if (WIN32)
 	include_directories($ENV{VK_SDK_PATH}/include)
 	link_directories($ENV{VK_SDK_PATH}/lib)
 
-	include_directories("G:/Libraries/glfw-3.2.1/include")
+	#include_directories("G:/Libraries/glfw-3.2.1/include")
+	include_directories("C:/glfw-3.2.1.bin.WIN64/include")
+	link_directories("C:/glfw-3.2.1.bin.WIN64/lib-vc2015")
 
 		#link_directories("G:/libraries/glfw-3.2.1/x64-debug-vs2017")
-		link_directories("G:/Libraries/glfw-3.2.1/x64-release-vs2017")
+		#link_directories("G:/Libraries/glfw-3.2.1/x64-release-vs2017")
 
-	link_directories("C:/VulkanSDK/1.0.39.1/Bin")
+	#link_directories("C:/VulkanSDK/1.0.39.1/Bin")
 
 
 

@@ -35,7 +35,7 @@ StagingImage::StagingImage(void* pixelData, VkDeviceSize imageSize, VkDevice dev
     {
         uint8_t* bytes = reinterpret_cast<uint8_t*>(data);
 
-        for(int i = 0; i < height; ++i)
+        for(uint32_t i = 0; i < height; ++i)
         {
             memcpy(&bytes[i * layout.rowPitch], &static_cast<uint8_t *>(pixelData)[i * width * 4], width * 4);
         }

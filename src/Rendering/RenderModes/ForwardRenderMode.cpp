@@ -312,12 +312,7 @@ void ForwardRenderMode::createDescriptorSetLayout()
 
 void ForwardRenderMode::updateUniformBuffer(float deltaTime)
 {
-    static auto startTime = std::chrono::high_resolution_clock::now();
-
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0f;
-
-    m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime * glm::radians(0.1f), glm::vec3(0.0f, 0.0f, 1.0f));
+    m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime * glm::radians(0.0000001f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_UBOData.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_UBOData.projection = glm::perspective(glm::radians(90.0f), m_Target.swapchain().extent2D().width / (float) m_Target.swapchain().extent2D().height, 0.1f, 10.0f);
     //m_UBOData.projection[1][1] *= -1;

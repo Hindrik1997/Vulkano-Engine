@@ -8,13 +8,15 @@
 void Engine::run() {
     while(!m_quit)
     {
-        float deltaTime = m_internalClock.getDeltaTime();
+        long long deltaTime = m_internalClock.getDeltaTime();
+		float dt = static_cast<float>(deltaTime);
 
-        if(!m_renderer.processAPI(deltaTime)) {
+
+        if(!m_renderer.processAPI(dt)) {
             m_quit = false;
             break;
         }
-        m_renderer.render(deltaTime);
+        m_renderer.render(dt);
     }
 }
 
@@ -22,7 +24,8 @@ Engine::Engine() : m_Threadpool(std::thread::hardware_concurrency()), m_renderer
 {
 }
 
-Engine::~Engine() {
+Engine::~Engine() 
+{
 }
 
 ThreadPool &Engine::threadPool()

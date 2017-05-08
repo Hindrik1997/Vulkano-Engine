@@ -11,7 +11,7 @@ class Clock {
 private:
     std::chrono::time_point<std::chrono::high_resolution_clock> m_previousFrame;
 public:
-    float getDeltaTime();
+    long long getDeltaTime();
 
 };
 
