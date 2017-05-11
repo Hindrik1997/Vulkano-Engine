@@ -2,9 +2,11 @@
 // Created by hindrik on 30-1-17.
 //
 
+#ifdef WIN32
 #define _CRTDBG_MAP_ALLOC  
 #include <stdlib.h>  
-#include <crtdbg.h> 
+#include <crtdbg.h>
+#endif
 #include "src/Core/Engine.h"
 
 void t() 
@@ -16,5 +18,7 @@ void t()
 int main()
 {
 	t();
-	_CrtDumpMemoryLeaks();
+    #ifdef WIN32
+        _CrtDumpMemoryLeaks();
+    #endif
 }
