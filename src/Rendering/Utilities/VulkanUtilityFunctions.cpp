@@ -82,12 +82,15 @@ auto operator<<(ostream& o, vk_layer_extension_properties p) -> ostream&
     o << "Layer spec version: "             << p.m_layerProperties.specVersion              << std::endl;
     o << "Extension count: "                << p.m_ExtensionProperties.size()               << std::endl;
 
-    o << "------------LAYER EXTENSIONS: " << p.m_layerProperties.layerName << "------------" << std::endl;
-
-    for(VkExtensionProperties ep : p.m_ExtensionProperties)
+    if(p.m_ExtensionProperties.size() != 0)
     {
-        o << "Extension name: "             << ep.extensionName << std::endl;
-        o << "Extension spec version: "     << ep.specVersion   << std::endl;
+        o << "------------LAYER EXTENSIONS: " << p.m_layerProperties.layerName << "------------" << std::endl;
+
+        for(VkExtensionProperties ep : p.m_ExtensionProperties)
+        {
+            o << "Extension name: "             << ep.extensionName << std::endl;
+            o << "Extension spec version: "     << ep.specVersion   << std::endl;
+        }
     }
 
     o << "------------------------------------------------------------------------------" << std::endl;

@@ -86,7 +86,7 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
     vkIfFailThrowMessage(result, "Error when retrieving amount of physical devices.");
 
     if(physicalDeviceCount == 0) {
-        throw std::runtime_error("Error, no physical devices supporting Vulkan found!.");
+        Logger::failure("Error, no physical devices supporting Vulkan found!.");
     }
 
     physicalDevices.resize(physicalDeviceCount);
@@ -97,8 +97,9 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
     vector<VkPhysicalDevice> possibleGPUs;
 
     if(createInfo.m_EnumeratePossibleDevicesInConsole)
+    {
         Logger::log("Possible GPU's found: ");
-
+    }
     for(const auto& device : physicalDevices)
     {
         if(checkDevice(device, createInfo.m_EnabledDeviceExtentionNames))
@@ -113,7 +114,7 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
             vkGetPhysicalDeviceProperties(device, &deviceProperties);
 
             std::stringstream str;
-            str << deviceProperties;
+            str << std::endl << deviceProperties;
             Logger::log(str.str());
 
         }
@@ -164,7 +165,8 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
 
         for(uint32_t i = 0; i < static_cast<uint32_t >(extensionProperties.size()); ++i)
         {
-            cout << extensionProperties[i] << std::endl;
+            std::stringstream str1; str1 << std::endl << extensionProperties[i] << std::endl;
+            Logger::logNoEndl(str1.str());
         }
     }
 }
@@ -370,7 +372,9 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
 
         for(VkExtensionProperties ep : instanceExtensions)
         {
-            cout << ep;
+            std::stringstream str;
+            str << std::endl << ep;
+            Logger::logNoEndl(str.str());
         }
 
         std::stringstream str;
@@ -379,7 +383,9 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
 
         for(vk_layer_extension_properties ep : layerProperties)
         {
-            std::cout << ep;
+            std::stringstream str1;
+            str1 << std::endl << ep;
+            Logger::logNoEndl(str1.str());
         }
     }
 
