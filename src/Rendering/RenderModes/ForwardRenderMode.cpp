@@ -9,6 +9,7 @@
 #include "../Vulkan/Classes/PipelineStateDescriptor.h"
 #include "../Vulkan/Classes/Vertex.h"
 #include "../Vulkan/Classes/Images/Image2D.h"
+#include "../../Core/Logger.h"
 
 
 ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
@@ -30,7 +31,7 @@ ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forwar
     VkDeviceSize imageSize = static_cast<VkDeviceSize>(width * height * 4);
 
     if(!pixels)
-        throw "ERROR loading image!";
+        Logger::failure("Error loading image file!");
 
     uint32_t index = m_Target.swapchain().presentQueue().m_FamilyIndex;
     vector<uint32_t> t = m_Target.vkCore().transferQueueFamilies();
@@ -98,9 +99,8 @@ void ForwardRenderMode::render(float deltaTime)
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    if (vkQueueSubmit(m_Target.swapchain().presentQueue().m_Queue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to submit draw command buffer!");
-    }
+    result = vkQueueSubmit(m_Target.swapchain().presentQueue().m_Queue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkIfFailThrowMessage(result, "Failed to submit the command buffer!");
 
     VkResult presentResult = m_Target.swapchain().present(swapImageIndex);
     handleSwapchainErrorCodes(presentResult);
@@ -258,10 +258,10 @@ void ForwardRenderMode::handleSwapchainErrorCodes(VkResult result)
         return;
     } else if(result == VK_SUBOPTIMAL_KHR)
             {
-                std::cout << "Swapchain became sub-optimal!" << std::endl;
+                Logger::warn("Swapchain became sub-optimal!");
             }
         else if (result != VK_SUCCESS) {
-        throw std::runtime_error("failed to acquire swap chain image!");
+            Logger::failure("failed to acquire swap chain image!");
     }
 }
 

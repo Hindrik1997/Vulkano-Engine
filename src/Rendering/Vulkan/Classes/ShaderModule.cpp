@@ -7,7 +7,8 @@
 #include <fstream>
 
 #include "ShaderModule.h"
-#include "../../../Core/Console.h"
+#include "../../../Core/Logger.h"
+#include "../../Utilities/VulkanUtilityFunctions.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -35,7 +36,7 @@ auto ShaderModule::readSpirFile(const std::string &fileName) -> vector<char>
 
     if(!file.is_open())
     {
-        throw std::runtime_error("Error when opening file!");
+        Logger::failure("Error when opening file!");
     }
 
     size_t fileSize = static_cast<size_t >(file.tellg());
@@ -63,8 +64,7 @@ ShaderModule::ShaderModule(const string& fileName, ShaderModuleType shaderType, 
     info.flags                      = {};
 
     VkResult result = vkCreateShaderModule(m_Device, &info, nullptr, m_ShaderModule.reset());
-    if(result != VK_SUCCESS)
-        throw std::runtime_error("Erorr creating shader module.");
+    vkIfFailThrowMessage(result,"Error creating shader module!");
 
     m_ShaderCreateInfo = createInfoStructure(*this);
 }

@@ -3,6 +3,7 @@
 //
 
 #include "RenderTarget.h"
+#include "../../../Core/Logger.h"
 
 RenderTarget::RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& vkCore, VK_PLATFORM& platform, vk_queue presentQueue)
         : m_VkCore(vkCore), m_Platform(platform), m_PresentQueue(presentQueue), m_Surface({m_VkCore.instance(), vkDestroySurfaceKHR}), m_Window(m_Platform)
@@ -16,7 +17,7 @@ RenderTarget::RenderTarget(uint32_t windowWidth, uint32_t windowHeight, VkCore& 
     VkBool32 presentSupport = VK_FALSE;
     vkGetPhysicalDeviceSurfaceSupportKHR(m_VkCore.physicalDevice(), m_PresentQueue.m_FamilyIndex, m_Surface, &presentSupport);
     if(!presentSupport)
-        throw std::runtime_error("Error, selected queue does not support presentation!");
+        Logger::failure("Error, selected queue does not support presentation!");
 
     createSwapchain(windowWidth, windowHeight);
 }
@@ -53,7 +54,8 @@ auto RenderTarget::getPresentCapableQueue(VkSurfaceKHR surface, VkCore &vkCore) 
             return q;
         }
     }
-    throw std::runtime_error("No supported surface found!");
+    Logger::failure("No supported surface found!");
+    throw;
 }
 
 

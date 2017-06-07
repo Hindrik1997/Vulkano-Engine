@@ -68,6 +68,7 @@ struct vk_core_create_info {
     vector<const char*>                 m_EnabledInstanceExtensionNames             = {};
     vector<const char*>                 m_EnabledDeviceExtentionNames               = {};
     bool                                m_EnableDebugLayers                         = false;
+    bool                                m_EnumeratePossibleDevicesInConsole         = false;
     bool                                m_EnumerateLayersAndExtensionsInConsole     = false;
 
 };

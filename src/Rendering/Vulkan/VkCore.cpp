@@ -5,16 +5,17 @@
 #include <cstring>
 #include <algorithm>
 #include "VkCore.h"
-#include "../../Core/Console.h"
 #include <algorithm>
 #include <shared_mutex>
 #include "../../Core/Engine.h"
+#include "../../Core/Logger.h"
 
 VkCore::VkCore(vk_core_create_info createInfo, Engine& engine) : m_Engine(engine)
 {
     checkLayersAndInstanceExtensionsSupport(createInfo);
     vkInit(createInfo);
-    Console::printLine("Initialized Vulkan API succesfully.");
+    Logger::succes("Initialized Vulkan API succesfully.");
+
     m_IsDebugEnabled = createInfo.m_EnableDebugLayers;
     if(m_IsDebugEnabled)
         setupDebugFacilities();
@@ -95,19 +96,32 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
 
     vector<VkPhysicalDevice> possibleGPUs;
 
-    cout << "Possible GPU's found: " << std::endl;
+    if(createInfo.m_EnumeratePossibleDevicesInConsole)
+        Logger::log("Possible GPU's found: ");
 
     for(const auto& device : physicalDevices)
     {
         if(checkDevice(device, createInfo.m_EnabledDeviceExtentionNames))
         {
             possibleGPUs.push_back(device);
+
+            if(!createInfo.m_EnumeratePossibleDevicesInConsole)
+                continue;
+
+            VkPhysicalDeviceProperties  deviceProperties;
+
+            vkGetPhysicalDeviceProperties(device, &deviceProperties);
+
+            std::stringstream str;
+            str << deviceProperties;
+            Logger::log(str.str());
+
         }
     }
 
     if(possibleGPUs.size() == 0)
     {
-        throw::std::runtime_error("Failed to find a suitable GPU. The GPU needs to be a discrete or integrated GPU, and needs to support geometry shaders and tesselation.");
+        Logger::failure("Failed to find a suitable GPU. The GPU needs to be a discrete or integrated GPU, and needs to support geometry shaders and tesselation.");
     }
 
     vector<vk_device_rating> ratings;
@@ -125,7 +139,7 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
 
     if(selectedDevice == VK_NULL_HANDLE)
     {
-        throw::std::runtime_error("Selected device is a VK_NULL_HANDLE! ");
+        Logger::failure("Selected device is a VK_NULL_HANDLE! ");
     }
 
     m_PhysicalDevice = selectedDevice;
@@ -134,8 +148,9 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
     VkPhysicalDeviceProperties props;
     vkGetPhysicalDeviceProperties(selectedDevice, &props);
 
-
-    std::cout << "Selected device: " << std::endl << props << std::endl;
+    std::stringstream str;
+    str << "Selected device: " << std::endl << props;
+    Logger::logNoEndl(str.str());
 
     m_PhysicalDeviceInfo = getDeviceQueueFamilies(selectedDevice);
 
@@ -145,7 +160,7 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
     {
         vector<VkExtensionProperties> extensionProperties = enumerateDeviceExtensions(m_PhysicalDevice);
 
-        Console::printLine("Found " + std::to_string(extensionProperties.size()) + " device extensions:");
+        Logger::log("Found " + std::to_string(extensionProperties.size()) + " device extensions:");
 
         for(uint32_t i = 0; i < static_cast<uint32_t >(extensionProperties.size()); ++i)
         {
@@ -278,7 +293,7 @@ auto VkCore::setupDebugFacilities() -> void
 {
     if(!m_IsDebugEnabled)
     {
-        throw std::runtime_error("Error, enabling debug facilities while the debug layers are not enabled.");
+        Logger::failure("Enabling debug facilities while the debug layers are not enabled.");
     }
 
     VkDebugReportCallbackCreateInfoEXT createInfo = {};
@@ -294,9 +309,9 @@ auto VkCore::setupDebugFacilities() -> void
     createInfo.pUserData            = NULL;
 
     if (createDebugReportCallbackEXT(m_Instance, &createInfo, nullptr, &m_DebugCallback) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug callback!");
+        Logger::failure("Failed to set up debug callback!");
     }
-    Console::printLine("Succesfully set up the debug facilities!");
+    Logger::succes("Succesfully set up the debug facilities!");
 }
 
 auto VkCore::cleanUpDebugFacilities() -> void
@@ -305,9 +320,9 @@ auto VkCore::cleanUpDebugFacilities() -> void
     {
         VkResult result = destroyDebugReportCallbackEXT(m_Instance, m_DebugCallback, NULL);
         if(result  != VK_SUCCESS)
-            Console::printLine("Error when destroying debug reporter callback.");
+            Logger::error("Problem when destroying debug reporter callback function.");
         else
-            Console::printLine("Succefully cleaned up debug facilities!");
+            Logger::log("Succefully cleaned up debug facilities!");
     }
 }
 
@@ -315,8 +330,9 @@ VKAPI_ATTR auto VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebugRep
                                          size_t location, int32_t code, const char *layerPrefix, const char *msg,
                                                                                         void *userData) -> VkBool32
 {
-    std::cerr << "Validation layer: " << msg << std::endl;
-
+    std::stringstream str;
+    str << "Validation layer: " << msg << std::endl;
+    Logger::log(str.str());
     return VK_FALSE;
 
 }
@@ -350,14 +366,16 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
         vector<VkExtensionProperties> instanceExtensions = enumerateInstanceExtensions();
         vector<vk_layer_extension_properties> layerProperties = enumerateValidationLayers();
 
-        Console::printLine("Found " + std::to_string(instanceExtensions.size()) + " KHR Extensions");
+        Logger::log("Found " + std::to_string(instanceExtensions.size()) + " KHR Extensions");
 
         for(VkExtensionProperties ep : instanceExtensions)
         {
             cout << ep;
         }
 
-        std::cout << "Found " << layerProperties.size() << " Extension Layers" << std::endl;
+        std::stringstream str;
+        str << "Found " << layerProperties.size() << " Extension Layers" << std::endl;
+        Logger::log(str.str());
 
         for(vk_layer_extension_properties ep : layerProperties)
         {
@@ -369,7 +387,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
     {
         if(!isInstanceExtensionSupported(name))
         {
-            throw std::runtime_error("Instance Extension not supported!");
+            Logger::failure("Instance Extension not supported!");
         }
     }
 
@@ -377,7 +395,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
     {
         if(!isValidationLayerSupported(name))
         {
-            throw std::runtime_error("Validation layer not supported!");
+            Logger::failure("Validation layer not supported!");
         }
     }
 
@@ -395,7 +413,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
 
         if(!debugExtensionFound)
         {
-            throw std::runtime_error("KHR Debug Extension is required when using the validation layers. Please enable it.");
+            Logger::failure("KHR Debug Extension is required when using the validation layers. Please enable it.");
         }
     }
 }
@@ -410,8 +428,8 @@ auto VkCore::isValidationLayerSupported(const char *name) -> bool
             return true;
         }
     }
-    Console::print("Validation layer not supported: ");
-    Console::printLine(name);
+    Logger::error("Validation layer not supported: ");
+    Logger::log(name);
     return false;
 }
 
@@ -425,8 +443,8 @@ auto VkCore::isInstanceExtensionSupported(const char *name) -> bool
             return true;
         }
     }
-    Console::print("Instance extension not supported: ");
-    Console::printLine(name);
+    Logger::error("Instance extension not supported: ");
+    Logger::log(name);
     return false;
 }
 
@@ -442,8 +460,8 @@ auto VkCore::isDeviceExtensionSupported(const char *name, VkPhysicalDevice devic
             return true;
         }
     }
-    Console::print("Device extension not supported: ");
-    Console::printLine(name);
+    Logger::error("Device extension not supported: ");
+    Logger::log(name);
     return false;
 }
 
@@ -552,8 +570,6 @@ auto VkCore::checkDevice(VkPhysicalDevice device, const vector<const char *> &de
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 
-    cout << deviceProperties << std::endl;
-
     vk_physical_device_info deviceInfo = getDeviceQueueFamilies(device);
 
     bool supportsGraphics = false;
@@ -603,7 +619,7 @@ auto VkCore::getDeviceQueueFamilies(VkPhysicalDevice device) -> vk_physical_devi
 
     if(queueFamilyCount == 0)
     {
-        throw std::runtime_error("No device queue families found.");
+        Logger::failure("No device queue families found.");
     }
 
     queueFamilies.resize(queueFamilyCount);

@@ -4,6 +4,7 @@
 
 #include "CommandPool.h"
 #include "../../Utilities/VulkanUtilityFunctions.h"
+#include "../../../Core/Logger.h"
 
 CommandPool::CommandPool(VkDevice device, uint32_t queueFamilyIndex, bool isTransient, bool individualReset) : m_IsIndividualRessetable(individualReset), m_IsTransient(isTransient), m_QueueFamilyIndex(queueFamilyIndex), m_Device(device), m_Commandpool({m_Device, vkDestroyCommandPool})
 {
@@ -23,9 +24,8 @@ CommandPool::CommandPool(VkDevice device, uint32_t queueFamilyIndex, bool isTran
         info.flags = 0;
 
 
-    if (vkCreateCommandPool(m_Device, &info, nullptr, m_Commandpool.reset()) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create the command pool!");
-    }
+    VkResult result = vkCreateCommandPool(m_Device, &info, nullptr, m_Commandpool.reset());
+    vkIfFailThrowMessage(result, "Failed to create command pool!");
 }
 
 vector<VkCommandBuffer> CommandPool::allocateCommandBuffers(uint32_t amount, CommandBufferLevel level)

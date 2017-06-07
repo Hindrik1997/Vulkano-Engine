@@ -8,6 +8,7 @@
 #include "Renderpass.h"
 #include "../../Utilities/VulkanEnums.h"
 #include "Swapchain.h"
+#include "../../../Core/Logger.h"
 
 VkPipelineVertexInputStateCreateInfo PipelineStateDescriptor::defaultVertexInputState() {
 
@@ -198,7 +199,7 @@ VkPipelineDepthStencilStateCreateInfo PipelineStateDescriptor::defaultDepthStenc
 auto PipelineStateDescriptor::attachShader(ShaderModule &shaderModule) -> void
 {
     if(shaderModule.type() == ShaderModuleType::Null)
-        throw std::runtime_error("Invalid shader module type!");
+        Logger::failure("Invalid shader module type!");
 
     m_ShaderStages.push_back(shaderModule.info());
 }

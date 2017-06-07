@@ -7,6 +7,7 @@
 
 
 
+#include <iostream>
 #include <stdint.h>
 #include <string>
 #include <vulkan/vulkan.h>
@@ -15,6 +16,7 @@
 #include <algorithm>
 #include <utility>
 #include "FunctionWrapper.h"
+#include "../../../Core/Logger.h"
 
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -26,6 +28,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <sstream>
 
 
 using std::make_pair;
@@ -34,6 +37,8 @@ using std::vector;
 using std::string;
 using std::function;
 using std::remove;
+using std::cout;
+using std::endl;
 
 ////SELECT PLATFORM HERE////
 
@@ -83,6 +88,9 @@ private:
 
 inline VulkanPlatform::VulkanPlatform(string platformName) : m_PlatformName(platformName)
 {
+    std::stringstream str;
+    str << "Current platform: " << m_PlatformName;
+    Logger::log(str.str());
 }
 
 inline VulkanPlatform::~VulkanPlatform()

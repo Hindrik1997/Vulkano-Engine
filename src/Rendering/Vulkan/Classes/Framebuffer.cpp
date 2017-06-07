@@ -3,6 +3,7 @@
 //
 
 #include "Framebuffer.h"
+#include "../../Utilities/VulkanUtilityFunctions.h"
 
 Framebuffer::Framebuffer(VkDevice device, const VkExtent2D swapchainExtent, const Renderpass& renderpass, const vector<VkImageView> &imageViews) : m_FrameBuffer({device, vkDestroyFramebuffer})
 {
@@ -16,9 +17,8 @@ Framebuffer::Framebuffer(VkDevice device, const VkExtent2D swapchainExtent, cons
     info.height = swapchainExtent.height;
     info.layers = 1;
 
-    if (vkCreateFramebuffer(device, &info, nullptr, m_FrameBuffer.reset()) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to create framebuffer!");
-    }
+    VkResult result = vkCreateFramebuffer(device, &info, nullptr, m_FrameBuffer.reset());
+    vkIfFailThrowMessage(result, "Failed to create frame buffer!");
 }
 
 VkFramebuffer Framebuffer::framebuffer() const

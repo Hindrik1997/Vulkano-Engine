@@ -5,6 +5,7 @@
 #include <limits>
 #include <tuple>
 #include "VulkanUtilityFunctions.h"
+#include "../../Core/Logger.h"
 
 using std::tuple;
 using std::make_tuple;
@@ -49,7 +50,7 @@ auto operator<<(ostream& o, VkPhysicalDeviceProperties& p) -> ostream&
     o << "API Version: "        << p.apiVersion     << std::endl;
     o << "Driver Version: "     << p.driverVersion  << std::endl;
 
-    o << "------------------------------------" << std::endl;
+    o << "------------------------------------"     << std::endl;
 
     return o;
 }
@@ -124,14 +125,16 @@ auto getVendorNameForID(uint32_t id) -> string
             return std::get<1>(t);
         }
     }
-    std::cout << "No vendor found!" << std::endl;
+    Logger::error("No compatible vendor found for this id: " + std::to_string(id) +  "!");
     return std::to_string(id);
 }
 
 auto vkIfFailThrowMessage(VkResult result, std::string message) -> void
 {
     if(result != VK_SUCCESS)
-        throw std::runtime_error(message);
+    {
+        Logger::failure(message);
+    }
 }
 
 auto getSuitableMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties) -> uint32_t
@@ -144,5 +147,6 @@ auto getSuitableMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter,
             return i;
         }
     }
-    throw std::runtime_error("failed to find suitable memory type!");
+    Logger::failure("failed to find suitable memory type!");
+    throw;
 }

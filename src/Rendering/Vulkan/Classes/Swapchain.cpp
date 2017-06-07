@@ -4,6 +4,7 @@
 
 #include <limits>
 #include "Swapchain.h"
+#include "../../../Core/Logger.h"
 
 Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface) :
     m_PresentQueue(presentQueue),
@@ -107,7 +108,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
 {
     vk_swapchain_details details = fillSwapChainDetails(m_VkCore.physicalDevice(), m_Surface);
     if(!checkSwapChainDetails(details))
-        throw std::runtime_error("Error, something wrong with the swapchain details.");
+        Logger::failure("Error, something wrong with the swapchain details.");
 
     m_SurfaceFormat = pickSwapChainSurfaceFormat(details);
     m_PresentMode = pickSwapChainPresentMode(details);
@@ -142,7 +143,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
     {
         createInfo.oldSwapchain             = VK_NULL_HANDLE;
         if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
-            throw std::runtime_error("Error, failed to create swapchain!");
+            Logger::failure("Error, failed to create swapchain!");
         }
     }
     else
@@ -151,7 +152,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
         VkSwapchainKHR newSwapchain;
 
         if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, &newSwapchain) != VK_SUCCESS) {
-            throw std::runtime_error("Error, failed to create swapchain!");
+            Logger::failure("Error, failed to create swapchain!");
         }
         m_Swapchain = newSwapchain;
     }

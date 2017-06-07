@@ -27,7 +27,9 @@ public:
 
 inline RenderMode::RenderMode(string name, RenderTarget&& target) : m_Name(name), m_Target(std::move(target))
 {
-    std::cout << "Initializing " << name << std::endl;
+    std::stringstream str;
+    str << "Initializing " << name ;
+    Logger::log(str.str());
 }
 
 inline bool RenderMode::processAPI(float deltaTime)

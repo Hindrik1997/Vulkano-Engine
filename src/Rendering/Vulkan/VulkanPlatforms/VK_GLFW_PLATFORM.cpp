@@ -20,7 +20,8 @@ static void onWindowResized(GLFWwindow* window, int width, int height)
 
 
 
-VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW Platform") {
+VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW")
+{
 
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

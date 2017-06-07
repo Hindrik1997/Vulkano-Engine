@@ -25,7 +25,8 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
     info.m_EnabledInstanceExtensionNames            = platform_extensions;
     info.m_EnabledDeviceExtentionNames              = enabledDeviceExtensions;
     info.m_EnableDebugLayers                        = enableDebugLayers;
-    info.m_EnumerateLayersAndExtensionsInConsole    = true;
+    info.m_EnumeratePossibleDevicesInConsole        = false;
+    info.m_EnumerateLayersAndExtensionsInConsole    = false;
 
     return info;
 }
