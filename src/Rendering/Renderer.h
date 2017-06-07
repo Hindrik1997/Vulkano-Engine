@@ -17,19 +17,31 @@ const bool enableDebugLayers =
         true;
 #endif
 
-static vector<const char*> enabledInstanceValidationLayers = {
-        "VK_LAYER_LUNARG_standard_validation",
+static vector<const char*> const enabledInstanceValidationLayers = {
+        //"VK_LAYER_LUNARG_standard_validation",
         //"VK_LAYER_LUNARG_api_dump"
+
+#ifndef NDEBUG
+
+        "VK_LAYER_GOOGLE_threading",
+        "VK_LAYER_LUNARG_parameter_validation",
+        "VK_LAYER_LUNARG_object_tracker",
+        "VK_LAYER_LUNARG_core_validation",
+        "VK_LAYER_LUNARG_swapchain",
+        "VK_LAYER_GOOGLE_unique_objects"
+
+#endif
+
 };
 
-static vector<const char*> enabledInstanceExtensions = {
+static vector<const char*> const enabledInstanceExtensions = {
 #ifndef NDEBUG
         VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
 #endif
         VK_KHR_SURFACE_EXTENSION_NAME,
 };
 
-static vector<const char*> enabledDeviceExtensions = {
+static vector<const char*> const enabledDeviceExtensions = {
         VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 };
 

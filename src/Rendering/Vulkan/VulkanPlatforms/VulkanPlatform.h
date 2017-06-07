@@ -66,7 +66,7 @@ public:
 
     virtual VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle) = 0;
 
-    virtual void processExtensions(vector<const char *> &instanceExtensions) = 0;
+    virtual vector<const char*> processExtensions(const vector<const char *>& instanceExtensions) = 0;
     virtual bool processAPI(WindowHandle window, float deltaTime) = 0;
 
     virtual pair<uint32_t,uint32_t> getWindowSize(WindowHandle handle) = 0;

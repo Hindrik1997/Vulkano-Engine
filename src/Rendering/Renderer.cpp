@@ -6,18 +6,26 @@
 #include "Renderer.h"
 #include "RenderModes/ForwardRenderMode.h"
 
+using std::begin;
+using std::end;
+using std::copy;
+
+
 auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 {
     vk_core_create_info info;
 
-    platform.processExtensions(enabledInstanceExtensions);
+    vector<const char*> platform_extensions = platform.processExtensions(enabledInstanceExtensions);
+
+    platform_extensions.reserve(platform_extensions.size() + enabledInstanceExtensions.size());
+    copy(begin(enabledInstanceExtensions),end(enabledInstanceExtensions), std::inserter(platform_extensions, end(platform_extensions)));
 
     info.m_ApplicationName                          = "Vulkano Engine";
-    info.m_EnabledInstanceValidationLayerNames      = &enabledInstanceValidationLayers;
-    info.m_EnabledInstanceExtensionNames            = &enabledInstanceExtensions;
-    info.m_EnabledDeviceExtentionNames              = &enabledDeviceExtensions;
+    info.m_EnabledInstanceValidationLayerNames      = enabledInstanceValidationLayers;
+    info.m_EnabledInstanceExtensionNames            = platform_extensions;
+    info.m_EnabledDeviceExtentionNames              = enabledDeviceExtensions;
     info.m_EnableDebugLayers                        = enableDebugLayers;
-    info.m_EnumerateLayersAndExtensionsInConsole    = false;
+    info.m_EnumerateLayersAndExtensionsInConsole    = true;
 
     return info;
 }

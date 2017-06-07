@@ -31,7 +31,10 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW Platform") {
 
 }
 
-void VK_GLFW_PLATFORM::processExtensions(vector<const char *> &instanceExtensions) {
+vector<const char*> VK_GLFW_PLATFORM::processExtensions(const vector<const char *> & instanceExtensions) {
+
+    vector<const char*> additionalExtensions;
+
     uint32_t glfwExtensionCount = 0;
     const char** extensions;
 
@@ -51,8 +54,9 @@ void VK_GLFW_PLATFORM::processExtensions(vector<const char *> &instanceExtension
 
         if(isFound)
             continue;
-        instanceExtensions.push_back(extensions[i]);
+        additionalExtensions.push_back(extensions[i]);
     }
+    return additionalExtensions;
 }
 
 WindowHandle VK_GLFW_PLATFORM::createWindow(uint32_t windowWidth, uint32_t windowHeight, string windowTitle)

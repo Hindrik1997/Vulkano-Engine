@@ -64,9 +64,9 @@ struct vk_queue {
 struct vk_core_create_info {
 
     const char*                         m_ApplicationName                           = "";
-    const vector<const char*>*          m_EnabledInstanceValidationLayerNames       = nullptr;
-    const vector<const char*>*          m_EnabledInstanceExtensionNames             = nullptr;
-    const vector<const char*>*          m_EnabledDeviceExtentionNames               = nullptr;
+    vector<const char*>                 m_EnabledInstanceValidationLayerNames       = {};
+    vector<const char*>                 m_EnabledInstanceExtensionNames             = {};
+    vector<const char*>                 m_EnabledDeviceExtentionNames               = {};
     bool                                m_EnableDebugLayers                         = false;
     bool                                m_EnumerateLayersAndExtensionsInConsole     = false;
 

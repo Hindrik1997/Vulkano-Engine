@@ -61,10 +61,10 @@ auto VkCore::vkInitInstance(vk_core_create_info createInfo) -> void
     instanceCreateInfo.pNext                            = nullptr;
     instanceCreateInfo.flags                            = 0;
     instanceCreateInfo.pApplicationInfo                 = &applicationInfo;
-    instanceCreateInfo.enabledExtensionCount            = static_cast<uint32_t >(createInfo.m_EnabledInstanceExtensionNames->size());
-    instanceCreateInfo.ppEnabledExtensionNames          = createInfo.m_EnabledInstanceExtensionNames->data();
-    instanceCreateInfo.enabledLayerCount                = static_cast<uint32_t >(createInfo.m_EnabledInstanceValidationLayerNames->size());
-    instanceCreateInfo.ppEnabledLayerNames              = createInfo.m_EnabledInstanceValidationLayerNames->data();
+    instanceCreateInfo.enabledExtensionCount            = static_cast<uint32_t >(createInfo.m_EnabledInstanceExtensionNames.size());
+    instanceCreateInfo.ppEnabledExtensionNames          = createInfo.m_EnabledInstanceExtensionNames.data();
+    instanceCreateInfo.enabledLayerCount                = static_cast<uint32_t >(createInfo.m_EnabledInstanceValidationLayerNames.size());
+    instanceCreateInfo.ppEnabledLayerNames              = createInfo.m_EnabledInstanceValidationLayerNames.data();
 
     result = vkCreateInstance(&instanceCreateInfo, nullptr, m_Instance.reset());
 
@@ -99,7 +99,7 @@ auto VkCore::vkInitPhysicalDevice(vk_core_create_info createInfo) -> void
 
     for(const auto& device : physicalDevices)
     {
-        if(checkDevice(device, *createInfo.m_EnabledDeviceExtentionNames))
+        if(checkDevice(device, createInfo.m_EnabledDeviceExtentionNames))
         {
             possibleGPUs.push_back(device);
         }
@@ -197,8 +197,8 @@ auto VkCore::vkInitLogicalDevice(vk_core_create_info createInfo) -> void
     deviceCreateInfo.enabledLayerCount = 0;
     deviceCreateInfo.ppEnabledLayerNames = nullptr;
 
-    deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t >(createInfo.m_EnabledDeviceExtentionNames->size());
-    deviceCreateInfo.ppEnabledExtensionNames = createInfo.m_EnabledDeviceExtentionNames->data();
+    deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t >(createInfo.m_EnabledDeviceExtentionNames.size());
+    deviceCreateInfo.ppEnabledExtensionNames = createInfo.m_EnabledDeviceExtentionNames.data();
 
 
     result = vkCreateDevice(m_PhysicalDevice, &deviceCreateInfo, nullptr, m_Device.reset());
@@ -365,7 +365,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
         }
     }
 
-    for(const char* name : *createInfo.m_EnabledInstanceExtensionNames)
+    for(const char* name : createInfo.m_EnabledInstanceExtensionNames)
     {
         if(!isInstanceExtensionSupported(name))
         {
@@ -373,7 +373,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
         }
     }
 
-    for(const char* name : *createInfo.m_EnabledInstanceValidationLayerNames)
+    for(const char* name : createInfo.m_EnabledInstanceValidationLayerNames)
     {
         if(!isValidationLayerSupported(name))
         {
@@ -384,7 +384,7 @@ auto VkCore::checkLayersAndInstanceExtensionsSupport(vk_core_create_info createI
     if(createInfo.m_EnableDebugLayers)
     {
         bool debugExtensionFound = false;
-        for(const char* name : *createInfo.m_EnabledInstanceExtensionNames)
+        for(const char* name : createInfo.m_EnabledInstanceExtensionNames)
         {
             if(strcmp(name, VK_EXT_DEBUG_REPORT_EXTENSION_NAME) == 0)
             {
