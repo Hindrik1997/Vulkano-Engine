@@ -27,8 +27,8 @@ public:
     RenderTargetOutput&operator=(RenderTargetOutput&&) = default;
 
 public:
-    void render(float deltaTime) const;
-    bool processAPI(float deltaTime) const;
+    void render(nanoseconds deltaTime) const;
+    bool processAPI(nanoseconds deltaTime) const;
 };
 
 

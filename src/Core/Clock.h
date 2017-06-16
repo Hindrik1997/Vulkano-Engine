@@ -11,7 +11,7 @@ class Clock {
 private:
     std::chrono::time_point<std::chrono::steady_clock> m_previousFrame;
 public:
-    long long getDeltaTime();
+    std::chrono::nanoseconds getDeltaTime();
 
 };
 

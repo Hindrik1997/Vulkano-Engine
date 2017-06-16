@@ -43,7 +43,7 @@ public:
     ForwardRenderMode& operator=(ForwardRenderMode&&) = default;
 
 public:
-    void render(float deltaTime) override;
+    void render(nanoseconds deltaTime) override;
 
 
 private:
@@ -62,7 +62,7 @@ private:
     void recreateSwapchain(uint32_t  width, uint32_t height);
 
 
-    void updateUniformBuffer(float deltaTime);
+    void updateUniformBuffer(nanoseconds deltaTime);
 };
 
 

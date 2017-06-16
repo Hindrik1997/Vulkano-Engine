@@ -8,7 +8,9 @@
 #include <string>
 #include <iostream>
 #include "RenderTarget.h"
+#include <chrono>
 
+using std::chrono::nanoseconds;
 using std::string;
 
 class RenderMode
@@ -20,9 +22,9 @@ public:
     RenderMode(string name, RenderTarget&& target);
     virtual ~RenderMode() = default;
 public:
-    virtual void render(float deltaTime)        = 0;
+    virtual void render(nanoseconds deltaTime)        = 0;
 
-    bool processAPI(float deltaTime);
+    bool processAPI(nanoseconds deltaTime);
 };
 
 inline RenderMode::RenderMode(string name, RenderTarget&& target) : m_Name(name), m_Target(std::move(target))
@@ -32,7 +34,7 @@ inline RenderMode::RenderMode(string name, RenderTarget&& target) : m_Name(name)
     Logger::log(str.str());
 }
 
-inline bool RenderMode::processAPI(float deltaTime)
+inline bool RenderMode::processAPI(nanoseconds deltaTime)
 {
     return m_Target.processAPI(deltaTime);
 }
@@ -43,7 +45,7 @@ class NullRenderMode : public RenderMode
 public:
     NullRenderMode(RenderTarget&& target);
 
-    void render(float deltaTime);
+    void render(nanoseconds deltaTime);
 
 };
 
@@ -51,7 +53,7 @@ inline NullRenderMode::NullRenderMode(RenderTarget&& target) : RenderMode("Null 
 {
 }
 
-inline void NullRenderMode::render(float deltaTime)
+inline void NullRenderMode::render(nanoseconds deltaTime)
 {
 
 }

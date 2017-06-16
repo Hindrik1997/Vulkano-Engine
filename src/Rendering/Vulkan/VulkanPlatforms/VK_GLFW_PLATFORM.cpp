@@ -28,7 +28,7 @@ VK_GLFW_PLATFORM::VK_GLFW_PLATFORM() : VulkanPlatform("GLFW")
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     if(glfwVulkanSupported() != GLFW_TRUE)
-        throw std::runtime_error("Vulkan loader not found!");
+        Logger::failure("Error, Vulkan support not found!");
 
 }
 
@@ -82,21 +82,27 @@ VK_GLFW_PLATFORM::~VK_GLFW_PLATFORM()
     glfwTerminate();
 }
 
-bool VK_GLFW_PLATFORM::processAPI(WindowHandle window, float deltaTime)
+bool VK_GLFW_PLATFORM::processAPI(WindowHandle window, nanoseconds deltaTime)
 {
     GLFWwindow* pointer = m_Windows[static_cast<uint16_t >(window)];
     bool shouldClose = glfwWindowShouldClose(pointer) > 0;
     if(shouldClose)
         return false;
 
-    
-
-    if(deltaTime > 0.0f)
+    if(deltaTime > nanoseconds(0))
     {
-        float fps = 1000000000.0f / deltaTime;
+        float fps = std::chrono::duration_cast<nanoseconds>(std::chrono::seconds(1)) / deltaTime;
+        int64_t frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count();
+
+        std::chrono::microseconds fraction  = std::chrono::duration_cast<std::chrono::microseconds>(deltaTime) - std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime));
+
         string c = "Vulkano Engine ";
         c.append(std::to_string(static_cast<int>(fps)));
-        c.append(" FPS");
+        c.append(" FPS - ");
+        c.append(std::to_string(frameTime));
+        c.append(",");
+        c.append(std::to_string(fraction.count()));
+        c.append("ms");
         glfwSetWindowTitle(pointer, c.c_str());
     }
 

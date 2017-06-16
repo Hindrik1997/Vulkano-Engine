@@ -32,7 +32,7 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 }
 
 
-auto Renderer::render(float deltaTime) -> void
+auto Renderer::render(nanoseconds deltaTime) -> void
 {
     for(const auto& output : m_Outputs)
     {
@@ -40,7 +40,7 @@ auto Renderer::render(float deltaTime) -> void
     }
 }
 
-auto Renderer::processAPI(float deltaTime) -> bool
+auto Renderer::processAPI(nanoseconds deltaTime) -> bool
 {
     vector<uint32_t > mustBeClosed;
     uint32_t  i = 0;

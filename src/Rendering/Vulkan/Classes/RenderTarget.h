@@ -10,7 +10,9 @@
 #include "Swapchain.h"
 #include "../VulkanPlatforms/WindowHandleWrapper.h"
 #include <memory>
+#include <chrono>
 
+using std::chrono::nanoseconds;
 using std::make_unique;
 using std::unique_ptr;
 
@@ -35,7 +37,7 @@ public:
     Swapchain&   swapchain();
     VkCore&      vkCore();
     WindowHandleWrapper& window();
-    bool processAPI(float deltaTime);
+    bool processAPI(nanoseconds deltaTime);
 private:
     void            createSwapchain(uint32_t width, uint32_t height);
     static VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle, VK_PLATFORM& platform);

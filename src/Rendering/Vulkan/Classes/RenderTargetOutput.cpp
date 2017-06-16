@@ -4,7 +4,10 @@
 
 #include "RenderTargetOutput.h"
 
-void RenderTargetOutput::render(float deltaTime) const
+using std::chrono::nanoseconds;
+
+
+void RenderTargetOutput::render(nanoseconds deltaTime) const
 {
     m_RenderMode->render(deltaTime);
 }
@@ -14,7 +17,7 @@ RenderTargetOutput::RenderTargetOutput(RenderMode* renderMode) : m_RenderMode(re
 
 }
 
-bool RenderTargetOutput::processAPI(float deltaTime) const
+bool RenderTargetOutput::processAPI(nanoseconds deltaTime) const
 {
     return m_RenderMode->processAPI(deltaTime);
 }

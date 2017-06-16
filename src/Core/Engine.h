@@ -11,20 +11,24 @@
 #include "../Utility Classes/NonCopyableNonMovable.h"
 #include "Threadpool.h"
 
+using std::chrono::nanoseconds;
+
+
 class Engine final : NonCopyableNonMovable {
 public:
     Engine();
     ~Engine();
 private:
-    bool m_quit = false;
-    Clock m_internalClock;
-    ThreadPool m_Threadpool;
-    Renderer m_renderer;
+    bool        m_Quit = false;
+    Clock       m_InternalClock;
+    ThreadPool  m_Threadpool;
+    Renderer    m_Renderer;
 public:
     void run();
 
     ThreadPool& threadPool();
-
+private:
+    void processFrameTime(nanoseconds dt);
 
 };
 

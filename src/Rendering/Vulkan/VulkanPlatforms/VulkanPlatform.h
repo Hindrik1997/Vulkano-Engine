@@ -17,6 +17,7 @@
 #include <utility>
 #include "FunctionWrapper.h"
 #include "../../../Core/Logger.h"
+#include <chrono>
 
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -31,6 +32,7 @@
 #include <sstream>
 
 
+using std::chrono::nanoseconds;
 using std::make_pair;
 using std::pair;
 using std::vector;
@@ -72,7 +74,7 @@ public:
     virtual VkResult createSurface(VkInstance instance, VkSurfaceKHR& surface, WindowHandle handle) = 0;
 
     virtual vector<const char*> processExtensions(const vector<const char *>& instanceExtensions) = 0;
-    virtual bool processAPI(WindowHandle window, float deltaTime) = 0;
+    virtual bool processAPI(WindowHandle window, nanoseconds deltaTime) = 0;
 
     virtual pair<uint32_t,uint32_t> getWindowSize(WindowHandle handle) = 0;
 

@@ -9,6 +9,9 @@
 #include "Vulkan/VkCore.h"
 #include "../Utility Classes/NonCopyableNonMovable.h"
 #include "Vulkan/Classes/RenderTargetOutput.h"
+#include <chrono>
+
+using std::chrono::nanoseconds;
 
 const bool enableDebugLayers =
 #ifdef NDEBUG
@@ -57,8 +60,8 @@ public:
     Renderer(Engine& engine);
     ~Renderer();
 public:
-    void render(float deltaTime);
-    bool processAPI(float deltaTime);
+    void render(nanoseconds deltaTime);
+    bool processAPI(nanoseconds deltaTime);
 
 
 

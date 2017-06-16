@@ -18,7 +18,7 @@ using std::string;
 
 class VK_GLFW_PLATFORM : public VulkanPlatform {
 private:
-    CacheOptimizedStorage<GLFWwindow*, 64> m_Windows;
+    CacheOptimizedStorage<GLFWwindow*, 8> m_Windows;
 public:
     VK_GLFW_PLATFORM();
     ~VK_GLFW_PLATFORM();
@@ -31,7 +31,7 @@ public:
     pair<uint32_t, uint32_t> getWindowSize(WindowHandle handle) override;
 
     vector<const char*> processExtensions(const vector<const char *>& instanceExtensions);
-    bool processAPI(WindowHandle window, float deltaTime);
+    bool processAPI(WindowHandle window, nanoseconds deltaTime);
 };
 
 

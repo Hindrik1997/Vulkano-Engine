@@ -77,7 +77,7 @@ Renderpass ForwardRenderMode::createDefaultRenderpass()
     return Renderpass(m_Target.vkCore().device(),ad,sd,sdy);
 }
 
-void ForwardRenderMode::render(float deltaTime)
+void ForwardRenderMode::render(nanoseconds deltaTime)
 {
     updateUniformBuffer(deltaTime);
 
@@ -310,9 +310,9 @@ void ForwardRenderMode::createDescriptorSetLayout()
     vkIfFailThrowMessage(result, "Error creating descriptor set layout!");
 }
 
-void ForwardRenderMode::updateUniformBuffer(float deltaTime)
+void ForwardRenderMode::updateUniformBuffer(nanoseconds deltaTime)
 {
-    m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime * glm::radians(0.0000001f), glm::vec3(0.0f, 0.0f, 1.0f));
+    m_UBOData.world = m_UBOData.world * glm::rotate(glm::mat4(), deltaTime.count() * glm::radians(0.0000001f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_UBOData.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     m_UBOData.projection = glm::perspective(glm::radians(90.0f), m_Target.swapchain().extent2D().width / (float) m_Target.swapchain().extent2D().height, 0.1f, 10.0f);
     //m_UBOData.projection[1][1] *= -1;

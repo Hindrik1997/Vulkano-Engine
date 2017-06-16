@@ -69,9 +69,9 @@ Swapchain &RenderTarget::swapchain()
     return *m_Swapchain;
 }
 
-bool RenderTarget::processAPI(float deltaTime)
+bool RenderTarget::processAPI(nanoseconds deltaTime)
 {
-    return m_Platform.processAPI(m_Window,deltaTime);
+    return m_Platform.processAPI(m_Window, deltaTime);
 }
 
 VkCore &RenderTarget::vkCore()
