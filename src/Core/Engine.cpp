@@ -3,6 +3,7 @@
 //
 
 #include "Engine.h"
+#include "SynchedTask.h"
 #include <memory>
 
 void Engine::run() {
@@ -22,6 +23,8 @@ void Engine::run() {
 
 Engine::Engine() : m_Threadpool(std::thread::hardware_concurrency()), m_renderer(*this)
 {
+
+
 }
 
 Engine::~Engine() 

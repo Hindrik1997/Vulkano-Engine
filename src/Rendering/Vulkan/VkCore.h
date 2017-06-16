@@ -89,6 +89,8 @@ public:
     auto        transferQueueFamilies()  const -> const vector<uint32_t>&;
 public:
     auto        copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset = 0, VkDeviceSize dstOffset = 0) -> void;
+    auto        transitionImage(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
 
 
 };

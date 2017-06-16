@@ -739,3 +739,12 @@ auto VkCore::transferQueueFamilies() const -> const vector<uint32_t> &
 {
     return m_TransferQueueFamilies;
 }
+
+auto VkCore::transitionImage(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
+    VkCommandBuffer buffer = m_TransferCommandPools[0].allocateCommandBuffer(CommandBufferLevel::Primary);
+
+
+
+
+
+}
