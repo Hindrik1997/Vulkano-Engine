@@ -4,6 +4,7 @@
 
 #include "Engine.h"
 #include "SynchedTask.h"
+#include "../Utility Classes/Nullable.h"
 
 void Engine::run() {
     while(!m_Quit)
@@ -21,9 +22,8 @@ void Engine::run() {
     }
 }
 
-Engine::Engine() : m_Threadpool(std::thread::hardware_concurrency()), m_Renderer(*this)
+Engine::Engine() : m_Threadpool(( readConfigFiles(), std::thread::hardware_concurrency())), m_Renderer(*this)
 {
-
 
 }
 
@@ -42,4 +42,19 @@ void Engine::processFrameTime(nanoseconds dt)
     {
         dt = nanoseconds(1);
     }
+}
+
+void Engine::readConfigFiles()
+{
+    m_ConfigManager.parseFile("config.cfg");
+
+    for(auto& a : m_ConfigManager.map())
+    {
+        Logger::log("Option: " + a.first + " Value: " + a.second);
+    }
+
+}
+
+const map<string, string> &Engine::configuration() {
+    return m_ConfigManager.map();
 }

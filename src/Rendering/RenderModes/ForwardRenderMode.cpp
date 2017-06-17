@@ -12,7 +12,7 @@
 #include "../../Core/Logger.h"
 
 
-ForwardRenderMode::ForwardRenderMode(RenderTarget&& target) : RenderMode("Forward render mode", std::move(target)), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
+ForwardRenderMode::ForwardRenderMode(RenderTarget&& target, Engine& engine) : RenderMode("Forward render mode", std::move(target), engine), m_TempLayout({ m_Target.vkCore().device(), vkDestroyPipelineLayout }), m_Commandpool(m_Target.vkCore().device(), m_Target.swapchain().presentQueue().m_FamilyIndex), m_ComparePtr(this), m_DescriptorSetLayout({m_Target.vkCore().device(), vkDestroyDescriptorSetLayout}), m_DescriptorPool({m_Target.vkCore().device(), vkDestroyDescriptorPool})
 {
     m_Target.platform().addResizeCallback([this](uint32_t width, uint32_t height){ recreateSwapchain(width, height); }, m_ComparePtr);
 

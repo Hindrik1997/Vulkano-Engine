@@ -79,7 +79,7 @@ auto Swapchain::pickSwapChainSurfaceFormat(const vk_swapchain_details& details) 
 
 auto Swapchain::pickSwapChainPresentMode(const vk_swapchain_details& details) -> VkPresentModeKHR
 {
-    return VK_PRESENT_MODE_IMMEDIATE_KHR;
+    //return VK_PRESENT_MODE_IMMEDIATE_KHR;
 
     for(const auto& presentMode : details.m_PresentModes)
     {

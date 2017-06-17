@@ -33,7 +33,7 @@ private:
     vector<VkDescriptorSet>                               m_DescriptorSets;
     WorldViewProjectionUBO                                m_UBOData;
 public:
-    ForwardRenderMode(RenderTarget&& target);
+    ForwardRenderMode(RenderTarget&& target, Engine& engine);
     ~ForwardRenderMode();
 
     ForwardRenderMode(const ForwardRenderMode&) = delete;

@@ -62,13 +62,6 @@ public:
 public:
     void render(nanoseconds deltaTime);
     bool processAPI(nanoseconds deltaTime);
-
-
-
-
-
-
-
 };
 
 

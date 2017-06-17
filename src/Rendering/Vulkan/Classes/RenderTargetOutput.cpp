@@ -7,7 +7,7 @@
 using std::chrono::nanoseconds;
 
 
-void RenderTargetOutput::render(nanoseconds deltaTime) const
+void RenderTargetOutput::render(nanoseconds deltaTime)
 {
     m_RenderMode->render(deltaTime);
 }
@@ -17,7 +17,7 @@ RenderTargetOutput::RenderTargetOutput(RenderMode* renderMode) : m_RenderMode(re
 
 }
 
-bool RenderTargetOutput::processAPI(nanoseconds deltaTime) const
+bool RenderTargetOutput::processAPI(nanoseconds deltaTime)
 {
     return m_RenderMode->processAPI(deltaTime);
 }

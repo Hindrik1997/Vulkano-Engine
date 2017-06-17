@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "Renderer.h"
 #include "RenderModes/ForwardRenderMode.h"
+#include "../Core/Engine.h"
 
 using std::begin;
 using std::end;
@@ -34,7 +35,7 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 
 auto Renderer::render(nanoseconds deltaTime) -> void
 {
-    for(const auto& output : m_Outputs)
+    for(auto& output : m_Outputs)
     {
         output.render(deltaTime);
     }
@@ -70,8 +71,9 @@ Renderer::~Renderer()
 
 Renderer::Renderer(Engine& engine) : m_VkCore(fill_vk_core_create_info(m_Platform), engine), m_Engine(engine)
 {
-    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
-    //m_Outputs.emplace_back(new NullRenderMode(RenderTarget(800, 600, m_VkCore, m_Platform)));
+    uint32_t width, height;
+    width = static_cast<uint32_t >(std::stoi(m_Engine.configuration().at("width")));
+    height = static_cast<uint32_t >(std::stoi(m_Engine.configuration().at("height")));
+
+    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(width, height, m_VkCore, m_Platform), m_Engine));
 }
-
-

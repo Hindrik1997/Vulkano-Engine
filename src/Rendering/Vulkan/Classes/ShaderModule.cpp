@@ -10,24 +10,7 @@
 #include "../../../Core/Logger.h"
 #include "../../Utilities/VulkanUtilityFunctions.h"
 
-#ifdef _WIN32
-#include <direct.h>
-#define GetCurrentDir _getcwd
-#else
-#include <bits/ios_base.h>
-#include <unistd.h>
-#include <cstring>
 
-#define GetCurrentDir getcwd
-#endif
-/*
-std::string GetCurrentWorkingDir() {
-    char buff[FILENAME_MAX];
-    GetCurrentDir( buff, FILENAME_MAX );
-    std::string current_working_dir(buff);
-    return current_working_dir;
-} 
-*/
 
 auto ShaderModule::readSpirFile(const std::string &fileName) -> vector<char>
 {

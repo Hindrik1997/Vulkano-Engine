@@ -6,6 +6,7 @@
 #define VULKANOENGINE_RENDERTARGETOUTPUT_H
 
 #include "RenderMode.h"
+#include "../../../Utility Classes/Nullable.h"
 #include <memory>
 
 using std::unique_ptr;
@@ -27,8 +28,8 @@ public:
     RenderTargetOutput&operator=(RenderTargetOutput&&) = default;
 
 public:
-    void render(nanoseconds deltaTime) const;
-    bool processAPI(nanoseconds deltaTime) const;
+    void render(nanoseconds deltaTime);
+    bool processAPI(nanoseconds deltaTime);
 };
 
 

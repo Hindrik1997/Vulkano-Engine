@@ -13,13 +13,16 @@
 using std::chrono::nanoseconds;
 using std::string;
 
+class Engine;
+
 class RenderMode
 {
 protected:
+    Engine& m_Engine;
     string m_Name;
     RenderTarget m_Target;
 public:
-    RenderMode(string name, RenderTarget&& target);
+    RenderMode(string name, RenderTarget&& target, Engine& engine);
     virtual ~RenderMode() = default;
 public:
     virtual void render(nanoseconds deltaTime)        = 0;
@@ -27,7 +30,7 @@ public:
     bool processAPI(nanoseconds deltaTime);
 };
 
-inline RenderMode::RenderMode(string name, RenderTarget&& target) : m_Name(name), m_Target(std::move(target))
+inline RenderMode::RenderMode(string name, RenderTarget&& target, Engine& engine) : m_Name(name), m_Target(std::move(target)), m_Engine(engine)
 {
     std::stringstream str;
     str << "Initializing " << name ;
@@ -43,13 +46,13 @@ inline bool RenderMode::processAPI(nanoseconds deltaTime)
 class NullRenderMode : public RenderMode
 {
 public:
-    NullRenderMode(RenderTarget&& target);
+    NullRenderMode(RenderTarget&& target, Engine& engine);
 
     void render(nanoseconds deltaTime);
 
 };
 
-inline NullRenderMode::NullRenderMode(RenderTarget&& target) : RenderMode("Null rendering mode", std::move(target))
+inline NullRenderMode::NullRenderMode(RenderTarget&& target, Engine& engine) : RenderMode("Null rendering mode", std::move(target), engine)
 {
 }
 
