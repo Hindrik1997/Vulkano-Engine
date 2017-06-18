@@ -12,7 +12,7 @@ void ThreadWorker::operator()()
     {
         std::unique_lock<std::mutex> locker(pool.queue_mutex);
         pool.cond.wait(locker, [this]() -> bool { return !pool.tasks.empty() || pool.stop; });
-        if (pool.stop) return;
+        if (pool.stop) { locker.unlock(); return; };
         if (!pool.tasks.empty())
         {
             task = pool.tasks.front();

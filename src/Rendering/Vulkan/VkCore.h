@@ -12,7 +12,8 @@
 #include "../Utilities/VulkanUtilityFunctions.h"
 #include "VkUniqueHandle.h"
 #include "Classes/CommandPool.h"
-
+#include "Classes/MemoryManager.h"
+#include "../../Utility Classes/Nullable.h"
 
 
 using std::vector;
@@ -40,6 +41,7 @@ private:
 
     vector<uint32_t>                        m_TransferQueueFamilies                         = {};
     vector<CommandPool>                     m_TransferCommandPools                          = {};
+    Nullable<MemoryManager>                 m_MemoryManager;
 
 public:
     VkCore                                  (vk_core_create_info createInfo, Engine& engine);
@@ -51,6 +53,7 @@ public:
     VkCore& operator=(const VkCore&) = delete;
     VkCore& operator=(VkCore&&) = delete;
 private:
+    auto vkSetupInit                        (vk_core_create_info &info)                                     -> void;
     auto vkInit                             (vk_core_create_info createInfo)                                -> void;
     auto vkInitInstance                     (vk_core_create_info createInfo)                                -> void;
     auto vkInitPhysicalDevice               (vk_core_create_info createInfo)                                -> void;

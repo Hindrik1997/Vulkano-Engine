@@ -12,6 +12,7 @@
 #include "../Utility Classes/NonCopyableNonMovable.h"
 #include "Threadpool.h"
 #include "ConfigurationLoader.h"
+#include "../Utility Classes/ThreadedResourceSet.h"
 
 using std::map;
 using std::chrono::nanoseconds;

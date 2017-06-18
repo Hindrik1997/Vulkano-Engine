@@ -6,6 +6,24 @@
 #include <chrono>
 #include "Logger.h"
 
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define WHITE   "\033[37m"
+#define BOLDBLACK   "\033[1m\033[30m"
+#define BOLDRED     "\033[1m\033[31m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDMAGENTA "\033[1m\033[35m"
+#define BOLDCYAN    "\033[1m\033[36m"
+#define BOLDWHITE   "\033[1m\033[37m"
+
 bool Logger::m_logToFile = true;
 bool Logger::m_logFileIsOpened = false;
 
@@ -41,7 +59,7 @@ void Logger::succes(string msg)
 void Logger::failure(string msg)
 {
     std::stringstream str;
-    str << msg << std::endl;
+    str << RED << msg << WHITE << std::endl;
     logToFileAndConsole(str.str(), LogLevel::Failure);
     throw std::runtime_error(msg);
 }
@@ -68,7 +86,9 @@ void Logger::succesNoEndl(string msg)
 
 void Logger::failureNoEndl(string msg)
 {
-    logToFileAndConsole(msg, LogLevel::Failure);
+    string str = RED + msg + WHITE;
+
+    logToFileAndConsole(str, LogLevel::Failure);
     throw std::runtime_error(msg);
 }
 
@@ -107,3 +127,21 @@ void Logger::logToFileAndConsole(string str, LogLevel e)
     }
     m_logFileIsOpened = true;
 }
+
+#undef RESET
+#undef BLACK
+#undef RED
+#undef GREEN
+#undef YELLOW
+#undef BLUE
+#undef MAGENTA
+#undef CYAN
+#undef WHITE
+#undef BOLDBLACK
+#undef BOLDRED
+#undef BOLDGREEN
+#undef BOLDYELLOW
+#undef BOLDBLUE
+#undef BOLDMAGENTA
+#undef BOLDCYAN
+#undef BOLDWHITE

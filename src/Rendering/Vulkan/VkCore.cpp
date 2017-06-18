@@ -12,13 +12,8 @@
 
 VkCore::VkCore(vk_core_create_info createInfo, Engine& engine) : m_Engine(engine)
 {
-    checkLayersAndInstanceExtensionsSupport(createInfo);
-    vkInit(createInfo);
-    Logger::succes("Initialized Vulkan API succesfully.");
-
-    m_IsDebugEnabled = createInfo.m_EnableDebugLayers;
-    if(m_IsDebugEnabled)
-        setupDebugFacilities();
+    vkSetupInit(createInfo);
+    m_MemoryManager.set(device(),transferOnlyQueues());
 }
 
 VkCore::~VkCore()
@@ -695,6 +690,9 @@ auto VkCore::vkInitSetupTransferFacilities() -> void
 
 auto VkCore::copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset, VkDeviceSize dstOffset) -> void
 {
+    m_MemoryManager.get().copyBuffer(src,dst,size,srcOffset,dstOffset);
+    return;
+
     VkCommandBuffer buffer = m_TransferCommandPools[0].allocateCommandBuffer(CommandBufferLevel::Primary);
 
     VkFenceCreateInfo fenceCreateInfo = {};
@@ -747,4 +745,15 @@ auto VkCore::transitionImage(VkImage image, VkFormat format, VkImageLayout oldLa
 
 
 
+}
+
+auto VkCore::vkSetupInit(vk_core_create_info &createInfo) -> void
+{
+    checkLayersAndInstanceExtensionsSupport(createInfo);
+    vkInit(createInfo);
+    Logger::succes("Initialized Vulkan API succesfully.");
+
+    m_IsDebugEnabled = createInfo.m_EnableDebugLayers;
+    if(m_IsDebugEnabled)
+        setupDebugFacilities();
 }

@@ -3,8 +3,9 @@
 //
 
 #include "Engine.h"
-#include "SynchedTask.h"
+#include "AwaitableTask.h"
 #include "../Utility Classes/Nullable.h"
+#include "../Utility Classes/ThreadedResourceSet.h"
 
 void Engine::run() {
     while(!m_Quit)
@@ -24,8 +25,8 @@ void Engine::run() {
 
 Engine::Engine() : m_Threadpool(( readConfigFiles(), std::thread::hardware_concurrency())), m_Renderer(*this)
 {
-
 }
+
 
 Engine::~Engine() 
 {

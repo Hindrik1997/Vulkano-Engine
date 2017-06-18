@@ -48,14 +48,6 @@ public:
     VkMemoryPropertyFlags memoryFlags();
     VkSharingMode sharingMode();
     VkMemoryRequirements memoryRequirements();
-
-public:
-
-    static void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-
-
-
-
 };
 
 

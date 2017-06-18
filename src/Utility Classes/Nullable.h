@@ -45,6 +45,9 @@ public:
 
     operator bool() const;
 
+    template<typename ...Args>
+    void set(Args... args);
+
     T& get();
     const T& get() const;
 
@@ -250,7 +253,16 @@ bool Nullable<T>::isSet() const
     return !isNull();
 }
 
-
+template<typename T>
+template<typename... Args>
+void Nullable<T>::set(Args... args)
+{
+    if(m_IsUsed)
+        m_Data.m_Data.~T();
+    void* tVoid = &m_Data.m_Data;
+    new (tVoid) T(std::move(args)...);
+    m_IsUsed = true;
+}
 
 
 #endif //VULKANOENGINE_NULLABLE_H

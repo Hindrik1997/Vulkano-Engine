@@ -95,11 +95,6 @@ Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bu
     vkBindBufferMemory(m_Device, m_Buffer, m_DeviceAllocatedMemory, 0);
 }
 
-void Buffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
-{
-
-}
-
 Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkBufferUsageFlags usageFlags,
                VkMemoryPropertyFlags memoryFlags, const vector<uint32_t>& queueFamilies)
         : m_Buffer({device, vkDestroyBuffer}),

@@ -12,7 +12,7 @@
 
 class ThreadPool;
 
-class SynchedTask
+class AwaitableTask
 {
 private:
     std::function<void()>   m_Func;
@@ -20,19 +20,21 @@ private:
     std::condition_variable m_Condition;
     bool                    m_IsDone        = false;
 public:
-    SynchedTask(std::function<void()> func);
-    ~SynchedTask() = default;
+    AwaitableTask() = default;
+    AwaitableTask(std::function<void()> func);
+    ~AwaitableTask() = default;
 
-    SynchedTask(SynchedTask&&)      = default;
-    SynchedTask(const SynchedTask&) = delete;
+    AwaitableTask(AwaitableTask&&)      = delete;
+    AwaitableTask(const AwaitableTask&) = delete;
 
-    SynchedTask& operator=(const SynchedTask&) = delete;
-    SynchedTask& operator=(SynchedTask&&)      = default;
+    AwaitableTask& operator=(const AwaitableTask&) = delete;
+    AwaitableTask& operator=(AwaitableTask&&)      = delete;
 public:
     void enqueue(ThreadPool& pool);
     void wait();
     bool isTaskDone();
-    void reset();
+    void resetCurrentTask();
+    void assignNewTask(std::function<void()> func);
 };
 
 

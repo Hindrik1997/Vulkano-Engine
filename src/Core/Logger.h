@@ -111,8 +111,6 @@ public:
 
 private:
     static void logToFileAndConsole(string str, LogLevel e);
-    static string getTimeStamp();
-
 };
 
 #undef RESET

@@ -8,6 +8,14 @@
 
 #include "../VulkanPlatforms/VulkanPlatform.h"
 #include "CommandPool.h"
+#include "../../Utilities/VulkanStructs.h"
+#include "../../../Utility Classes/ThreadedResourceSet.h"
+#include "../../../Core/AwaitableTask.h"
+#include <utility>
+#include <vector>
+
+using std::vector;
+using std::pair;
 
 class VkCore;
 
@@ -16,7 +24,7 @@ class MemoryManager final
 {
 public:
     MemoryManager()  = delete;
-    MemoryManager(VkCore& vkCore);
+    MemoryManager(VkDevice device, const vector<vk_queue>& transferQueues);
     ~MemoryManager() = default;
 
     MemoryManager(const MemoryManager&) = delete;
@@ -25,10 +33,14 @@ public:
     MemoryManager& operator=(const MemoryManager&)   = delete;
     MemoryManager& operator=(MemoryManager&&)        = default;
 private:
-    VkCore&                                 m_VkCore;
-    vector<CommandPool>                     m_TransferCommandPools                          = {};
+    VkDevice                                m_Device;
 
-
+    vector<CommandPool>                                       m_TransferCommandPools                          = {};
+    ThreadedResourceSet<pair< vk_queue, uint32_t> >           m_TransferQueues;
+private:
+    vector<pair<vk_queue, uint32_t>> createQueueSet(const vector<vk_queue> &vector);
+public:
+    void copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset, VkDeviceSize dstOffset);
 
 
 
