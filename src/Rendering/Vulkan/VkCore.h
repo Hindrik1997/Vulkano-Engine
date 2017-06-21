@@ -53,7 +53,7 @@ public:
     VkCore& operator=(const VkCore&) = delete;
     VkCore& operator=(VkCore&&) = delete;
 private:
-    auto vkSetupInit                        (vk_core_create_info &info)                                     -> void;
+    auto vkSetupInit                        (vk_core_create_info&      info)                                -> void;
     auto vkInit                             (vk_core_create_info createInfo)                                -> void;
     auto vkInitInstance                     (vk_core_create_info createInfo)                                -> void;
     auto vkInitPhysicalDevice               (vk_core_create_info createInfo)                                -> void;

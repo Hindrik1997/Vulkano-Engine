@@ -16,7 +16,8 @@ using std::chrono::nanoseconds;
 using std::make_unique;
 using std::unique_ptr;
 
-class RenderTarget final : NonCopyable {
+class RenderTarget final : NonCopyable
+{
 private:
     VkCore&                         m_VkCore;
     VK_PLATFORM&                    m_Platform;

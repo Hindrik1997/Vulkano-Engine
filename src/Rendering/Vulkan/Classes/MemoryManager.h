@@ -42,6 +42,10 @@ private:
 public:
     void copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size, VkDeviceSize srcOffset, VkDeviceSize dstOffset);
 
+    void transitionBufferOwnershipAndAccesFlags(VkBuffer buffer, VkDeviceSize size, VkDeviceSize offset, uint32_t srcQueueFamilyIndex, uint32_t dstQueueFamilyIndex,VkAccessFlagBits srcAccessFlags, VkAccessFlagBits dstAccessFlags);
+
+
+
 
 
 
