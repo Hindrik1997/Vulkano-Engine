@@ -6,21 +6,22 @@ if (WIN32)
 	include_directories($ENV{VK_SDK_PATH}/include)
 	link_directories($ENV{VK_SDK_PATH}/lib)
 
-	#include_directories("G:/Libraries/glfw-3.2.1/include")
-	include_directories("C:/glfw-3.2.1.bin.WIN64/include")
-	link_directories("C:/glfw-3.2.1.bin.WIN64/lib-vc2015")
+    include_directories("libraries/glfw/include")
 
-		#link_directories("G:/libraries/glfw-3.2.1/x64-debug-vs2017")
-		#link_directories("G:/Libraries/glfw-3.2.1/x64-release-vs2017")
+	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 
-	#link_directories("C:/VulkanSDK/1.0.39.1/Bin")
+        link_directories("C:/glfw-3.2.1.bin.WIN64/lib-vc2015")
 
+	elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
+        link_directories("C:/glfw-3.2.1.bin.WIN64/lib-mingw-w64")
+
+	endif()
 
 else(WIN32)
 
-include_directories($ENV{VULKAN_SDK}/include)
-link_directories($ENV{VULKAN_SDK}/lib)
+include_directories($ENV{VK_SDK_PATH}/include)
+link_directories($ENV{VK_SDK_PATH}/lib)
 
 endif(WIN32)
 

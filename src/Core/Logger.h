@@ -15,6 +15,28 @@ using std::cout;
 using std::endl;
 using std::cin;
 
+#ifdef WIN32
+
+#define RESET   ""
+#define BLACK   ""
+#define RED     ""
+#define GREEN   ""
+#define YELLOW  ""
+#define BLUE    ""
+#define MAGENTA ""
+#define CYAN    ""
+#define WHITE   ""
+#define BOLDBLACK   ""
+#define BOLDRED     ""
+#define BOLDGREEN   ""
+#define BOLDYELLOW  ""
+#define BOLDBLUE    ""
+#define BOLDMAGENTA ""
+#define BOLDCYAN    ""
+#define BOLDWHITE   ""
+
+#else
+
 #define RESET   "\033[0m"
 #define BLACK   "\033[30m"
 #define RED     "\033[31m"
@@ -32,6 +54,9 @@ using std::cin;
 #define BOLDMAGENTA "\033[1m\033[35m"
 #define BOLDCYAN    "\033[1m\033[36m"
 #define BOLDWHITE   "\033[1m\033[37m"
+
+#endif
+
 
 enum class LogLevel : char
 {
