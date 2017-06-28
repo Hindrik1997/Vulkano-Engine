@@ -6,11 +6,15 @@
 #define VULKANOENGINE_SWAPCHAIN_H
 
 #include "../VulkanPlatforms/VulkanPlatform.h"
-#include "../VkCore.h"
+#include "../Instance.h"
+#include "../PresentDevice.h"
+
+class PresentDevice;
 
 class Swapchain final : NonCopyable {
 private:
-    VkCore&                             m_VkCore;
+    Instance*                           m_Instance;
+    PresentDevice*                      m_Device;
     VkSurfaceKHR                        m_Surface;
     VkUniqueHandle<VkSwapchainKHR>      m_Swapchain;
     vector<VkImage>                     m_SwapchainImages;
@@ -29,7 +33,7 @@ private:
     uint32_t            m_Width             = 0;
     uint32_t            m_Height            = 0;
 public:
-    Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface);
+    Swapchain(uint32_t width, uint32_t height, Instance& instance, PresentDevice& device, vk_queue presentQueue, VkSurfaceKHR surface);
 private:
     auto        createSwapchain                 (VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE)                          -> void;
     auto        retrieveSwapchainImages         ()                                                                      -> void;

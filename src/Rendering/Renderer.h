@@ -6,9 +6,11 @@
 #define VULKANOENGINE_RENDERER_H
 
 #include "Vulkan/VulkanPlatforms/VulkanPlatform.h"
-#include "Vulkan/VkCore.h"
+#include "Vulkan/Instance.h"
 #include "../Utility Classes/NonCopyableNonMovable.h"
-#include "Vulkan/Classes/RenderTargetOutput.h"
+#include "Vulkan/RenderOutput.h"
+#include "Vulkan/PresentDevice.h"
+#include "Vulkan/Classes/ResourceOperationManager.h"
 #include <chrono>
 
 using std::chrono::nanoseconds;
@@ -31,7 +33,8 @@ static vector<const char*> const enabledInstanceValidationLayers = {
         "VK_LAYER_LUNARG_object_tracker",
         "VK_LAYER_LUNARG_core_validation",
         "VK_LAYER_LUNARG_swapchain",
-        "VK_LAYER_GOOGLE_unique_objects"
+        "VK_LAYER_GOOGLE_unique_objects",
+        //"VK_LAYER_RENDERDOC_Capture"
 
 #endif
 
@@ -52,16 +55,24 @@ class Engine;
 
 class Renderer final : NonCopyableNonMovable {
 private:
-    Engine& m_Engine;
-    VK_PLATFORM m_Platform;
-    VkCore m_VkCore;
-    vector<RenderTargetOutput> m_Outputs;
+    Engine*                             m_Engine;
+    VK_PLATFORM                         m_Platform;
+    Nullable<Instance>                  m_Instance;
+    Nullable<PresentDevice>             m_Device;
+    Nullable<RenderOutput>              m_Output;
+    Nullable<ResourceOperationManager>  m_ResourceOpsManager;
+    Nullable<MemoryManager>             m_MemoryManager;
 public:
     Renderer(Engine& engine);
     ~Renderer();
 public:
     void render(nanoseconds deltaTime);
     bool processAPI(nanoseconds deltaTime);
+private:
+    void initialize();
+
+
+
 };
 
 

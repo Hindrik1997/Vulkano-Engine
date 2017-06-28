@@ -9,7 +9,7 @@
 #include "../../VkUniqueHandle.h"
 #include "Buffer.h"
 #include "StagingBuffer.h"
-#include "../../VkCore.h"
+#include "../../Instance.h"
 #include <vector>
 
 class UniformBuffer final
@@ -17,9 +17,9 @@ class UniformBuffer final
 private:
     StagingBuffer   m_StagingBuffer;
     Buffer          m_Buffer;
-    VkCore&         m_VkCore;
+    Instance&         m_VkCore;
 public:
-    UniformBuffer(VkDevice device,VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, VkCore& core, const vector<uint32_t>& queueFamilies);
+    UniformBuffer(VkDevice device,VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize, Instance& core, const vector<uint32_t>& queueFamilies);
 
     UniformBuffer()  = delete;
     ~UniformBuffer() = default;

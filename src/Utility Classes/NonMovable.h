@@ -12,7 +12,11 @@ public:
     virtual ~NonMovable() = 0;
 
     NonMovable(NonMovable&&) = delete;
-    NonMovable&& operator=(NonMovable&&) = delete;
+    NonMovable& operator=(NonMovable&&) = delete;
+
+    NonMovable(const NonMovable&) = default;
+    NonMovable& operator=(const NonMovable&) = default;
+
 };
 
 inline NonMovable::~NonMovable(){}

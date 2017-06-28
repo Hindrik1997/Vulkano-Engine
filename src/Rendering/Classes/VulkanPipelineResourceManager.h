@@ -8,7 +8,7 @@
 
 #include "../../Utility Classes/NonCopyable.h"
 #include "../../Utility Classes/NonCopyableNonMovable.h"
-#include "../Vulkan/Classes/RenderTargetOutput.h"
+#include "../Vulkan/RenderOutput.h"
 #include "../Vulkan/Classes/Renderpass.h"
 #include "../Vulkan/Classes/PipelineStateObject.h"
 

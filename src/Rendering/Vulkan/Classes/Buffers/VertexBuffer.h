@@ -10,7 +10,7 @@
 #include "../../VkUniqueHandle.h"
 #include "Buffer.h"
 #include "StagingBuffer.h"
-#include "../../VkCore.h"
+#include "../../Instance.h"
 #include <vector>
 
 using std::vector;
@@ -21,7 +21,7 @@ private:
     Buffer m_Buffer;
 public:
     VertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices);
-    VertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices, VkCore& core, const vector<uint32_t>& queueFamilies);
+    VertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices, Instance& core, const vector<uint32_t>& queueFamilies);
 
     VertexBuffer()  = delete;
     ~VertexBuffer() = default;

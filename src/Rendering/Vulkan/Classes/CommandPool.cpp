@@ -43,10 +43,6 @@ vector<VkCommandBuffer> CommandPool::allocateCommandBuffers(uint32_t amount, Com
     VkResult result = vkAllocateCommandBuffers(m_Device, &info, commandBuffers.data());
     vkIfFailThrowMessage(result, "Command buffer allocation failed!");
 
-    for(const auto& i : commandBuffers)
-    {
-        m_Commandbuffers.push_back(i);
-    }
     return commandBuffers;
 }
 
@@ -54,11 +50,6 @@ VkCommandBuffer CommandPool::allocateCommandBuffer(CommandBufferLevel level)
 {
     vector<VkCommandBuffer> buf = allocateCommandBuffers(1,level);
     return buf.front();
-}
-
-vector<VkCommandBuffer> CommandPool::commandBuffers() const
-{
-    return m_Commandbuffers;
 }
 
 bool CommandPool::isIndividualRessetable() const
@@ -81,17 +72,9 @@ VkDevice CommandPool::device() const
     return m_Device;
 }
 
-void CommandPool::deallocateAllCommandBuffers()
-{
-    if(m_Commandbuffers.size() > 0)
-    {
-        vkFreeCommandBuffers(m_Device, m_Commandpool, static_cast<uint32_t >(m_Commandbuffers.size()), m_Commandbuffers.data());
-    }
-}
-
 void CommandPool::deallocateCommandBuffers(const vector<VkCommandBuffer> buffers)
 {
-    if(m_Commandbuffers.size() > 0)
+    if(buffers.size() > 0)
     {
         vkFreeCommandBuffers(m_Device, m_Commandpool, static_cast<uint32_t >(buffers.size()), buffers.data());
     }
@@ -101,4 +84,9 @@ void CommandPool::deallocateCommandBuffer(VkCommandBuffer buffer)
 {
     vector<VkCommandBuffer> vec = {buffer};
     deallocateCommandBuffers(vec);
+}
+
+VkCommandPool CommandPool::commandPool() const
+{
+    return m_Commandpool;
 }

@@ -21,6 +21,9 @@ ostream& operator<<(ostream& o, vk_layer_extension_properties p);
 
 ostream& operator<<(ostream& o, VkExtensionProperties p);
 
+ostream& operator<<(ostream& o, vk_memory_heap p);
+
+
 void vkIfFailThrowMessage(VkResult result, std::string message);
 
 string getVendorNameForID(uint32_t id);

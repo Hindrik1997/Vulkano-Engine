@@ -41,7 +41,7 @@ public:
     void cleanUp();
 
     template<typename... Args>
-    void reset(Args... arguments);
+    void reset(Args&&... arguments);
 };
 
 template<typename T>
@@ -67,11 +67,11 @@ inline void PoolItem<T>::cleanUp()
 
 template<typename T>
 template<typename... Args>
-void PoolItem<T>::reset(Args... arguments)
+void PoolItem<T>::reset(Args&&... arguments)
 {
     cleanUp();
     void* tVoid = &m_CurrentState;
-    new (tVoid) T(std::move(arguments)...);
+    new (tVoid) T(std::forward<Args>(arguments)...);
     m_IsUsed = true;
 }
 

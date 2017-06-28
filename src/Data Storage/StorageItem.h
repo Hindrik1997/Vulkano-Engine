@@ -37,7 +37,7 @@ public:
     void cleanUp();
 
     template<typename... Args>
-    void reset(Args... arguments);
+    void reset(Args&&... arguments);
 };
 
 template<typename T>
@@ -59,10 +59,10 @@ inline void StorageItem<T>::cleanUp()
 
 template<typename T>
 template<typename... Args>
-void StorageItem<T>::reset(Args... arguments)
+void StorageItem<T>::reset(Args&&... arguments)
 {
     void* tVoid = &(m_Object.m_Object);
-    new (tVoid) T(std::move(arguments)...);
+    new (tVoid) T(std::forward<Args>(arguments)...);
 }
 
 #endif //VULKANO_ENGINE_STORAGEITEM_H

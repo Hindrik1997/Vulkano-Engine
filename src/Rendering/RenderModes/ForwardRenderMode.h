@@ -5,6 +5,7 @@
 #ifndef VULKANOENGINE_FORWARDRENDERMODE_H
 #define VULKANOENGINE_FORWARDRENDERMODE_H
 
+/*
 
 #include "../Vulkan/Classes/RenderMode.h"
 #include "../Vulkan/Classes/RenderTarget.h"
@@ -64,6 +65,6 @@ private:
 
     void updateUniformBuffer(nanoseconds deltaTime);
 };
-
+*/
 
 #endif //VULKANOENGINE_FORWARDRENDERMODE_H

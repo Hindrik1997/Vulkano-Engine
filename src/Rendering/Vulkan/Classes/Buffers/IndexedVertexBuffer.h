@@ -9,7 +9,7 @@
 #include "../../VkUniqueHandle.h"
 #include "Buffer.h"
 #include "StagingBuffer.h"
-#include "../../VkCore.h"
+#include "../../Instance.h"
 #include <vector>
 
 using std::vector;
@@ -22,7 +22,7 @@ private:
     uint32_t m_IndicesCount;
 public:
     IndexedVertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices, const vector<uint16_t>& indices);
-    IndexedVertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices, const vector<uint16_t>& indices, VkCore& core, const vector<uint32_t>& queueFamilies);
+    IndexedVertexBuffer(VkDevice device,VkPhysicalDevice physicalDevice, const vector<Vertex>& vertices, const vector<uint16_t>& indices, Instance& core, const vector<uint32_t>& queueFamilies);
 
     IndexedVertexBuffer()  = delete;
     ~IndexedVertexBuffer() = default;

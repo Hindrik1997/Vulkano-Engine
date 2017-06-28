@@ -24,9 +24,7 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
     info.m_ApplicationName                          = "Vulkano Engine";
     info.m_EnabledInstanceValidationLayerNames      = enabledInstanceValidationLayers;
     info.m_EnabledInstanceExtensionNames            = platform_extensions;
-    info.m_EnabledDeviceExtentionNames              = enabledDeviceExtensions;
     info.m_EnableDebugLayers                        = enableDebugLayers;
-    info.m_EnumeratePossibleDevicesInConsole        = false;
     info.m_EnumerateLayersAndExtensionsInConsole    = false;
 
     return info;
@@ -35,45 +33,46 @@ auto fill_vk_core_create_info(VK_PLATFORM& platform) -> vk_core_create_info
 
 auto Renderer::render(nanoseconds deltaTime) -> void
 {
-    for(auto& output : m_Outputs)
-    {
-        output.render(deltaTime);
-    }
+
 }
 
 auto Renderer::processAPI(nanoseconds deltaTime) -> bool
 {
-    vector<uint32_t > mustBeClosed;
-    uint32_t  i = 0;
-    for(auto& output : m_Outputs)
-    {
-        bool x = output.processAPI(deltaTime);
-        if(!x)
-        {
-            mustBeClosed.push_back(i);
-        }
-        ++i;
-    }
-
-    std::sort(mustBeClosed.begin(), mustBeClosed.end(), std::greater<uint32_t>());
-    for(auto& item : mustBeClosed)
-    {
-        m_Outputs.erase(m_Outputs.begin() + item);
-    }
-
-
-    return m_Outputs.size() != 0;
+    return m_Output.get().processAPI(deltaTime);
 }
 
 Renderer::~Renderer()
 {
 }
 
-Renderer::Renderer(Engine& engine) : m_VkCore(fill_vk_core_create_info(m_Platform), engine), m_Engine(engine)
+Renderer::Renderer(Engine& engine) : m_Engine(&engine)
+{
+    initialize();
+}
+
+void Renderer::initialize()
 {
     uint32_t width, height;
-    width = static_cast<uint32_t >(std::stoi(m_Engine.configuration().at("width")));
-    height = static_cast<uint32_t >(std::stoi(m_Engine.configuration().at("height")));
+    width = static_cast<uint32_t >(std::stoi(m_Engine->configuration().at("width")));
+    height = static_cast<uint32_t >(std::stoi(m_Engine->configuration().at("height")));
 
-    m_Outputs.emplace_back(new ForwardRenderMode(RenderTarget(width, height, m_VkCore, m_Platform), m_Engine));
+    vk_core_create_info coreCreateInfo = fill_vk_core_create_info(m_Platform);
+    m_Instance.set(coreCreateInfo, m_Engine);
+
+    m_Output.set(m_Platform, m_Instance.get().instance(), width, height);
+
+    vk_present_device_create_info info = {};
+    info.m_Instance = m_Instance.get().instance();
+    info.m_Surface  = m_Output.get().surface();
+    info.m_EnabledDeviceExtentionNames = enabledDeviceExtensions;
+    info.m_EnumerateLayersAndExtensionsInConsole = false;
+    info.m_EnumeratePossibleDevicesInConsole = false;
+
+    m_Device.set(info);
+
+    m_ResourceOpsManager.set(m_Device.get());
+
+    m_Output.get().initializeSwapchain(width, height, m_Instance.get(), m_Device.get(),m_Device.get().presentQueue(), m_Output.get().surface());
+
+    m_MemoryManager.set(m_Device.get());
 }

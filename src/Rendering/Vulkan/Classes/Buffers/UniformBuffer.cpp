@@ -5,7 +5,7 @@
 #include <cstring>
 #include "UniformBuffer.h"
 
-UniformBuffer::UniformBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize,  VkCore &core, const vector<uint32_t> &queueFamilies)
+UniformBuffer::UniformBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bufferSize,  Instance &core, const vector<uint32_t> &queueFamilies)
         : m_Buffer(device,physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, queueFamilies),
           m_StagingBuffer(device, physicalDevice, bufferSize, queueFamilies), m_VkCore(core)
 {
@@ -28,5 +28,5 @@ void UniformBuffer::updateGPUBuffer(void* data, VkDeviceSize size)
     memcpy(dst, data, size);
     vkUnmapMemory(m_StagingBuffer.buffer().device(), m_StagingBuffer.buffer().deviceMemory());
 
-    m_VkCore.copyBuffer(m_StagingBuffer.buffer().buffer(), m_Buffer.buffer(), size);
+    //m_VkCore.copyBuffer(m_StagingBuffer.buffer().buffer(), m_Buffer.buffer(), size);
 }

@@ -106,7 +106,8 @@ bool VK_GLFW_PLATFORM::processAPI(WindowHandle window, nanoseconds deltaTime)
         glfwSetWindowTitle(pointer, c.c_str());
     }
 
-	glfwPollEvents();
+    glfwWaitEvents();
+	//glfwPollEvents();
 
     return true;
 }

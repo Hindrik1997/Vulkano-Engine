@@ -89,7 +89,7 @@ Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bu
     memoryAllocateInfo.memoryTypeIndex = memoryTypeIndex;
 
     result = vkAllocateMemory(m_Device, &memoryAllocateInfo, nullptr, m_DeviceAllocatedMemory.reset());
-    vkIfFailThrowMessage(result, "Device memory allocation failed!");
+    vkIfFailThrowMessage(result, "PresentDevice memory allocation failed!");
 
     //Bind the memory to the buffer
     vkBindBufferMemory(m_Device, m_Buffer, m_DeviceAllocatedMemory, 0);
@@ -137,7 +137,7 @@ Buffer::Buffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize bu
     memoryAllocateInfo.memoryTypeIndex = memoryTypeIndex;
 
     result = vkAllocateMemory(m_Device, &memoryAllocateInfo, nullptr, m_DeviceAllocatedMemory.reset());
-    vkIfFailThrowMessage(result, "Device memory allocation failed!");
+    vkIfFailThrowMessage(result, "PresentDevice memory allocation failed!");
 
     //Bind the memory to the buffer
     vkBindBufferMemory(m_Device, m_Buffer, m_DeviceAllocatedMemory, 0);

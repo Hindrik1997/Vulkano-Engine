@@ -4,20 +4,22 @@
 
 #include <limits>
 #include "Swapchain.h"
+#include "../PresentDevice.h"
 #include "../../../Core/Logger.h"
 
-Swapchain::Swapchain(uint32_t width, uint32_t height, VkCore& vkCore, vk_queue presentQueue, VkSurfaceKHR surface) :
+Swapchain::Swapchain(uint32_t width, uint32_t height, Instance& instance, PresentDevice& device, vk_queue presentQueue, VkSurfaceKHR surface) :
     m_PresentQueue(presentQueue),
     m_Height(height),
     m_Width(width),
-    m_VkCore(vkCore),
+    m_Instance(&instance),
     m_Surface(surface),
-    m_Swapchain({vkCore.device(), vkDestroySwapchainKHR}),
-    m_ImageAvailableSemaphore({vkCore.device(), vkDestroySemaphore}),
-    m_RenderingFinishedSemaphore({vkCore.device(), vkDestroySemaphore}),
-    m_DepthImage({vkCore.device(), vkDestroyImage}),
-    m_DepthImageMemory({vkCore.device(), vkFreeMemory}),
-    m_DepthImageView({vkCore.device(), vkDestroyImageView})
+    m_Swapchain({device.device(), vkDestroySwapchainKHR}),
+    m_ImageAvailableSemaphore({device.device(), vkDestroySemaphore}),
+    m_RenderingFinishedSemaphore({device.device(), vkDestroySemaphore}),
+    m_DepthImage({device.device(), vkDestroyImage}),
+    m_DepthImageMemory({device.device(), vkFreeMemory}),
+    m_DepthImageView({device.device(), vkDestroyImageView}),
+    m_Device(&device)
 {
     createSwapchain();
     retrieveSwapchainImages();
@@ -108,7 +110,7 @@ auto Swapchain::pickSwapChainExtent2D(const vk_swapchain_details& details, uint3
 
 auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
 {
-    vk_swapchain_details details = fillSwapChainDetails(m_VkCore.physicalDevice(), m_Surface);
+    vk_swapchain_details details = fillSwapChainDetails(m_Device->physicalDevice(), m_Surface);
     if(!checkSwapChainDetails(details))
         Logger::failure("Error, something wrong with the swapchain details.");
 
@@ -144,7 +146,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
     if(oldSwapchain == VK_NULL_HANDLE)
     {
         createInfo.oldSwapchain             = VK_NULL_HANDLE;
-        if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
+        if (vkCreateSwapchainKHR(m_Device->device(), &createInfo, nullptr, m_Swapchain.reset()) != VK_SUCCESS) {
             Logger::failure("Error, failed to create swapchain!");
         }
     }
@@ -153,7 +155,7 @@ auto Swapchain::createSwapchain(VkSwapchainKHR oldSwapchain) -> void
         createInfo.oldSwapchain = oldSwapchain;
         VkSwapchainKHR newSwapchain;
 
-        if (vkCreateSwapchainKHR(m_VkCore.device(), &createInfo, nullptr, &newSwapchain) != VK_SUCCESS) {
+        if (vkCreateSwapchainKHR(m_Device->device(), &createInfo, nullptr, &newSwapchain) != VK_SUCCESS) {
             Logger::failure("Error, failed to create swapchain!");
         }
         m_Swapchain = newSwapchain;
@@ -165,9 +167,9 @@ auto Swapchain::retrieveSwapchainImages() -> void
 {
     m_SwapchainImages.clear();
     uint32_t imageCount = 0;
-    vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, nullptr);
+    vkGetSwapchainImagesKHR(m_Device->device(), m_Swapchain, &imageCount, nullptr);
     m_SwapchainImages.resize(imageCount);
-    vkGetSwapchainImagesKHR(m_VkCore.device(), m_Swapchain, &imageCount, m_SwapchainImages.data());
+    vkGetSwapchainImagesKHR(m_Device->device(), m_Swapchain, &imageCount, m_SwapchainImages.data());
 }
 
 auto Swapchain::createSwapchainImageViews()  -> void
@@ -196,9 +198,9 @@ auto Swapchain::createSwapchainImageViews()  -> void
 
         VkImageView view;
 
-        VkResult result = vkCreateImageView(m_VkCore.device(), &createInfo, nullptr, &view);
+        VkResult result = vkCreateImageView(m_Device->device(), &createInfo, nullptr, &view);
         vkIfFailThrowMessage(result, "Error creating VkImageView for swapchain!");
-        m_SwapchainImageViews[i] = VkUniqueHandle<VkImageView>(view, m_VkCore.device(), vkDestroyImageView);
+        m_SwapchainImageViews[i] = VkUniqueHandle<VkImageView>(view, m_Device->device(), vkDestroyImageView);
     }
 }
 
@@ -267,16 +269,16 @@ auto Swapchain::createSemaphores() -> void
     VkSemaphoreCreateInfo semaphoreInfo = {};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    VkResult result = vkCreateSemaphore(m_VkCore.device(), &semaphoreInfo, nullptr, m_ImageAvailableSemaphore.reset());
+    VkResult result = vkCreateSemaphore(m_Device->device(), &semaphoreInfo, nullptr, m_ImageAvailableSemaphore.reset());
     vkIfFailThrowMessage(result, "Semaphore creation failed!");
-    result = vkCreateSemaphore(m_VkCore.device(), &semaphoreInfo, nullptr, m_RenderingFinishedSemaphore.reset());
+    result = vkCreateSemaphore(m_Device->device(), &semaphoreInfo, nullptr, m_RenderingFinishedSemaphore.reset());
     vkIfFailThrowMessage(result, "Semaphore creation failed!");
 }
 
 auto Swapchain::getAvailableImageIndex(VkResult& result) -> uint32_t
 {
     uint32_t index;
-    result = vkAcquireNextImageKHR(m_VkCore.device(), m_Swapchain,UINT64_MAX, m_ImageAvailableSemaphore.get(), VK_NULL_HANDLE, &index);
+    result = vkAcquireNextImageKHR(m_Device->device(), m_Swapchain,UINT64_MAX, m_ImageAvailableSemaphore.get(), VK_NULL_HANDLE, &index);
     return index;
 }
 

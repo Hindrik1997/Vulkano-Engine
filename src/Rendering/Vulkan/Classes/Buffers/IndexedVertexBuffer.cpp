@@ -10,7 +10,7 @@ Buffer &IndexedVertexBuffer::buffer()
     return m_Buffer;
 }
 
-IndexedVertexBuffer::IndexedVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, const vector<Vertex> &vertices, const vector<uint16_t> &indices, VkCore &core, const vector<uint32_t> &queueFamilies)
+IndexedVertexBuffer::IndexedVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, const vector<Vertex> &vertices, const vector<uint16_t> &indices, Instance &core, const vector<uint32_t> &queueFamilies)
         : m_Buffer(
         device,
         physicalDevice,
@@ -33,7 +33,7 @@ IndexedVertexBuffer::IndexedVertexBuffer(VkDevice device, VkPhysicalDevice physi
     //Unmap it again
     vkUnmapMemory(stagingBuffer.buffer().device(), stagingBuffer.buffer().deviceMemory());
 
-    core.copyBuffer(stagingBuffer.buffer().buffer(), m_Buffer.buffer(), m_Buffer.bufferSize());
+    //core.copyBuffer(stagingBuffer.buffer().buffer(), m_Buffer.buffer(), m_Buffer.bufferSize());
 }
 
 IndexedVertexBuffer::IndexedVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, const vector<Vertex> &vertices, const vector<uint16_t> &indices)

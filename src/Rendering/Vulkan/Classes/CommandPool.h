@@ -16,7 +16,6 @@ private:
     uint32_t m_QueueFamilyIndex;
     bool m_IsTransient;
     bool m_IsIndividualRessetable;
-    vector<VkCommandBuffer>       m_Commandbuffers;
     VkUniqueHandle<VkCommandPool> m_Commandpool;
 public:
     CommandPool(VkDevice device, uint32_t queueFamilyIndex, bool isTransient = false, bool individualReset = false);
@@ -31,15 +30,12 @@ public:
 
     void deallocateCommandBuffer(VkCommandBuffer buffer);
     void deallocateCommandBuffers(const vector<VkCommandBuffer> buffers);
-    void deallocateAllCommandBuffers();
 
-
+    VkCommandPool commandPool() const;
     VkDevice device() const;
     uint32_t queueFamilyIndex() const;
     bool     isTransient() const;
     bool     isIndividualRessetable() const;
-    vector<VkCommandBuffer> commandBuffers() const;
-
 };
 
 

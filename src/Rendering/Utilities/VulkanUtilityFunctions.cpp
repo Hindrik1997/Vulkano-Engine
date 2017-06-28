@@ -46,7 +46,7 @@ auto operator<<(ostream& o, VkPhysicalDeviceProperties& p) -> ostream&
     o << "Name: "               << p.deviceName     << std::endl;
     o << "Type: "               << p.deviceType     << std::endl;
     o << "Vendor: "             << vendorName       << std::endl;
-    o << "Device ID: "          << p.deviceID       << std::endl;
+    o << "PresentDevice ID: "          << p.deviceID       << std::endl;
     o << "API Version: "        << p.apiVersion     << std::endl;
     o << "Driver Version: "     << p.driverVersion  << std::endl;
 
@@ -109,6 +109,20 @@ auto operator<<(ostream &o, VkExtensionProperties p) -> ostream&
     return o;
 }
 
+auto operator<<(ostream &o, vk_memory_heap p) -> ostream &
+{
+    o << "------------------------------MEMORYHEAP PROPERTIES------------------------------" << std::endl;
+
+    o << "Heap location: " << (p.m_IsDeviceLocal ? "DEVICE" : "HOST") << std::endl;
+    o << "Heap size: " << p.m_MemoryHeap.size << std::endl;
+
+    o << "---------------------------------------------------------------------------------" << std::endl;
+
+    return o;
+}
+
+
+
 auto getVendorNameForID(uint32_t id) -> string
 {
     vector<tuple<uint32_t,string>> names =
@@ -153,3 +167,5 @@ auto getSuitableMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter,
     Logger::failure("failed to find suitable memory type!");
     throw;
 }
+
+

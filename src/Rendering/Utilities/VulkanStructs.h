@@ -14,16 +14,16 @@ using std::array;
 using std::vector;
 using std::string;
 
-struct vk_physical_device_info {
-
+struct vk_physical_device_queue_family_info
+{
     VkPhysicalDevice                m_PhysicalDevice            = VK_NULL_HANDLE;
     vector<VkQueueFamilyProperties> m_QueueFamilyProperties     = {};
 
 };
 
 
-struct vk_layer_extension_properties {
-
+struct vk_layer_extension_properties
+{
     VkLayerProperties               m_layerProperties       = {};
     vector<VkExtensionProperties>   m_ExtensionProperties   = {};
 
@@ -37,39 +37,72 @@ struct vk_device_rating {
 
 };
 
-
-struct vk_queue_family {
-
+struct vk_queue_family_properties
+{
     VkQueueFamilyProperties m_QueueFamilyProperties = {};
     uint32_t m_Index                                = 0;
-    vector<float> m_Priorities                      = {};
 };
 
-struct vk_swapchain_details {
+struct vk_queue_family
+{
+    VkQueueFamilyProperties m_QueueFamilyProperties = {};
+    uint32_t                m_FamilyIndex           = 0;
+    vector<float>           m_Priorities            = {};
+    vector<uint32_t>        m_QueueIndices          = {};
+};
 
+struct vk_queue_family_selected_set
+{
+    vk_queue_family         presentQueue;
+    vector<vk_queue_family> computeFamilies;
+    vector<vk_queue_family> transferFamlies;
+};
+
+struct vk_swapchain_details
+{
     VkSurfaceCapabilitiesKHR    m_Capabilities  = {};
     vector<VkSurfaceFormatKHR>  m_Formats       = {};
     vector<VkPresentModeKHR>    m_PresentModes  = {};
 
 };
 
-
-struct vk_queue {
-
-    VkQueue                     m_Queue             = VK_NULL_HANDLE;
+struct vk_queue
+{
+    VkQueue                     m_Queue            = VK_NULL_HANDLE;
     uint32_t                    m_FamilyIndex      = 0;
 
 };
 
-struct vk_core_create_info {
+struct vk_queue_set
+{
+    uint32_t            m_FamilyIndex   = 0;
+    vector<VkQueue>     m_Queues        = {};
+};
 
+struct vk_core_create_info
+{
     const char*                         m_ApplicationName                           = "";
     vector<const char*>                 m_EnabledInstanceValidationLayerNames       = {};
     vector<const char*>                 m_EnabledInstanceExtensionNames             = {};
-    vector<const char*>                 m_EnabledDeviceExtentionNames               = {};
     bool                                m_EnableDebugLayers                         = false;
+    bool                                m_EnumerateLayersAndExtensionsInConsole     = false;
+
+};
+
+struct vk_present_device_create_info
+{
+    VkInstance                          m_Instance                                  = VK_NULL_HANDLE;
+    VkSurfaceKHR                        m_Surface                                   = VK_NULL_HANDLE;
+    vector<const char*>                 m_EnabledDeviceExtentionNames               = {};
     bool                                m_EnumeratePossibleDevicesInConsole         = false;
     bool                                m_EnumerateLayersAndExtensionsInConsole     = false;
+};
+
+struct vk_memory_heap
+{
+    VkMemoryHeap                        m_MemoryHeap    = {};
+    bool                                m_IsDeviceLocal = false;
+    vector<VkMemoryPropertyFlagBits>    m_MemoryTypes   = {};
 
 };
 

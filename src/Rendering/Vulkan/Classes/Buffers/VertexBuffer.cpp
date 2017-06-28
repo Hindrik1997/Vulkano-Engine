@@ -33,7 +33,7 @@ Buffer& VertexBuffer::buffer()
     return m_Buffer;
 }
 
-VertexBuffer::VertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, const vector<Vertex> &vertices, VkCore& core, const vector<uint32_t>& queueFamilies)
+VertexBuffer::VertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, const vector<Vertex> &vertices, Instance& core, const vector<uint32_t>& queueFamilies)
         : m_Buffer(
         device,
         physicalDevice,
@@ -55,5 +55,5 @@ VertexBuffer::VertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, con
 
     //flush it?
 
-    core.copyBuffer(stagingBuffer.buffer().buffer(), m_Buffer.buffer(), m_Buffer.bufferSize());
+    //core.copyBuffer(stagingBuffer.buffer().buffer(), m_Buffer.buffer(), m_Buffer.bufferSize());
 }
