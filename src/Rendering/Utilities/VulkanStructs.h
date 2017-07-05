@@ -100,12 +100,20 @@ struct vk_present_device_create_info
 
 struct vk_memory_heap
 {
-    VkMemoryHeap                        m_MemoryHeap    = {};
-    bool                                m_IsDeviceLocal = false;
-    vector<VkMemoryPropertyFlagBits>    m_MemoryTypes   = {};
+    uint32_t                                            m_HeapIndex     = 0;
+    bool                                                m_IsDeviceLocal = false;
+    VkMemoryHeap                                        m_MemoryHeap    = {};
+    vector<pair<VkMemoryPropertyFlagBits,uint32_t>>     m_MemoryTypes   = {};
+
 
 };
 
+struct vk_memory_allocation
+{
+    VkDeviceMemory  m_Memory = VK_NULL_HANDLE;
+    VkDeviceSize    m_Offset = 0;
+    VkDeviceSize    m_Size   = 0;
 
+};
 
 #endif //VULKANO_ENGINE_VULKANCORESTRUCTS_H

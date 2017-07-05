@@ -1,5 +1,5 @@
 //
-// Created by hindr on 26-6-2017.
+// Created by hindrik on 26-6-2017.
 //
 
 #ifndef VULKANOENGINE_FENCEWAITER_H

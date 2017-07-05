@@ -1,5 +1,5 @@
 //
-// Created by hindr on 23-6-2017.
+// Created by hindrik on 23-6-2017.
 //
 
 #ifndef VULKANOENGINE_DEVICE_H

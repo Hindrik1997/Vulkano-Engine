@@ -13,7 +13,7 @@
 template <typename T, uint16_t SIZE = (UINT16_MAX-1)>
 class CacheOptimizedStorage final
 {
-    static_assert(SIZE <= (UINT16_MAX-1) && SIZE >= 2, "You must bind a max_size between (and including) #MIN_SIZE and (including) #MAX_SIZE!");
+    static_assert(SIZE <= (UINT16_MAX-1) && SIZE >= 2, "You must bind a max_size between (and including) 2 and (including) 65534");
 public:
     CacheOptimizedStorage();
     ~CacheOptimizedStorage();

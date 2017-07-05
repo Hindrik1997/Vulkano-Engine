@@ -114,7 +114,7 @@ auto operator<<(ostream &o, vk_memory_heap p) -> ostream &
     o << "------------------------------MEMORYHEAP PROPERTIES------------------------------" << std::endl;
 
     o << "Heap location: " << (p.m_IsDeviceLocal ? "DEVICE" : "HOST") << std::endl;
-    o << "Heap size: " << p.m_MemoryHeap.size << std::endl;
+    o << "Heap size: " << p.m_MemoryHeap.size << " bytes" << std::endl;
 
     o << "---------------------------------------------------------------------------------" << std::endl;
 
